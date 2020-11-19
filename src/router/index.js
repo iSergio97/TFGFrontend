@@ -1,14 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Home from '@/components/Home.vue';
 import Login from '@/components/Login.vue';
 import Operation from '@/components/Operation.vue';
 import Request from '../components/Request.vue';
 
 const routes = [
-  {
-    path: '/',
-    name: 'Login',
-    component: Login,
-  },
   {
     path: '/login',
     name: 'Login',
@@ -25,14 +21,19 @@ const routes = [
     component: () => import('../components/Administrator.vue'),
   },
   {
-    path: '/request',
+    path: '/requests',
     name: 'Request',
     component: Request,
   },
   {
-    path: '/operation',
+    path: '/operations',
     name: 'Operation',
     component: Operation,
+  },
+  {
+    path: '/',
+    name: 'Home',
+    component: Home,
   },
   /* {
     path: '/',
