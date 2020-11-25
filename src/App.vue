@@ -1,5 +1,5 @@
 <template>
-  <div id="">
+  <div>
     <nav class="navbar" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <router-link class="navbar-item" to="/#">
@@ -18,7 +18,8 @@
       <div id="navbarBasicExample" class="navbar-menu"
            :class="{ 'is-active': isHamburgerOpen }">
         <div class="navbar-start">
-          <router-link to="/#" class="navbar-item">
+          <router-link to="/#" class="navbar-item"
+            :class="{ 'is-active': isHamburgerOpen }" @click="openHamburgerMenu">
             {{ homeLang[lang] }}
           </router-link>
 
@@ -26,7 +27,8 @@
             Ver qué hacer
           </router-link>
 
-          <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-item has-dropdown"
+               :class="{ 'is-active': isHamburgerOpen }" @click="openHamburgerMenu">
             <a class="navbar-link">
               {{ habitanteLang[lang] }}
             </a>
@@ -48,7 +50,8 @@
 
         <div class="navbar-end">
           <div class="navbar-item">
-            <div class="buttons">
+            <div class="buttons" :class="{ 'is-active': isHamburgerOpen }"
+                 @click="openHamburgerMenu">
               <router-link to="/login" class="button is-light">
                 {{ loginLang[lang] }}
               </router-link>
