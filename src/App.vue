@@ -7,14 +7,16 @@
         </router-link>
 
         <a role="button" class="navbar-burger burger" aria-label="menu"
-           aria-expanded="false" data-target="navbarBasicExample">
+           aria-expanded="false" data-target="navbarBasicExample"
+           :class="{ 'is-active': isHamburgerOpen }" @click="openHamburgerMenu">
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
 
-      <div id="navbarBasicExample" class="navbar-menu">
+      <div id="navbarBasicExample" class="navbar-menu"
+           :class="{ 'is-active': isHamburgerOpen }">
         <div class="navbar-start">
           <router-link to="/#" class="navbar-item">
             {{ homeLang[lang] }}
@@ -74,6 +76,10 @@ export default {
     const operationsLang = ref(['Operaciones', 'Operations']);
     const requestLang = ref(['Solicitudes', 'Requests']);
     const profileLang = ref(['Perfil', 'Profile']);
+    const isHamburgerOpen = ref(false);
+    const openHamburgerMenu = () => {
+      isHamburgerOpen.value = !isHamburgerOpen.value;
+    };
     if (session) {
       window.location.href = 'profile';
     }
@@ -85,6 +91,8 @@ export default {
       operationsLang,
       requestLang,
       profileLang,
+      isHamburgerOpen,
+      openHamburgerMenu,
     };
   },
 };
