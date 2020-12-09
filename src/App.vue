@@ -1,66 +1,61 @@
 <template>
-  <div>
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <router-link class="navbar-item" to="/#">
-          <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <router-link to="/" class="navbar-item"
+                   @click="closeHamburgerMenu">
+        <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+      </router-link>
+
+      <a role="button" class="navbar-burger burger" aria-label="menu"
+         aria-expanded="false" data-target="navbarBasicExample"
+         :class="{ 'is-active': isHamburgerOpen }" @click="openHamburgerMenu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu"
+         :class="{ 'is-active': isHamburgerOpen }">
+      <div class="navbar-start" v-if="session !== undefined">
+        <router-link to="" class="navbar-item" @click="openHamburgerMenu">
+          Ver qué hacer
         </router-link>
 
-        <a role="button" class="navbar-burger burger" aria-label="menu"
-           aria-expanded="false" data-target="navbarBasicExample"
-           :class="{ 'is-active': isHamburgerOpen }" @click="openHamburgerMenu">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
+        <div class="navbar-item has-dropdown"
+             :class="{ 'is-active': isHamburgerOpen }" @click="openHamburgerMenu"
+             v-if="session !== undefined">
+          <a class="navbar-link">
+            {{ habitanteLang[lang] }}
+          </a>
 
-      <div id="navbarBasicExample" class="navbar-menu"
-           :class="{ 'is-active': isHamburgerOpen }">
-        <div class="navbar-start">
-          <router-link to="/#" class="navbar-item"
-            :class="{ 'is-active': isHamburgerOpen }" @click="openHamburgerMenu">
-            {{ homeLang[lang] }}
-          </router-link>
-
-          <router-link to="" class="navbar-item">
-            Ver qué hacer
-          </router-link>
-
-          <div class="navbar-item has-dropdown"
-               :class="{ 'is-active': isHamburgerOpen }" @click="openHamburgerMenu">
-            <a class="navbar-link">
-              {{ habitanteLang[lang] }}
-            </a>
-
-            <div class="navbar-dropdown">
-              <router-link to="/operations" class="navbar-item">
-                {{ operationsLang[lang] }}
-              </router-link>
-              <router-link to="/requests" class="navbar-item">
-                {{ requestLang[lang] }}
-              </router-link>
-              <hr class="navbar-divider">
-              <router-link to="/profile" class="navbar-item">
-                {{ profileLang[lang] }}
-              </router-link>
-            </div>
-          </div>
-        </div>
-
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <div class="buttons" :class="{ 'is-active': isHamburgerOpen }"
-                 @click="openHamburgerMenu">
-              <router-link to="/login" class="button is-light">
-                {{ loginLang[lang] }}
-              </router-link>
-            </div>
+          <div class="navbar-dropdown">
+            <router-link to="/operations" class="navbar-item">
+              {{ operationsLang[lang] }}
+            </router-link>
+            <router-link to="/requests" class="navbar-item">
+              {{ requestLang[lang] }}
+            </router-link>
+            <hr class="navbar-divider">
+            <router-link to="/profile" class="navbar-item">
+              {{ profileLang[lang] }}
+            </router-link>
           </div>
         </div>
       </div>
-    </nav>
-  </div>
+
+      <div class="navbar-end" v-if="session === undefined">
+        <div class="navbar-item">
+          <div class="buttons" :class="{ 'is-active': isHamburgerOpen }"
+               @click="closeHamburgerMenu">
+            <router-link to="/login" class="button is-light">
+              {{ loginLang[lang] }}
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
   <router-view/>
 </template>
 
@@ -72,6 +67,7 @@ export default {
   name: 'App',
   setup() {
     const session = Cookie.get('JSESSIONID');
+    console.log(session);
     const lang = (Cookie.get('lang') !== undefined && Cookie.get('lang') < 2) ? Cookie.get('lang') : 0;
     const loginLang = ref(['Iniciar sesión', 'Login']);
     const homeLang = ref(['Inicio', 'Home']);
@@ -83,9 +79,11 @@ export default {
     const openHamburgerMenu = () => {
       isHamburgerOpen.value = !isHamburgerOpen.value;
     };
-    if (session) {
-      window.location.href = 'profile';
-    }
+    const closeHamburgerMenu = () => {
+      if (isHamburgerOpen.value === true) {
+        isHamburgerOpen.value = !isHamburgerOpen.value;
+      }
+    };
     return {
       loginLang,
       lang,
@@ -95,11 +93,10 @@ export default {
       requestLang,
       profileLang,
       isHamburgerOpen,
+      session,
       openHamburgerMenu,
+      closeHamburgerMenu,
     };
   },
 };
 </script>
-
-<style>
-</style>
