@@ -7,8 +7,9 @@
       </router-link>
 
       <a role="button" class="navbar-burger burger" aria-label="menu"
-         aria-expanded="false" data-target="navbarBasicExample"
-         :class="{ 'is-active': isHamburgerOpen }" @click="openHamburgerMenu">
+         data-target="navbarBasicExample"
+         :class="{ 'is-active': isHamburgerOpen }"
+         @click="openHamburgerMenu">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -18,26 +19,27 @@
     <div id="navbarBasicExample" class="navbar-menu"
          :class="{ 'is-active': isHamburgerOpen }">
       <div class="navbar-start" v-if="session !== undefined">
-        <router-link to="" class="navbar-item" @click="openHamburgerMenu">
+        <router-link to="" class="navbar-item">
           Ver qué hacer
         </router-link>
 
         <div class="navbar-item has-dropdown"
-             :class="{ 'is-active': isHamburgerOpen }" @click="openHamburgerMenu"
+             :class="{ 'is-active': isHamburgerOpen }"
+             @click="openHamburgerMenu"
              v-if="session !== undefined">
           <a class="navbar-link">
             {{ habitanteLang[lang] }}
           </a>
 
           <div class="navbar-dropdown">
-            <router-link to="/operations" class="navbar-item">
+            <router-link to="/operations" class="navbar-item" @click="closeHamburgerMenu">
               {{ operationsLang[lang] }}
             </router-link>
-            <router-link to="/requests" class="navbar-item">
+            <router-link to="/requests" class="navbar-item" @click="closeHamburgerMenu">
               {{ requestLang[lang] }}
             </router-link>
             <hr class="navbar-divider">
-            <router-link to="/profile" class="navbar-item">
+            <router-link to="/profile" class="navbar-item" @click="closeHamburgerMenu">
               {{ profileLang[lang] }}
             </router-link>
           </div>
