@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Cookie from 'js-cookie';
 import Home from '@/components/Home.vue';
 import Login from '@/components/Login.vue';
-import Operation from '@/components/Operation.vue';
-import Request from '../components/Request.vue';
+// import Operation from '@/components/Operation.vue';
+// import Request from '../components/Request.vue';
 
 const routes = [
   {
@@ -24,18 +24,23 @@ const routes = [
   {
     path: '/requests',
     name: 'Request',
-    component: Request,
+    component: () => import('../components/Request.vue'),
   },
   {
     path: '/operations',
     name: 'Operation',
-    component: Operation,
+    component: () => import('../components/Operation.vue'),
   },
   {
     path: '/',
     name: 'Home',
     component: Home,
-  },
+  }, /*
+  {
+    path: '/*',
+    name: '*',
+    component: 'Error component'
+  } */
 ];
 
 const router = createRouter({
@@ -44,9 +49,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log(to.name);
   const session = Cookie.get('JSESSIONID');
-  console.log(session);
   if (session === undefined && (to.name !== 'Login')) {
     if (to.name !== 'Home') {
       next({ name: 'Login' });
