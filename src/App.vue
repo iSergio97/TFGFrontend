@@ -1,58 +1,63 @@
 <template>
-  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-info" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <router-link to="/" class="navbar-item"
-                   @click="closeHamburgerMenu">
+      <a class="navbar-item" href="https://bulma.io">
         <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
-      </router-link>
+      </a>
 
-      <a role="button" class="navbar-burger burger" aria-label="menu"
-         data-target="navbarBasicExample"
-         :class="{ 'is-active': isHamburgerOpen }"
-         @click="openHamburgerMenu">
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+         data-target="navbarBasicExample">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </a>
     </div>
 
-    <div id="navbarBasicExample" class="navbar-menu"
-         :class="{ 'is-active': isHamburgerOpen }">
-      <div class="navbar-start" v-if="session !== undefined">
-        <router-link to="" class="navbar-item">
-          Ver qué hacer
-        </router-link>
+    <div id="navbarBasicExample" class="navbar-menu" v-if="session">
+      <div class="navbar-start">
 
-        <div class="navbar-item has-dropdown"
-             :class="{ 'is-active': isHamburgerOpen }"
-             @click="openHamburgerMenu"
-             v-if="session !== undefined">
+        <a class="navbar-item">
+          {{profileLang[lang]}}
+        </a>
+
+        <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link">
-            {{ habitanteLang[lang] }}
+            {{habitanteLang[lang]}}
           </a>
 
           <div class="navbar-dropdown">
-            <router-link to="/operations" class="navbar-item" @click="closeHamburgerMenu">
+            <a class="navbar-item">
+              {{requestLang[lang]}}
+            </a>
+            <a class="navbar-item">
               {{ operationsLang[lang] }}
-            </router-link>
-            <router-link to="/requests" class="navbar-item" @click="closeHamburgerMenu">
-              {{ requestLang[lang] }}
-            </router-link>
+            </a>
             <hr class="navbar-divider">
-            <router-link to="/profile" class="navbar-item" @click="closeHamburgerMenu">
-              {{ profileLang[lang] }}
-            </router-link>
+            <a class="navbar-item">
+              {{reportLang[lang]}}
+            </a>
           </div>
         </div>
       </div>
 
-      <div class="navbar-end" v-if="session === undefined">
+      <div class="navbar-end">
         <div class="navbar-item">
-          <div class="buttons" :class="{ 'is-active': isHamburgerOpen }"
-               @click="closeHamburgerMenu">
-            <router-link to="/login" class="button is-light">
+          <div class="buttons">
+            <button class="button is-primary" @click="logout">
+              <strong>{{logoutLang[lang]}}</strong>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="navbarBasicExample" class="navbar-menu" v-else>
+
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="buttons">
+            <a class="button is-success">
               {{ loginLang[lang] }}
-            </router-link>
+            </a>
           </div>
         </div>
       </div>
@@ -69,35 +74,31 @@ export default {
   name: 'App',
   setup() {
     const session = Cookie.get('JSESSIONID');
-    console.log(session);
     const lang = (Cookie.get('lang') !== undefined && Cookie.get('lang') < 2) ? Cookie.get('lang') : 0;
     const loginLang = ref(['Iniciar sesión', 'Login']);
+    const logoutLang = ref(['Cerrar sesión', 'Logout']);
     const homeLang = ref(['Inicio', 'Home']);
     const habitanteLang = ref(['Opciones de habitante', 'Habitant options']);
     const operationsLang = ref(['Operaciones', 'Operations']);
     const requestLang = ref(['Solicitudes', 'Requests']);
     const profileLang = ref(['Perfil', 'Profile']);
-    const isHamburgerOpen = ref(false);
-    const openHamburgerMenu = () => {
-      isHamburgerOpen.value = !isHamburgerOpen.value;
-    };
-    const closeHamburgerMenu = () => {
-      if (isHamburgerOpen.value === true) {
-        isHamburgerOpen.value = !isHamburgerOpen.value;
-      }
+    const reportLang = ref(['Reportar un problema', 'Report an issue']);
+    const logout = () => {
+      Cookie.remove('JSESSIONID');
+      window.location.reload();
     };
     return {
       loginLang,
+      logoutLang,
       lang,
       homeLang,
       habitanteLang,
       operationsLang,
       requestLang,
       profileLang,
-      isHamburgerOpen,
       session,
-      openHamburgerMenu,
-      closeHamburgerMenu,
+      reportLang,
+      logout,
     };
   },
 };
