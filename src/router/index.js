@@ -27,20 +27,35 @@ const routes = [
     component: () => import('../components/Request.vue'),
   },
   {
+    path: '/requests/new',
+    name: 'Request',
+    component: () => import('../components/RequestForm.vue'),
+  },
+  {
+    path: '/requests/:id',
+    name: 'Request',
+    component: () => import('../components/RequestForm.vue'),
+  },
+  {
     path: '/operations',
     name: 'Operation',
     component: () => import('../components/Operation.vue'),
   },
   {
+    path: '/operations/new',
+    name: 'Operation',
+    component: () => import('../components/OperationForm.vue'),
+  },
+  {
+    path: '/operations/:id',
+    name: 'Operation',
+    component: () => import('../components/OperationForm.vue'),
+  },
+  {
     path: '/',
     name: 'Home',
     component: Home,
-  }, /*
-  {
-    path: '/*',
-    name: '*',
-    component: 'Error component'
-  } */
+  },
 ];
 
 const router = createRouter({

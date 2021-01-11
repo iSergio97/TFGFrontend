@@ -55,9 +55,9 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-success">
+            <router-link to="login" class="button is-success">
               {{ loginLang[lang] }}
-            </a>
+            </router-link>
           </div>
         </div>
       </div>
