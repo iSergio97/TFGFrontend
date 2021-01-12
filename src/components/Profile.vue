@@ -5,6 +5,12 @@
 <script>
 export default {
   name: 'Profile',
+  setup() {
+    console.log('Entra a profile');
+    return {
+
+    };
+  },
 };
 </script>
 

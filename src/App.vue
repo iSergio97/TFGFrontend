@@ -1,9 +1,9 @@
 <template>
   <nav class="navbar is-info" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://bulma.io">
+      <router-link class="navbar-item" to="/">
         <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
-      </a>
+      </router-link>
 
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
          data-target="navbarBasicExample">
@@ -13,49 +13,24 @@
       </a>
     </div>
 
-    <div id="navbarBasicExample" class="navbar-menu" v-if="session">
-      <div class="navbar-start">
-
-        <a class="navbar-item">
-          {{profileLang[lang]}}
-        </a>
-
-        <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link">
-            {{habitanteLang[lang]}}
-          </a>
-
-          <div class="navbar-dropdown">
-            <a class="navbar-item">
-              {{requestLang[lang]}}
-            </a>
-            <a class="navbar-item">
-              {{ operationsLang[lang] }}
-            </a>
-            <hr class="navbar-divider">
-            <a class="navbar-item">
-              {{reportLang[lang]}}
-            </a>
-          </div>
-        </div>
-      </div>
+    <div id="navbarBasicExample" class="navbar-menu">
 
       <div class="navbar-end">
+        <router-link to="/profile" class="navbar-item" v-if="session">
+          {{profileLang[lang]}}
+        </router-link>
+        <router-link to="/operations/list" class="navbar-item" v-if="session">
+          {{operationsLang[lang]}}
+        </router-link>
+        <router-link to="/requests/list" class="navbar-item" v-if="session">
+          {{requestLang[lang]}}
+        </router-link>
         <div class="navbar-item">
           <div class="buttons">
-            <button class="button is-primary" @click="logout">
+            <button class="button is-primary" @click="logout" v-if="session">
               <strong>{{logoutLang[lang]}}</strong>
             </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="navbarBasicExample" class="navbar-menu" v-else>
-
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons">
-            <router-link to="login" class="button is-success">
+            <router-link to="login" class="button is-success" v-if="!session">
               {{ loginLang[lang] }}
             </router-link>
           </div>

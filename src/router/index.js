@@ -2,8 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Cookie from 'js-cookie';
 import Home from '@/components/Home.vue';
 import Login from '@/components/Login.vue';
-// import Operation from '@/components/Operation.vue';
-// import Request from '../components/Request.vue';
 
 const routes = [
   {
@@ -22,24 +20,24 @@ const routes = [
     component: () => import('../components/Administrator.vue'),
   },
   {
-    path: '/requests',
-    name: 'Request',
-    component: () => import('../components/Request.vue'),
+    path: '/requests/list',
+    name: 'RequestList',
+    component: () => import('../components/RequestList.vue'),
   },
   {
     path: '/requests/new',
-    name: 'Request',
+    name: 'RequestForm',
     component: () => import('../components/RequestForm.vue'),
   },
   {
     path: '/requests/:id',
-    name: 'Request',
+    name: 'RequestForm',
     component: () => import('../components/RequestForm.vue'),
   },
   {
-    path: '/operations',
-    name: 'Operation',
-    component: () => import('../components/Operation.vue'),
+    path: '/operations/list',
+    name: 'OperationList',
+    component: () => import('../components/OperationList.vue'),
   },
   {
     path: '/operations/new',

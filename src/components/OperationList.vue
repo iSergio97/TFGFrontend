@@ -1,10 +1,10 @@
 <template>
-  <h1> Request component view </h1>
+  <h1> OperationList component view </h1>
 </template>
 
 <script>
 export default {
-  name: 'Request',
+  name: 'Operation',
 };
 </script>
 
