@@ -98,7 +98,7 @@ export default {
               errorForm.value = true;
             }
           })
-          .catch((error) => {
+          .catch(() => {
             errorForm.value = true;
             submitted.value = false;
           });
