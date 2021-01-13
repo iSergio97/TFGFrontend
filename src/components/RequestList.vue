@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: 'Request',
+  name: 'RequestList',
 };
 </script>
 

@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: 'Request',
+  name: 'RequestForm',
 };
 </script>
 

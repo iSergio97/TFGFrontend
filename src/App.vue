@@ -78,3 +78,9 @@ export default {
   },
 };
 </script>
+
+<style>
+html {
+  background-color: #F8F8FF;
+}
+</style>

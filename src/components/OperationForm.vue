@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'Operation',
+  name: 'OperationForm',
 };
 </script>
 
