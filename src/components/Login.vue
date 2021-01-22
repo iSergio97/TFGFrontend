@@ -62,6 +62,7 @@ export default {
     if (session) {
       window.location.href = '';
     }
+
     const lang = (Cookie.get('lang') !== undefined && Cookie.get('lang') < 2) ? Cookie.get('lang') : 0;
     const headerLang = ref(['Iniciar sesión', 'Login']);
     const usernameLang = ref(['Nombre de usuario', 'Username']);
@@ -90,15 +91,16 @@ export default {
           .then((res) => {
             const { status, object } = res.data;
             if (status === 200) {
-              // Redirigir a la página de home y guardar los datos del habitante devuelto
               console.log(object);
+              // Cookie.set('JSESSIONID', store.state.user.id);
+              // window.location.reload();
             } else {
-              console.error(status);
+              errorNoUserFound.value = true;
               submitted.value = false;
-              errorForm.value = true;
             }
           })
-          .catch(() => {
+          .catch((res) => {
+            console.log(res);
             errorForm.value = true;
             submitted.value = false;
           });

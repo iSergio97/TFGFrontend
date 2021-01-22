@@ -74,6 +74,8 @@ export default {
       session,
       reportLang,
       logout,
+      todos,
+      user,
     };
   },
 };
