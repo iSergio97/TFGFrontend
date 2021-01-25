@@ -12,18 +12,17 @@
     "buefy": "^0.9.4",
     "bulma": "^0.9.1",
     "core-js": "^3.8.3",
+    "crypto-js": "^4.0.0",
     "js-cookie": "^2.2.1",
     "register-service-worker": "^1.7.2",
     "vue": "^3.0.5",
-    "vue-router": "^4.0.3",
-    "vuex": "^4.0.0-rc.2"
+    "vue-router": "^4.0.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.10",
     "@vue/cli-plugin-eslint": "^4.5.10",
     "@vue/cli-plugin-pwa": "^4.5.10",
     "@vue/cli-plugin-router": "^4.5.10",
-    "@vue/cli-plugin-vuex": "^4.5.10",
     "@vue/cli-service": "^4.5.10",
     "@vue/compiler-sfc": "^3.0.5",
     "@vue/eslint-config-airbnb": "^5.3.0",

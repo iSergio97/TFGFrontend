@@ -1,1 +1,1 @@
-npm install axios js-cookie bulma
+npm install axios js-cookie bulma crypto-js vue-agile
