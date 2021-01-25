@@ -62,7 +62,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const session = Cookie.get('JSESSIONID');
+  const session = Cookie.get('PMHSESSION');
   if (session === undefined && (to.name !== 'Login')) {
     if (to.name !== 'Home') {
       next({ name: 'Login' });
