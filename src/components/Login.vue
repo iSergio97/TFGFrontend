@@ -24,7 +24,7 @@
                 <div class="control">
                   <input v-model="username"
                          :class="errorUsername ? 'input is-rounded is-danger' : 'input is-rounded'"
-                         type="text"  :placeholder="usernameLang[lang]">
+                         type="text" :placeholder="usernameLang[lang]">
                 </div>
                 <p class="help is-danger" v-if="errorUsername">{{errorUsernameLang[lang]}}</p>
               </div>
@@ -32,7 +32,7 @@
                 <div class="control">
                   <input v-model="password"
                          :class="errorPassword ? 'input is-rounded is-danger' : 'input is-rounded'"
-                         type="password"  :placeholder="passwordLang[lang]">
+                         type="password" :placeholder="passwordLang[lang]">
                 </div>
                 <p class="help is-danger" v-if="errorPassword">{{errorPasswordLang[lang]}}</p>
               </div>
@@ -52,13 +52,14 @@
 
 <script>
 import { ref } from 'vue';
+import { User } from '@/api/User';
 import Cookie from 'js-cookie';
-import axios from 'axios';
+import CryptoJS from 'crypto-js';
 
 export default {
   name: 'Login',
   setup() {
-    const session = Cookie.get('JSESSIONID');
+    const session = Cookie.get('PMHSESSION');
     if (session) {
       window.location.href = '';
     }
@@ -71,15 +72,15 @@ export default {
     const errorUsername = ref(false);
     const errorPasswordLang = ref(['La contraseña no puede estar vacía', 'Password input can not be empty']);
     const errorPassword = ref(false);
-    const username = ref('');
-    const password = ref('');
+    const username = ref('habitante0');
+    const password = ref('habitante0');
     const submitButton = ref(['Enviar', 'Submit']);
     const submitted = ref(false);
     const errorForm = ref(false);
     const errorFormRes = ref(['Se ha producido un error. Inténtelo de nuevo más tarde', 'An error has occurred. Try it again later ']);
     const errorNoUserFound = ref(false);
     const noUserFound = ref(['El usuario o la contraseña son incorrectas', 'Username or password are incorrect']);
-    const submitForm = () => {
+    const submitForm = async () => {
       errorUsername.value = username.value.trim() === '';
       errorPassword.value = password.value.trim() === '';
 
@@ -87,23 +88,36 @@ export default {
         submitted.value = true;
         errorNoUserFound.value = false;
         errorForm.value = false;
-        axios.get(`http://localhost:8080/habitante/login?username=${username.value}&password=${password.value}`)
-          .then((res) => {
-            const { status, object } = res.data;
-            if (status === 200) {
-              console.log(object);
-              // Cookie.set('JSESSIONID', store.state.user.id);
-              // window.location.reload();
-            } else {
-              errorNoUserFound.value = true;
-              submitted.value = false;
-            }
-          })
-          .catch((res) => {
-            console.log(res);
-            errorForm.value = true;
+        const { user, statusGet } = await User({
+          username: username.value,
+          password: password.value,
+        });
+
+        // Si el usuario existe y la contraseña es correcta
+        switch (statusGet.value) {
+          case 200: // El usuario y la contraseña son correctas
+            /* eslint-disable */
+            const { cuentaUsuario } = user.value;
+            console.log(cuentaUsuario);
+            const PMHSESSION = CryptoJS.AES.encrypt(cuentaUsuario.username + '¥' + cuentaUsuario.id, cuentaUsuario.salt);
+            localStorage.setItem('PMHSESSION', PMHSESSION.toString());
+            Cookie.set('PMHSESSION', PMHSESSION);
+            localStorage.setItem('SALT', cuentaUsuario.salt)
+            Cookie.set('SALT', cuentaUsuario.salt);
+            window.location.reload();
+            break;
+          case 350: // Error en la combinación usuario/contraseña.
+            errorNoUserFound.value = true;
             submitted.value = false;
-          });
+            break;
+          case 370: // Error inesperado, inténtelo de nuevo más tarde.
+            errorForm.value = false;
+            submitted.value = false;
+            break;
+          default: //
+            // TODO: Redirigir a la página de error de conexión con la BBDD
+            break;
+        }
       }
     };
     return {
