@@ -48,7 +48,7 @@ import { ref } from 'vue';
 export default {
   name: 'App',
   setup() {
-    const session = Cookie.get('JSESSIONID');
+    const session = Cookie.get('PMHSESSION');
     const lang = (Cookie.get('lang') !== undefined && Cookie.get('lang') < 2) ? Cookie.get('lang') : 0;
     const loginLang = ref(['Iniciar sesión', 'Login']);
     const logoutLang = ref(['Cerrar sesión', 'Logout']);
@@ -59,7 +59,9 @@ export default {
     const profileLang = ref(['Perfil', 'Profile']);
     const reportLang = ref(['Reportar un problema', 'Report an issue']);
     const logout = () => {
-      Cookie.remove('JSESSIONID');
+      Cookie.remove('PMHSESSION');
+      Cookie.remove('SALT');
+      localStorage.clear();
       window.location.reload();
     };
     return {
@@ -74,8 +76,7 @@ export default {
       session,
       reportLang,
       logout,
-      todos,
-      user,
+      // username,
     };
   },
 };
