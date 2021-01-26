@@ -3,7 +3,7 @@ import axios from 'axios';
 // import Cookie from 'js-cookie';
 
 /* eslint-disable */
-export const User = async (props) => {
+export const Login = async (props) => {
   const user = ref({});
   const statusGet = ref(0);
   // Cuiraro, watch es sólo para peticiones constantes, para ver si cambia algún valro o no.
