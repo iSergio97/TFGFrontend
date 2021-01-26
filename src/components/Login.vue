@@ -4,11 +4,9 @@
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="notification is-danger" v-if="errorForm">
-          <button class="delete"></button>
           {{errorFormRes[lang]}}
         </div>
         <div class="notification is-danger" v-if="errorNoUserFound">
-          <button class="delete"></button>
           {{noUserFound[lang]}}
         </div>
         <div class="column is-4 is-offset-4">
@@ -52,7 +50,8 @@
 
 <script>
 import { ref } from 'vue';
-import { User } from '@/api/User';
+import { Login } from '@/api/Login';
+import { PMHCrypto } from '@/methods/PMHCrypto';
 import Cookie from 'js-cookie';
 import CryptoJS from 'crypto-js';
 
@@ -83,12 +82,11 @@ export default {
     const submitForm = async () => {
       errorUsername.value = username.value.trim() === '';
       errorPassword.value = password.value.trim() === '';
-
       if (!errorUsername.value && !errorPassword.value) {
         submitted.value = true;
         errorNoUserFound.value = false;
         errorForm.value = false;
-        const { user, statusGet } = await User({
+        const { user, statusGet } = await Login({
           username: username.value,
           password: password.value,
         });
@@ -98,12 +96,16 @@ export default {
           case 200: // El usuario y la contraseña son correctas
             /* eslint-disable */
             const { cuentaUsuario } = user.value;
-            console.log(cuentaUsuario);
-            const PMHSESSION = CryptoJS.AES.encrypt(cuentaUsuario.username + '¥' + cuentaUsuario.id, cuentaUsuario.salt);
-            localStorage.setItem('PMHSESSION', PMHSESSION.toString());
+            const { encrypt, decrypt } = PMHCrypto();
+            const PMHSESSION = encrypt(cuentaUsuario.username + '¥' + cuentaUsuario.id, cuentaUsuario.salt);
+              // CryptoJS.AES.encrypt(cuentaUsuario.username + '¥' + cuentaUsuario.id, cuentaUsuario.salt);
+            localStorage.setItem('PMHSESSION', PMHSESSION);
             Cookie.set('PMHSESSION', PMHSESSION);
-            localStorage.setItem('SALT', cuentaUsuario.salt)
+            localStorage.setItem('SALT', cuentaUsuario.salt);
             Cookie.set('SALT', cuentaUsuario.salt);
+            localStorage.setItem('USER_PRO', JSON.stringify(user.value));
+            const user_rol = CryptoJS.AES.encrypt(cuentaUsuario.rol, cuentaUsuario.salt);
+            localStorage.setItem('USER_ROL', user_rol);
             window.location.reload();
             break;
           case 350: // Error en la combinación usuario/contraseña.
