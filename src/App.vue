@@ -1,83 +1,20 @@
 <template>
-  <nav class="navbar is-info" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <router-link class="navbar-item" to="/">
-        <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
-      </router-link>
-
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
-         data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-
-    <div id="navbarBasicExample" class="navbar-menu">
-
-      <div class="navbar-end">
-        <router-link to="/profile" class="navbar-item" v-if="session">
-          {{profileLang[lang]}}
-        </router-link>
-        <router-link to="/operations/list" class="navbar-item" v-if="session">
-          {{operationsLang[lang]}}
-        </router-link>
-        <router-link to="/requests/list" class="navbar-item" v-if="session">
-          {{requestLang[lang]}}
-        </router-link>
-        <div class="navbar-item">
-          <div class="buttons">
-            <button class="button is-primary" @click="logout" v-if="session">
-              <strong>{{logoutLang[lang]}}</strong>
-            </button>
-            <router-link to="login" class="button is-success" v-if="!session">
-              {{ loginLang[lang] }}
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-  <router-view/>
+<UserNavbar />
 </template>
 
 <script>
+import UserNavbar from '@/components/UserNavbar.vue';
 import Cookie from 'js-cookie';
-import { ref } from 'vue';
 
 export default {
   name: 'App',
+  components: {
+    UserNavbar,
+  },
   setup() {
     const session = Cookie.get('PMHSESSION');
-    const lang = (Cookie.get('lang') !== undefined && Cookie.get('lang') < 2) ? Cookie.get('lang') : 0;
-    const loginLang = ref(['Iniciar sesión', 'Login']);
-    const logoutLang = ref(['Cerrar sesión', 'Logout']);
-    const homeLang = ref(['Inicio', 'Home']);
-    const habitanteLang = ref(['Opciones de habitante', 'Habitant options']);
-    const operationsLang = ref(['Operaciones', 'Operations']);
-    const requestLang = ref(['Solicitudes', 'Requests']);
-    const profileLang = ref(['Perfil', 'Profile']);
-    const reportLang = ref(['Reportar un problema', 'Report an issue']);
-    const logout = () => {
-      Cookie.remove('PMHSESSION');
-      Cookie.remove('SALT');
-      localStorage.clear();
-      window.location.reload();
-    };
-    return {
-      loginLang,
-      logoutLang,
-      lang,
-      homeLang,
-      habitanteLang,
-      operationsLang,
-      requestLang,
-      profileLang,
-      session,
-      reportLang,
-      logout,
-      // username,
-    };
+
+    return { session };
   },
 };
 </script>
