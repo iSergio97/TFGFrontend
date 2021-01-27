@@ -15,7 +15,7 @@
           <p class="subtitle has-text-black">Please login to proceed.</p>
           <div class="box">
             <figure class="avatar">
-              <img src="../images/login.png">
+              <img src="../images/login.png" alt="Login image">
             </figure>
             <form @submit.prevent="submitForm">
               <div class="field">
@@ -53,7 +53,6 @@ import { ref } from 'vue';
 import { Login } from '@/api/Login';
 import { PMHCrypto } from '@/methods/PMHCrypto';
 import Cookie from 'js-cookie';
-import CryptoJS from 'crypto-js';
 
 export default {
   name: 'Login',
@@ -96,17 +95,16 @@ export default {
           case 200: // El usuario y la contraseña son correctas
             /* eslint-disable */
             const { cuentaUsuario } = user.value;
-            const { encrypt, decrypt } = PMHCrypto();
+            const { encrypt } = PMHCrypto();
             const PMHSESSION = encrypt(cuentaUsuario.username + '¥' + cuentaUsuario.id, cuentaUsuario.salt);
-              // CryptoJS.AES.encrypt(cuentaUsuario.username + '¥' + cuentaUsuario.id, cuentaUsuario.salt);
+            const user_rol = encrypt(cuentaUsuario.rol, cuentaUsuario.salt);
             localStorage.setItem('PMHSESSION', PMHSESSION);
-            Cookie.set('PMHSESSION', PMHSESSION);
             localStorage.setItem('SALT', cuentaUsuario.salt);
-            Cookie.set('SALT', cuentaUsuario.salt);
             localStorage.setItem('USER_PRO', JSON.stringify(user.value));
-            const user_rol = CryptoJS.AES.encrypt(cuentaUsuario.rol, cuentaUsuario.salt);
             localStorage.setItem('USER_ROL', user_rol);
-            window.location.reload();
+            Cookie.set('PMHSESSION', PMHSESSION);
+            Cookie.set('SALT', cuentaUsuario.salt);
+            window.location.href = '/';
             break;
           case 350: // Error en la combinación usuario/contraseña.
             errorNoUserFound.value = true;
@@ -118,6 +116,8 @@ export default {
             break;
           default: //
             // TODO: Redirigir a la página de error de conexión con la BBDD
+            alert('Error en la base de datos');
+            submitted.value = false;
             break;
         }
       }
@@ -148,17 +148,5 @@ export default {
 <style scoped>
 input {
   text-align: center;
-}
-.login-error {
-  color: #D8000C;
-}
-.login-sucess {
-  color: #4F8A10;
-}
-.login-info {
-  color: #00529B;
-}
-.login-warning {
-  color: #D8000C;
 }
 </style>

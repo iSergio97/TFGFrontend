@@ -108,39 +108,6 @@
       </div>
     </div>
   </div>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-
 </template>
 
 <script>
@@ -154,13 +121,9 @@ export default {
     const { decrypt } = PMHCrypto();
     const alertErrorStorage = ref(['Se ha producido un error con su sesión, debe iniciar sesión de nuevo', 'An error has occurred with your session, you will be logged out.']);
     const lang = Cookie.get('lang') !== undefined ? Cookie.get('lang') : 0;
-    if (localStorage.getItem('PMHSESSION') === null || localStorage.getItem('SALT') === null || Cookie.get('PMHSESSION') === null || Cookie.get('SALT') === null) {
-      alert(alertErrorStorage.value[lang]);
-      Cookie.remove('PMHSESSION');
-      Cookie.remove('SALT');
-      localStorage.clear();
+    /* alert(alertErrorStorage.value[lang]);
       window.location.href = '/';
-    }
+    */
 
     const lsSession = decrypt(localStorage.getItem('PMHSESSION'), localStorage.getItem('SALT'));
     const cookieSession = decrypt(Cookie.get('PMHSESSION'), Cookie.get('SALT'));

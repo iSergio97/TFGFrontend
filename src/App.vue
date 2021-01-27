@@ -1,20 +1,31 @@
 <template>
-<UserNavbar />
+  <div v-if="localSession === 0 || localSession === 1">
+    <UserNavbar />
+  </div>
+  <div v-else>
+    <AdminNavbar />
+  </div>
+  <Footer />
 </template>
 
 <script>
 import UserNavbar from '@/components/UserNavbar.vue';
-import Cookie from 'js-cookie';
+import AdminNavbar from '@/components/AdminNavBar.vue';
+import Footer from '@/components/Footer.vue';
+import { PMHSession } from '@/methods/PMHSession';
 
 export default {
   name: 'App',
   components: {
     UserNavbar,
+    AdminNavbar,
+    Footer,
   },
   setup() {
-    const session = Cookie.get('PMHSESSION');
+    const { localSession } = PMHSession('/user/profile');
+    console.log(localSession.value);
 
-    return { session };
+    return { localSession };
   },
 };
 </script>
