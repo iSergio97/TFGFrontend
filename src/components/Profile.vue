@@ -1,81 +1,6 @@
 <template>
   <div class='columns'>
     <div class='container profile'>
-      <div class='modal' id='edit-preferences-modal'>
-        <div class='modal-background'></div>
-        <div class='modal-card'>
-          <header class='modal-card-head'>
-            <p class='modal-card-title'>Edit Preferences</p>
-            <button class='delete'></button>
-          </header>
-          <section class='modal-card-body'>
-            <label class='label'>Name</label>
-            <p class='control'>
-              <input class='input' placeholder='Text input' type='text'>
-            </p>
-            <label class='label'>Username</label>
-            <p class='control has-icon has-icon-right'>
-              <input class='input' placeholder='Text input' type='text' value='pmillerk'>
-            </p>
-            <label class='label'>Email</label>
-            <p class='control has-icon has-icon-right'>
-              <input class='input' placeholder='Email input' type='text' value='hello@'>
-              <i class='fa fa-warning'></i>
-              <span class='help is-danger'>This email is invalid</span>
-            </p>
-            <div class='control'>
-              <div class='control-label is-pulled-left'>
-                <label class='label'>Date of Birth</label>
-              </div>
-              <span>
-              <span class='select'>
-                <select>
-                  <option>Month</option>
-                  <option>With options</option>
-                </select>
-              </span>
-              <span class='select'>
-                <select>
-                  <option>Day</option>
-                  <option>With options</option>
-                </select>
-              </span>
-              <span class='select'>
-                <select>
-                  <option>Year</option>
-                  <option>With options</option>
-                </select>
-              </span>
-            </span>
-            </div>
-            <label class='label'>Description</label>
-            <p class='control'>
-              <textarea class='textarea' placeholder='Describe Yourself!'></textarea>
-            </p>
-            <div class='content'>
-              <h1>Optional Information</h1>
-            </div>
-            <label class='label'>Phone Number</label>
-            <p class='control has-icon has-icon-right'>
-              <input class='input' placeholder='Text input' type='text' value='+1 *** *** 0535'>
-            </p>
-            <label class='label'>Work</label>
-            <p class='control has-icon has-icon-right'>
-              <input class='input' placeholder='Text input' type='text'
-                     value='Greater Washington Publishing'>
-            </p>
-            <label class='label'>School</label>
-            <p class='control has-icon has-icon-right'>
-              <input class='input' placeholder='Text input'
-                     type='text' value='George Mason University'>
-            </p>
-          </section>
-          <footer class='modal-card-foot'>
-            <a class='button is-primary modal-save'>Save changes</a>
-            <a class='button modal-cancel'>Cancel</a>
-          </footer>
-        </div>
-      </div>
       <div class='section profile-heading'>
         <div class='columns is-mobile is-multiline'>
           <div class='column is-2'>
@@ -85,24 +10,32 @@
           </div>
           <div class='column is-4-tablet is-10-mobile name'>
             <p>
-              <span class='title is-bold'>{{fullName}}</span>
+              <span class='title is-bold'>{{ nombre }}</span>
             </p>
+            <p> {{ apellidos }} </p>
           </div>
-          <div class='column is-2-tablet is-4-mobile has-text-centered'>
-            <p class='stat-val'>3</p>
-            <p class='stat-key'>Cambios realizados</p>
-            <p class='stat-val'>3</p>
-            <p class='stat-key'>Cambios realizados</p>
-            <p class='stat-val'>3</p>
-            <p class='stat-key'>Cambios realizados</p>
-          </div>
-          <div class='column is-2-tablet is-4-mobile has-text-centered'>
-            <p class='stat-val'>3</p>
-            <p class='stat-key'>Cambios realizados</p>
-            <p class='stat-val'>3</p>
-            <p class='stat-key'>Cambios realizados</p>
-            <p class='stat-val'>3</p>
-            <p class='stat-key'>Cambios realizados</p>
+          <!-- Recorrer el array del localStorage de los convivientes y
+          hacer un print de los nombres, apellidos de los mismos, -->
+          <div class='column is-6-tablet is-4-mobile has-text-centered'>
+            <div class="card">
+              <div class="card-content">
+                <!-- TODO: En el login, realizar una petición para devovler los convivientes
+                    de dicha persona y almacenarlos en caché -->
+                <p class="title">
+                  Convivientes
+                </p>
+                <p class="subtitle">
+                  Jeff Atwood
+                </p>
+              </div>
+              <footer class="card-footer">
+                <p class="card-footer-item">
+                  Los convivientes son las personas que viven contigo.
+                  Si uno de los que aparece aquí es menor, las personas mayores de edad pueden
+                  realizar una solicitud de edición de datos por el menor de edad.
+                </p>
+              </footer>
+            </div>
           </div>
         </div>
       </div>
@@ -121,9 +54,7 @@ export default {
     const { decrypt } = PMHCrypto();
     const alertErrorStorage = ref(['Se ha producido un error con su sesión, debe iniciar sesión de nuevo', 'An error has occurred with your session, you will be logged out.']);
     const lang = Cookie.get('lang') !== undefined ? Cookie.get('lang') : 0;
-    /* alert(alertErrorStorage.value[lang]);
-      window.location.href = '/';
-    */
+    // const
 
     const lsSession = decrypt(localStorage.getItem('PMHSESSION'), localStorage.getItem('SALT'));
     const cookieSession = decrypt(Cookie.get('PMHSESSION'), Cookie.get('SALT'));
@@ -141,9 +72,15 @@ export default {
     }
     let user;
     let image;
+    let nombre;
+    let apellidos;
     try {
       user = JSON.parse(localStorage.getItem('USER_PRO'));
       image = user.image;
+      nombre = user.nombre;
+      /* eslint-disable */
+      apellidos = computed(() => `${user.primerApellido} ${user.segundoApellido}`);
+      /* eslint-enable */
     } catch {
       alert(alertErrorStorage.value[lang]);
       Cookie.remove('PMHSESSION');
@@ -151,13 +88,11 @@ export default {
       localStorage.clear();
       window.location.href = '/';
     }
-    /* eslint-disable */
-    const fullName = computed(() => `${user.nombre}, ${user.primerApellido} ${user.segundoApellido}`);
-    /* eslint-enable */
     return {
       user,
       image,
-      fullName,
+      nombre,
+      apellidos,
       alertErrorStorage,
       lang,
     };

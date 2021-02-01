@@ -53,13 +53,15 @@ import { ref } from 'vue';
 import { Login } from '@/api/Login';
 import { PMHCrypto } from '@/methods/PMHCrypto';
 import Cookie from 'js-cookie';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'Login',
   setup() {
+    const router = useRouter();
     const session = Cookie.get('PMHSESSION');
     if (session) {
-      window.location.href = '';
+      router.push('/');
     }
 
     const lang = (Cookie.get('lang') !== undefined && Cookie.get('lang') < 2) ? Cookie.get('lang') : 0;
@@ -85,13 +87,13 @@ export default {
         submitted.value = true;
         errorNoUserFound.value = false;
         errorForm.value = false;
-        const { user, statusGet } = await Login({
+        const { user, statusUser, convivientes } = await Login({
           username: username.value,
           password: password.value,
         });
 
         // Si el usuario existe y la contraseña es correcta
-        switch (statusGet.value) {
+        switch (statusUser.value) {
           case 200: // El usuario y la contraseña son correctas
             /* eslint-disable */
             const { cuentaUsuario } = user.value;
@@ -104,7 +106,8 @@ export default {
             localStorage.setItem('USER_ROL', user_rol);
             Cookie.set('PMHSESSION', PMHSESSION);
             Cookie.set('SALT', cuentaUsuario.salt);
-            window.location.href = '/';
+            localStorage.setItem('CONV', JSON.stringify(convivientes.value));
+            window.location.href = '/'; // Se usa esto en vez de router.push porque si no, no recarga la barra de navegación
             break;
           case 350: // Error en la combinación usuario/contraseña.
             errorNoUserFound.value = true;

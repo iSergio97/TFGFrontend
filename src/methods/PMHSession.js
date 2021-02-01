@@ -11,7 +11,6 @@ Función que tiene 3 métodos
     @throw Devuelve excepción si los valores de las cookies no coinciden con los valores del localStorage
 */
 export const PMHSession = (path) => {
-  console.log('Se crea la constante PMHSession');
   const localSession = ref(0);
   const userRolSession = ref(false);
   const adminRolSession = ref(false);
