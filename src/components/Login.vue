@@ -72,14 +72,17 @@ export default {
     const errorUsername = ref(false);
     const errorPasswordLang = ref(['La contraseña no puede estar vacía', 'Password input can not be empty']);
     const errorPassword = ref(false);
-    const username = ref('habitante0');
-    const password = ref('habitante0');
+    const username = ref('habitante1');
+    const password = ref('habitante1');
     const submitButton = ref(['Enviar', 'Submit']);
     const submitted = ref(false);
     const errorForm = ref(false);
     const errorFormRes = ref(['Se ha producido un error. Inténtelo de nuevo más tarde', 'An error has occurred. Try it again later ']);
     const errorNoUserFound = ref(false);
     const noUserFound = ref(['El usuario o la contraseña son incorrectas', 'Username or password are incorrect']);
+    const isMobile = /iPhone|iPad|iPod|/i.test(navigator.userAgent);
+    const errorSafariLogin = ref(['Existe un error con los navegadores privados (Safari en iOS) que bloquea las sesiones empleadas en esta aplicación.\nSi desea usar la aplicación, emplee otro navegador como Firefox o Google Chrome',
+      'There is an error with private browsers (Safari on iOS) that blocks the sessions used in this application.\nIf you want to use the application, please use another browser such as Firefox or Google Chrome ']);
     const submitForm = async () => {
       errorUsername.value = username.value.trim() === '';
       errorPassword.value = password.value.trim() === '';
@@ -119,9 +122,15 @@ export default {
             break;
           default: //
             // TODO: Redirigir a la página de error de conexión con la BBDD
-            alert('Error en la base de datos');
-            submitted.value = false;
-            break;
+            if(isMobile) {
+              alert(errorSafariLogin.value[lang]);
+              break;
+            } else {
+              alert('Error en la base de datos');
+              submitted.value = false;
+              router.push('/database-error');
+              break;
+            }
         }
       }
     };

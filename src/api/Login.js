@@ -18,13 +18,13 @@ export const Login = async (props) => {
     })
     .catch(() => statusUser.value = 404);
 
-  // TODO: Consultas los convivientes
   if(statusUser.value === 200) {
-    await axios.get(`http://localhost:8080/habitante/convivientes?vivienda=${user.value.vivienda.calle}`)
+    const { calle, numero } = user.value.vivienda;
+    const { id } = user.value
+    await axios.get(`http://localhost:8080/habitante/convivientes?vivienda=${calle}&numero=${numero}&id=${id}`)
       .then((res) => {
-        const { status, object } = res.data;
-        convivientes.value = object;
-        statusConvivientes.value = status;
+        const { data } = res;
+        convivientes.value = data;
       });
   }
 

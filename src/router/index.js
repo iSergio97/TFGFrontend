@@ -1,9 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Cookie from 'js-cookie';
+import DatabaseError from '@/components/DatabaseError.vue';
 import Home from '@/components/Home.vue';
 import Login from '@/components/Login.vue';
 
 const routes = [
+  {
+    path: '/database-error',
+    name: 'DatabaseError',
+    component: DatabaseError,
+  },
   {
     path: '/login',
     name: 'Login',
@@ -63,6 +69,10 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const session = Cookie.get('PMHSESSION');
+  if (session === undefined && to.name === 'DatabaseError') {
+    next();
+    return;
+  }
   if (session === undefined && (to.name !== 'Login')) {
     if (to.name !== 'Home') {
       next({ name: 'Login' });
