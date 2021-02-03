@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import Footer from '@/components/Footer.vue';
+import Footer from '@/views/Footer.vue';
 
 export default {
   name: 'Home',

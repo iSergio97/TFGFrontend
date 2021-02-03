@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Cookie from 'js-cookie';
-import DatabaseError from '@/components/DatabaseError.vue';
-import Home from '@/components/Home.vue';
-import Login from '@/components/Login.vue';
+import DatabaseError from '@/views/DatabaseError.vue';
+import Home from '@/views/Home.vue';
+import Login from '@/views/Login.vue';
 
 const routes = [
   {
@@ -18,42 +18,42 @@ const routes = [
   {
     path: '/user/profile',
     name: 'Profile',
-    component: () => import('../components/Profile.vue'),
+    component: () => import('../views/Profile.vue'),
   },
   {
     path: '/administrator/system',
     name: 'Administrator',
-    component: () => import('../components/Administrator.vue'),
+    component: () => import('../views/Administrator.vue'),
   },
   {
     path: '/user/requests/list',
     name: 'RequestList',
-    component: () => import('../components/RequestList.vue'),
+    component: () => import('../views/RequestList.vue'),
   },
   {
     path: '/user/requests/new',
     name: 'RequestForm',
-    component: () => import('../components/RequestForm.vue'),
+    component: () => import('../views/RequestForm.vue'),
   },
   {
     path: '/user/requests/:id',
     name: 'RequestForm',
-    component: () => import('../components/RequestForm.vue'),
+    component: () => import('../views/RequestForm.vue'),
   },
   {
     path: '/user/operations/list',
     name: 'OperationList',
-    component: () => import('../components/UserOperationList.vue'),
+    component: () => import('../views/UserOperationList.vue'),
   },
   {
     path: '/user/operations/new',
     name: 'UserOperation',
-    component: () => import('../components/UserOperationForm.vue'),
+    component: () => import('../views/UserOperationForm.vue'),
   },
   {
     path: '/user/operations/:id',
     name: 'UserOperation',
-    component: () => import('../components/UserOperationForm.vue'),
+    component: () => import('../views/UserOperationForm.vue'),
   },
   {
     path: '/',

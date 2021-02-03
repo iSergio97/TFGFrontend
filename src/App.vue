@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import UserNavbar from '@/components/UserNavbar.vue';
-import AdminNavbar from '@/components/AdminNavBar.vue';
+import UserNavbar from '@/views/UserNavbar.vue';
+import AdminNavbar from '@/views/AdminNavBar.vue';
 import { PMHSession } from '@/methods/PMHSession';
 
 export default {
