@@ -4,9 +4,11 @@
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="notification is-danger" v-if="errorForm">
+          <button class="delete" onclick="this.parentElement.style.display='none'"></button>
           {{errorFormRes[lang]}}
         </div>
         <div class="notification is-danger" v-if="errorNoUserFound">
+          <button class="delete" onclick="this.parentElement.style.display='none'"></button>
           {{noUserFound[lang]}}
         </div>
         <div class="column is-4 is-offset-4">
@@ -119,6 +121,12 @@ export default {
           case 370: // Error inesperado, inténtelo de nuevo más tarde.
             errorForm.value = false;
             submitted.value = false;
+            break;
+          case 404:
+            alert('Error en la base de datos');
+            submitted.value = false;
+            errorForm.value = true;
+            // router.push('/database-error');
             break;
           default: //
             // TODO: Redirigir a la página de error de conexión con la BBDD

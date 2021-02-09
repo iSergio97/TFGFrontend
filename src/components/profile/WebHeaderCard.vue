@@ -13,12 +13,20 @@
               <p class="title is-4">{{ nombre }}</p>
               <p class="subtitle is-6">{{ apellidos }}</p>
             </div>
-            <div class="content">
-              <div>
-                <p> <strong> Dirección</strong>: {{address}} </p>
-                <p><strong>Fecha de nacimiento</strong>: {{ birthDate }}</p>
-                <p> <strong> Email</strong>: {{ email }} </p>
-                <p> <strong> Tarjeta de identificación</strong>: {{ tarjetaIdentificacion }}</p>
+            <div>
+              <div class="content">
+                <div>
+                  <p> <strong> Dirección</strong>: {{address}} </p>
+                </div>
+                <div>
+                  <p><strong>Fecha de nacimiento</strong>: {{ birthDate }}</p>
+                </div>
+                <div>
+                  <p> <strong> Email</strong>: {{ email }} </p>
+                </div>
+                <div>
+                  <p> <strong> Tarjeta de identificación</strong>: {{ tarjetaIdentificacion }}</p>
+                </div>
               </div>
             </div>
           </div>

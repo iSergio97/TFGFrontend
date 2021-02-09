@@ -5,8 +5,11 @@
         <p class="title">
           Convivientes
         </p>
-        <p class="subtitle" v-for="(conviviente, index) in convivientes" :key="index">
-          {{conviviente}}
+        <p v-if="convivientes.length === 0">
+          Actualmente no convive con nadie
+        </p>
+        <p class="subtitle" v-else v-for="(conviviente, index) in convivientes" :key="index">
+          {{conviviente.nombre}} {{conviviente.primerApellido}} {{conviviente.segundoApellido}}
         </p>
       </div>
       <footer class="card-footer">
