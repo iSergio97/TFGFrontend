@@ -33,6 +33,21 @@
             </div>
           </div>
         </div>
+        <div class="field">
+          <label class="label">¿Solicita por alguien? Si no, déjelo vacío</label>
+          <div class="control">
+            <div class="select">
+              <select v-model="solicitaPor">
+                <option value=""></option>
+                <option v-for="conviviente in convivientes" :value="conviviente.id"
+                        :key="conviviente.id">
+                  {{conviviente.primerApellido}} {{conviviente.segundoApellido}},
+                  {{conviviente.nombre}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
           <button
             :class="[submitted ?
                       'button is-medium is-info is-rounded is-loading' :
@@ -45,22 +60,19 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 
 export default {
   name: 'RequestFormComponent',
   props: {
-    id: Number,
     convivientes: Array,
   },
   setup(props) {
-    const create = props.id === undefined;
     const tipos = ref('A');
-    watch(() => tipos.value);
     const subtipos = ref('AN');
+    // TODO: Ver si es conveniente dejar el solicitaPor vacío por defecto o no
     const solicitaPor = ref(props.convivientes[0].id);
     const submitted = ref(false);
-    watch(() => subtipos.value);
     const changeSubtipo = () => {
       if (tipos.value === 'A') {
         subtipos.value = 'AN';
@@ -76,7 +88,6 @@ export default {
       console.log(solicitaPor.value);
     };
     return {
-      create,
       tipos,
       subtipos,
       solicitaPor,

@@ -19,9 +19,6 @@
         <router-link to="/user/profile" class="navbar-item" v-if="session">
           {{profileLang[lang]}}
         </router-link>
-        <router-link to="/user/operations/list" class="navbar-item" v-if="session">
-          {{operationsLang[lang]}}
-        </router-link>
         <router-link to="/user/requests/list" class="navbar-item" v-if="session">
           {{requestLang[lang]}}
         </router-link>

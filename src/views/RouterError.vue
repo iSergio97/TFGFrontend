@@ -15,9 +15,9 @@
 
 <script>
 import { ref } from 'vue';
-// import { useRouter } from 'vue-router';
+
 export default {
-  name: 'DatabaseError',
+  name: 'RouterError',
   setup() {
     const errorMessage = ref();
     // const session = localStorage.getItem('');

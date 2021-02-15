@@ -12,7 +12,7 @@
 import { useRouter, useRoute } from 'vue-router';
 
 export default {
-  name: 'OperationForm',
+  name: 'OperationShow',
   setup() {
     /* eslint-disable */
     const router = useRouter();
