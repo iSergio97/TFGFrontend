@@ -74,8 +74,8 @@ export default {
     const errorUsername = ref(false);
     const errorPasswordLang = ref(['La contraseña no puede estar vacía', 'Password input can not be empty']);
     const errorPassword = ref(false);
-    const username = ref('habitante1');
-    const password = ref('habitante1');
+    const username = ref('habitante0');
+    const password = ref('habitante0');
     const submitButton = ref(['Enviar', 'Submit']);
     const submitted = ref(false);
     const errorForm = ref(false);

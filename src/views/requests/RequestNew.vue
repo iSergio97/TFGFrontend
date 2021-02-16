@@ -1,5 +1,5 @@
 <template>
-  <RequestFormComponent :convivientes="convivientes" />
+  <RequestFormComponent :convivientes="convivientes" :userLogged="userLogged"/>
 </template>
 
 <script>
@@ -7,7 +7,6 @@ import RequestFormComponent from '@/components/request/RequestFormComponent.vue'
 import { PMHCrypto } from '@/methods/PMHCrypto';
 import Cookie from 'js-cookie';
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
 
 export default {
   components: {
@@ -34,13 +33,11 @@ export default {
       window.location.href = '/';
     }
     const convivientes = JSON.parse(localStorage.getItem('CONV'));
-    const route = useRoute();
-    const idRequest = ref(Number(route.params.id));
-    // console.log(idRequest.value);
+    const userLogged = JSON.parse(localStorage.getItem('USER_PRO'));
 
     return {
       convivientes,
-      idRequest,
+      userLogged,
     };
   },
 };
