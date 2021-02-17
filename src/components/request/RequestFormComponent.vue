@@ -1,9 +1,24 @@
 <template>
   <div class="card">
+    <div class="notification is-danger" v-if="errorTipoBol">
+      <button class="delete" onclick="this.parentElement.style.display='none'"></button>
+      {{errorTipo[lang]}}
+    </div>
+    <div class="notification is-danger" v-if="errorSubtipoBol">
+      <button class="delete" onclick="this.parentElement.style.display='none'"></button>
+      {{errorSubtipo[lang]}}
+    </div>
     <div class="card-content">
       <form class="content is-center" @submit.prevent="submitRequest">
-        <p><i>Si sólo desea una modificación, puede dejar campos vacíos.
-        <br>Sólo debe rellenar los campos que desea modificar</i></p>
+        <div v-if="tipos === 'A'">
+          <p><i>Debe rellenar todos los campos para dar de alta a un habitante</i></p>
+        </div>
+        <div v-else-if="tipos === 'B'">
+          <p><i>No debe modificar nada, sólo solicitar el tipo de baja</i></p>
+        </div>
+        <div v-else>
+          <p><i>Sólo debe editar los campos que desea modificar. </i></p>
+        </div>
         <div class="field">
           <label class="label">Tipo de solicitud</label>
           <div class="control">
@@ -25,7 +40,8 @@
                   <option value="AO" v-if="tipos === 'A'">Alta por omisión</option>
                   <option value="ACD" v-if="tipos === 'A'">
                     Alta por cambio de domicilio (viene)</option>
-                  <option value="BCD" v-if="tipos === 'B'">Baja por cambio de domicilio</option>
+                  <option value="BCD" v-if="tipos === 'B'">Baja por cambio de domicilio
+                    (se marcha)</option>
                   <option value="BD" v-if="tipos === 'B'">Baja por defunción</option>
                   <option value="MD" v-if="tipos === 'M'">Modificación de datos personales</option>
                   <option value="MV" v-if="tipos === 'M'">Modificación de vivienda</option>
@@ -48,74 +64,125 @@
             </div>
           </div>
         </div>
-        <div class="field">
-          <label class="label">Nombre</label>
-          <div class="control">
-            <input class="input" type="text" v-model="nombre" id="nombre" maxlength="20">
+        <div v-if="tipos === 'A' || subtipos === 'MD'">
+          <div class="field">
+            <label class="label">Nombre</label>
+            <div class="control">
+              <input class="input" type="text" v-model="nombre" id="nombre" maxlength="20">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Primer apellido</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                v-model="primerApellido"
+                id="primer-apellidos"
+                maxlength="30">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Segundo apellido</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                v-model="segundoApellido"
+                id="segundo-apellidos"
+                maxlength="30">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Nombre de usuario</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                v-model="username"
+                id="username"
+                maxlength="30">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Contraseña</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                v-model="password"
+                id="password"
+                maxlength="30">
+            </div>
           </div>
         </div>
-        <div class="field">
-          <label class="label">Primer apellido</label>
-          <div class="control">
-            <input
-              class="input"
-              type="text"
-              v-model="primerApellido"
-              id="primer-apellidos"
-              maxlength="30">
+        <div v-if="tipos === 'A' || subtipos === 'MV'">
+          <div class="field">
+            <label class="label">Pais</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                v-model="pais"
+                id="pais"
+                maxlength="30">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Provincia</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                v-model="provincia"
+                id="provincia"
+                maxlength="30">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Municipio</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                v-model="municipio"
+                id="municipio"
+                maxlength="30">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Calle</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                v-model="calle"
+                id="calle"
+                maxlength="50">
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Número</label>
+            <div class="control">
+              <input
+                class="input"
+                type="number"
+                v-model="numero"
+                id="numero"
+                min="0"
+                max="999">
+            </div>
           </div>
         </div>
-        <div class="field">
-          <label class="label">Segundo apellido</label>
-          <div class="control">
-            <input
-              class="input"
-              type="text"
-              v-model="segundoApellido"
-              id="segundo-apellidos"
-              maxlength="30">
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Segundo apellido</label>
-          <div class="control">
-            <input
-              class="input"
-              type="text"
-              v-model="pais"
-              id="pais"
-              maxlength="30">
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Segundo apellido</label>
-          <div class="control">
-            <input
-              class="input"
-              type="text"
-              v-model="provincia"
-              id="provincia"
-              maxlength="30">
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Segundo apellido</label>
-          <div class="control">
-            <input
-              class="input"
-              type="text"
-              v-model="municipio"
-              id="municipio"
-              maxlength="30">
-          </div>
-        </div>
-
-        <button
-          :class="[submitted ?
+        <br>
+        <div>
+          <button
+            :class="[submitted ?
                     'button is-medium is-info is-rounded is-loading' :
                     'button is-medium is-info is-rounded']">
-          Enviar <i class="fa fa-sign-in" aria-hidden="true"></i>
-        </button>
+            Enviar <i class="fa fa-sign-in" aria-hidden="true"></i>
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -123,6 +190,8 @@
 
 <script>
 import { ref } from 'vue';
+import Cookie from 'js-cookie';
+import { Request } from '@/api/Request.js';
 
 export default {
   name: 'RequestFormComponent',
@@ -138,13 +207,24 @@ export default {
     const nombre = ref('');
     // eslint-disable-next-line
     const identificacion = ref('');
-    // props.userLogged.identificacion === null ? ref("") : ref(props.userLogged.identificacion);
     // eslint-enable-next-line
     const primerApellido = ref('');
     const segundoApellido = ref('');
     const pais = ref('ESPAÑA');
-    const provincia = ref('PROVINCIA');
-    const municipio = ref('MUNICIPIO');
+    const provincia = ref('SEVILLA');
+    const municipio = ref('ÉCIJA');
+
+    const calle = ref('');
+    const numero = ref(0);
+
+    const username = ref('');
+    const password = ref('');
+
+    const errorTipo = ref(['Se ha producido un error a la hora de seleccionar el tipo de solicitud', 'An error ocurred selecting the request main type']);
+    const errorTipoBol = ref(false);
+    const errorSubtipo = ref(['Se ha producido un error a la hora de seleccionar el subtipo de solicitud', 'An error ocurred selecting the request subtype']);
+    const errorSubtipoBol = ref(false);
+    const lang = Cookie.get('lang') === undefined ? 0 : Cookie.get('lang');
     const changeInputs = () => {
       if (tipos.value === 'A') {
         nombre.value = '';
@@ -171,7 +251,6 @@ export default {
         }
       }
     };
-
     const changeSubtipo = () => {
       if (tipos.value === 'A') {
         subtipos.value = 'AN';
@@ -182,10 +261,42 @@ export default {
       }
       changeInputs();
     };
-    const submitRequest = () => {
-      console.log(tipos.value);
-      console.log(subtipos.value);
-      console.log(solicitaPor.value);
+    const submitRequest = async () => {
+      // Comprobación tipos es de alta, baja o modificación
+      if (['A', 'B', 'M'].indexOf(tipos.value) === -1) {
+        errorTipoBol.value = true;
+      }
+      // Comprobación que el subtipo corresponde con la lista disponible
+      if (['AN', 'AO', 'ACD', 'BD', 'BCD', 'MD', 'MV'].indexOf(subtipos.value)) {
+        errorSubtipoBol.value = true;
+      }
+      // Comprobación que el subtipo corresponde a la lista de tipo
+      if (errorSubtipo.value.indexOf(tipos.value) === -1) {
+        errorSubtipoBol.value = true;
+      }
+
+      const userLoggedId = ref(props.userLogged.id);
+
+      const {
+        request,
+        statusRequest
+      } = await Request({
+        tipo: tipos.value,
+        subtipos: subtipos.value,
+        solicitanteId: userLoggedId.value,
+        solicitaPorId: solicitaPor,
+        identificacion: identificacion.value,
+        nombre: nombre.value,
+        primerApellido: primerApellido.value,
+        segundoApellido: segundoApellido.value,
+        pais: pais.value,
+        municipio: municipio.value,
+        calle: calle.value,
+        numero: numero.value,
+        username: username.value,
+        password: password.value,
+
+      });
     };
     return {
       tipos,
@@ -198,7 +309,16 @@ export default {
       provincia,
       municipio,
       identificacion,
+      calle,
+      numero,
+      username,
+      password,
       submitted,
+      errorTipo,
+      errorTipoBol,
+      errorSubtipo,
+      errorSubtipoBol,
+      lang,
       changeSubtipo,
       changeInputs,
       submitRequest,
@@ -221,11 +341,16 @@ input {
 }
 
 #primer-apellidos, #segundo-apellidos {
-  width: 60%;
+  width: 40%;
 }
 
-#pais, #provincia, #municipio {
+#pais, #provincia, #municipio, #calle, #numero, #username, #password {
   width: 20%;
+}
+
+.notification {
+  width: 50%;
+  margin: 0 auto;
 }
 
 </style>
