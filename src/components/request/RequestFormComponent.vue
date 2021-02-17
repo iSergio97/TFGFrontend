@@ -191,7 +191,7 @@
 <script>
 import { ref } from 'vue';
 import Cookie from 'js-cookie';
-import { Request } from '@/api/Request.js';
+import { Request } from '@/api/Request';
 
 export default {
   name: 'RequestFormComponent',
