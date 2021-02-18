@@ -1,20 +1,15 @@
 import { ref } from 'vue';
 import axios from 'axios';
-// import Cookie from 'js-cookie';
+import { BASE_URL } from '@/api/BASE_URL';
 
 /* eslint-disable */
 export const Request = async (props) => {
   const request = ref({});
   const status = ref(0);
 
-  // TODO: Comprobar qué tipo de solicitud es, para redirigirlo a un controlador u otro
-
-  const baseURL = `http://localhost:8080/habitante/solicitud/`;
-
-  // TODO: Revisar esto
-  // https://github.com/nuxt-community/axios-module/issues/97
+  // https://github.com/nuxt-community/axios-module/issues/975
   if(props.tipo === 'A') { // ALTA
-    await axios.get(`${baseURL}new?username=${props.username}&password=${props.password}`)
+    await axios.get(`${BASE_URL}habitante/solicitud/new?username=${props.username}&password=${props.password}`)
       .then((res) => {
         const { status, object } = res.data;
         request.value = object;

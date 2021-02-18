@@ -91,11 +91,11 @@ body {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.65) 100%);
   text-shadow: 0px 0px 2px #000000;
 }
-.card.is-fullimage .card-image .card-stacked .card-footer {
+.card.is-fullimage .card-image .card-stacked {
   border-color: transparent;
 }
-.card.is-fullimage .card-image .card-stacked .title,
-.card.is-fullimage .card-image .card-stacked .subtitle {
+.card.is-fullimage .card-image .card-stacked,
+.card.is-fullimage .card-image .card-stacked {
   color: inherit;
 }
 .card.is-fullimage .card-image .card-stacked a {

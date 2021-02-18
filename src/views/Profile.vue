@@ -19,10 +19,81 @@
             <div class='column is-6-tablet is-4-mobile has-text-centered'>
               <div class="card">
                 <div class="card-content">
-                  <p class="title">
-                    Formulario para cambiar datos de login
+                  <div class="notification is-success is-light" v-if="formSubmittedOK">
+                    <button class="delete"
+                            onclick="this.parentElement.style.display='none'">
+                    </button>
+                    <p> ¡Petición realizada con éxito!</p>
+                    <p> Se va a proceder a cerrar su sesión</p>
+                  </div>
+                  <p class="subtitle">
+                    Cambiar nombre de usuario
                   </p>
-                  <p> Introducir form </p>
+                  <form @submit.prevent="submitForm">
+                    <div class="field">
+                      <label>Nombre de usuario</label>
+                      <div class="control">
+                        <input
+                          class="input is-rounded"
+                          type="text"
+                          placeholder="Nombre de usuario"
+                          v-model="username">
+                      </div>
+                    </div>
+                    <br>
+                    <div class="field">
+                      <label>Contraseña</label>
+                      <div class="control">
+                        <input
+                          class="input is-rounded"
+                          type="password"
+                          placeholder="Contraseña"
+                          v-model="password">
+                      </div>
+                    </div>
+                    <br>
+                    <div class="field">
+                      <label>Confirmar contraseña</label>
+                      <div class="control">
+                        <input
+                          class="input is-rounded"
+                          type="password"
+                          placeholder="Confirmar contraseña"
+                          v-model="confirmPassword">
+                      </div>
+                    </div>
+                    <br>
+                    <div class="field">
+                      <label>Nueva contraseña</label>
+                      <div class="control">
+                        <input
+                          class="input is-rounded"
+                          type="password"
+                          placeholder="Confirmar contraseña"
+                          v-model="newPassword">
+                      </div>
+                    </div>
+                    <br>
+                    <div class="field">
+                      <label>Confirmar nueva contraseña</label>
+                      <div class="control">
+                        <input
+                          class="input is-rounded"
+                          type="password"
+                          placeholder="Confirmar contraseña"
+                          v-model="confirmNewPassword">
+                      </div>
+                    </div>
+                    <br>
+                    <div>
+                      <button
+                        :class="[submitted ?
+                    'button is-medium is-info is-rounded is-loading' :
+                    'button is-medium is-info is-rounded']">
+                        Enviar <i class="fa fa-sign-in" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </form>
                 </div>
                 <footer class="card-footer">
                   <p class="card-footer-item">
@@ -59,6 +130,7 @@ import Cookie from 'js-cookie';
 import WebHeaderCard from '@/components/profile/WebHeaderCard.vue';
 import ConvivientesCard from '@/components/profile/ConvivientesCard.vue';
 import MobileHeaderCard from '@/components/profile/MobileHeaderCard.vue';
+import { UserAccount } from '@/api/UserAccount';
 
 export default {
   name: 'Profile',
@@ -96,9 +168,17 @@ export default {
     let birthDate;
     let tarjetaIdentificacion;
     let email;
+    const submitted = ref(false);
+    let username;
+    let password;
+    let confirmPassword;
+    let newPassword;
+    let confirmNewPassword;
+    let submitForm;
+    const formSubmittedOK = ref(false);
     try {
       user = JSON.parse(localStorage.getItem('USER_PRO'));
-      image = user.image;
+      image = new URL(user.image);
       nombre = user.nombre;
       /* eslint-disable */
       apellidos = computed(() => `${user.primerApellido} ${user.segundoApellido}`);
@@ -108,7 +188,29 @@ export default {
       birthDate = `${fechaNacimiento.getDate()}/${fechaNacimiento.getMonth() + 1}/${fechaNacimiento.getFullYear()}`;
       tarjetaIdentificacion = user.tarjetaIdentificacion.codigoTarjeta === 0 ? 'Identificación correspondiente con un menor de edad' : user.identificacion;
       email = user.email;
-    } catch {
+      username = ref(user.cuentaUsuario.username);
+      password = ref('habitante0');
+      confirmPassword = ref('habitante0');
+      newPassword = ref('habitante0');
+      confirmNewPassword = ref('habitante0');
+      submitForm = async () => {
+        const { status } = await UserAccount({
+          id: user.cuentaUsuario.id,
+          newUsername: username.value,
+          currentPassword: password.value,
+          newPassword: newPassword.value,
+        });
+        if (status.value === 200) {
+          formSubmittedOK.value = true;
+        }
+        setTimeout(() => {
+          Cookie.remove('PMHSESSION');
+          Cookie.remove('SALT');
+          localStorage.clear();
+          window.location.href = '/';
+        }, 3500); // Comprobar si 3.5s es mucho, poco o está OK.
+      };
+    } catch (e) {
       alert(alertErrorStorage.value[lang]);
       Cookie.remove('PMHSESSION');
       Cookie.remove('SALT');
@@ -116,6 +218,13 @@ export default {
       window.location.href = '/';
     }
     return {
+      submitted,
+      username,
+      password,
+      confirmPassword,
+      newPassword,
+      confirmNewPassword,
+      submitForm,
       user,
       image,
       nombre,
@@ -128,6 +237,7 @@ export default {
       isMobile,
       alertErrorStorage,
       lang,
+      formSubmittedOK,
     };
   },
 };
@@ -180,5 +290,9 @@ body {
 }
 .card.is-fullimage .card-image .card-stacked a:hover {
   text-decoration: underline;
+}
+input {
+  width: 70%;
+  text-align: center;
 }
 </style>

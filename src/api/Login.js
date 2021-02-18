@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import axios from 'axios';
-// import Cookie from 'js-cookie';
+import { BASE_URL } from '@/api/BASE_URL';
 
 /* eslint-disable */
 export const Login = async (props) => {
@@ -10,7 +10,7 @@ export const Login = async (props) => {
   const statusConvivientes = ref(0);
 
 
-  await axios.get(`http://localhost:8080/habitante/login?username=${props.username}&password=${props.password}`)
+  await axios.get(`${BASE_URL}habitante/login?username=${props.username}&password=${props.password}`)
     .then((res) => {
       const { status, object } = res.data;
       user.value = object;

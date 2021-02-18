@@ -15,7 +15,17 @@ export const PMHSession = (path) => {
   const userRolSession = ref(false);
   const adminRolSession = ref(false);
   watchEffect(() => [localSession, userRolSession, adminRolSession]);
+  watchEffect(() => [
+    localStorage.getItem('PMHSESSION'),
+    localStorage.getItem('USER_PRO'),
+    localStorage.getItem('CONV'),
+    localStorage.getItem('SALT'),
+    localStorage.getItem('USER_ROL'),
+    Cookie.get('PMHSESSION'),
+    Cookie.get('SALT')]);
   if (localStorage.getItem('PMHSESSION') === null ||
+      localStorage.getItem('USER_PRO') === null ||
+      localStorage.getItem('CONV') === null ||
       localStorage.getItem('SALT') === null ||
       localStorage.getItem('USER_ROL') === null ||
       Cookie.get('PMHSESSION') === undefined ||
