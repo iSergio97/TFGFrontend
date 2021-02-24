@@ -18,7 +18,7 @@ export const Login = async (props) => {
     })
     .catch(() => statusUser.value = 404);
 
-  if(statusUser.value === 200) {
+  if(statusUser.value === 200 && user.value.vivienda !== null) {
     const { calle, numero } = user.value.vivienda;
     const { id } = user.value
     await axios.get(`http://localhost:8080/habitante/convivientes?vivienda=${calle}&numero=${numero}&id=${id}`)

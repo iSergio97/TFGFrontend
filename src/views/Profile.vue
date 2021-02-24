@@ -183,7 +183,7 @@ export default {
       /* eslint-disable */
       apellidos = computed(() => `${user.primerApellido} ${user.segundoApellido}`);
       /* eslint-enable */
-      address = `${user.vivienda.calle} Nº ${user.vivienda.numero}`;
+      address = user.vivienda !== null ? `${user.vivienda.calle} Nº ${user.vivienda.numero}` : 'Actualmente no tiene asignado ninguna vivienda';
       const fechaNacimiento = new Date(user.fechaNacimiento);
       birthDate = `${fechaNacimiento.getDate()}/${fechaNacimiento.getMonth() + 1}/${fechaNacimiento.getFullYear()}`;
       tarjetaIdentificacion = user.tarjetaIdentificacion.codigoTarjeta === 0 ? 'Identificación correspondiente con un menor de edad' : user.identificacion;
@@ -210,7 +210,7 @@ export default {
           window.location.href = '/';
         }, 3500); // Comprobar si 3.5s es mucho, poco o está OK.
       };
-    } catch (e) {
+    } catch {
       alert(alertErrorStorage.value[lang]);
       Cookie.remove('PMHSESSION');
       Cookie.remove('SALT');

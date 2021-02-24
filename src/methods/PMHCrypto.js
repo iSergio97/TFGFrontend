@@ -12,7 +12,8 @@ export const PMHCrypto = () => {
   const decrypt = (body, salt) => {
     try {
       return CryptoJS.AES.decrypt(body, salt).toString(CryptoJS.enc.Utf8);
-    } catch {
+    } catch (e){
+      console.log(e);
       alert('Se ha producido un error con su sesión.\nSe va a proceder a cerrar la sesión');
     }
   }
