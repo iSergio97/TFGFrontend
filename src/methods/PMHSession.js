@@ -18,22 +18,22 @@ export const PMHSession = (path) => {
   watchEffect(() => [
     localStorage.getItem('PMHSESSION'),
     localStorage.getItem('USER_PRO'),
-    localStorage.getItem('CONV'),
     localStorage.getItem('SALT'),
     localStorage.getItem('USER_ROL'),
     Cookie.get('PMHSESSION'),
     Cookie.get('SALT')]);
   if (localStorage.getItem('PMHSESSION') === null ||
       localStorage.getItem('USER_PRO') === null ||
-      localStorage.getItem('CONV') === null ||
       localStorage.getItem('SALT') === null ||
       localStorage.getItem('USER_ROL') === null ||
       Cookie.get('PMHSESSION') === undefined ||
       Cookie.get('SALT') === undefined) {
-    Cookie.remove('PMHSESSION');
-    Cookie.remove('SALT');
-    localStorage.clear();
-    localSession.value = 0;
+    if(userRolSession.value !== 'U2FsdGVkX1/SG5iHEk1ZV2oTlE7rYLFdgZne6SnuPF0=') {
+      Cookie.remove('PMHSESSION');
+      Cookie.remove('SALT');
+      localStorage.clear();
+      localSession.value = 0;
+    }
   } else {
     const { decrypt } = PMHCrypto();
     const userRol = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT'));

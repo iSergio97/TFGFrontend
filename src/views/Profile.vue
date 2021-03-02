@@ -186,6 +186,7 @@ export default {
       address = user.vivienda !== null ? `${user.vivienda.calle} Nº ${user.vivienda.numero}` : 'Actualmente no tiene asignado ninguna vivienda';
       const fechaNacimiento = new Date(user.fechaNacimiento);
       birthDate = `${fechaNacimiento.getDate()}/${fechaNacimiento.getMonth() + 1}/${fechaNacimiento.getFullYear()}`;
+      console.log(user.tarjetaIdentificacion);
       tarjetaIdentificacion = user.tarjetaIdentificacion.codigoTarjeta === 0 ? 'Identificación correspondiente con un menor de edad' : user.identificacion;
       email = user.email;
       username = ref(user.cuentaUsuario.username);

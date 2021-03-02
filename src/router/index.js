@@ -3,6 +3,7 @@ import Cookie from 'js-cookie';
 import DatabaseError from '@/views/RouterError.vue';
 import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
+import AdministratorLogin from '@/views/AdministratorLogin.vue';
 
 const routes = [
   {
@@ -14,6 +15,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/administrator/login',
+    name: 'AdministratorLogin',
+    component: AdministratorLogin,
   },
   {
     path: '/user/profile',
@@ -46,7 +52,7 @@ const routes = [
     component: () => import('../views/operations/OperationList.vue'),
   },
   {
-    path: '/administrator/operations/:id',
+    path: '/administrator/operations/show/:id',
     name: 'OperationShow',
     component: () => import('../views/operations/OperationShow.vue'),
   },
@@ -68,13 +74,13 @@ router.beforeEach((to, from, next) => {
     next();
     return;
   }
-  if (session === undefined && (to.name !== 'Login')) {
+  if (session === undefined && !to.name.includes('Login')) {
     if (to.name !== 'Home') {
       next({ name: 'Login' });
     } else {
       next();
     }
-  } else if (session !== undefined && to.name === 'Login') {
+  } else if (session !== undefined && (to.name === 'Login' || to.name === 'AdministratorLogin')) {
     next({ name: 'Home' });
   } else {
     next();

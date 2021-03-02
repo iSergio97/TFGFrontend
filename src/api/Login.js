@@ -9,7 +9,6 @@ export const Login = async (props) => {
   const convivientes = ref([]);
   const statusConvivientes = ref(0);
 
-
   await axios.get(`${BASE_URL}habitante/login?username=${props.username}&password=${props.password}`)
     .then((res) => {
       const { status, object } = res.data;

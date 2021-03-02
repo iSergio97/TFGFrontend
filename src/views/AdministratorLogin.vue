@@ -12,19 +12,19 @@
           {{noUserFound[lang]}}
         </div>
         <div class="column is-4 is-offset-4">
-          <h3 class="title has-text-black">Login</h3>
+          <h3 class="title has-text-black">Adminitrator Login</h3>
           <hr class="login-hr">
           <p class="subtitle has-text-black">Please login to proceed.</p>
           <div class="box">
             <figure class="avatar">
-              <img src="../images/login.png" alt="Login image">
+              <img src="../images/admin.png" width="150" alt="Login image">
             </figure>
             <form @submit.prevent="submitForm">
               <div class="field">
                 <div class="control">
                   <input v-model="username"
                          :class="errorUsername ? 'input is-rounded is-danger' : 'input is-rounded'"
-                         type="text" :placeholder="username">
+                         type="text" :placeholder="usernameLang[lang]">
                 </div>
                 <p class="help is-danger" v-if="errorUsername">{{errorUsernameLang[lang]}}</p>
               </div>
@@ -32,12 +32,12 @@
                 <div class="control">
                   <input v-model="password"
                          :class="errorPassword ? 'input is-rounded is-danger' : 'input is-rounded'"
-                         type="password" :placeholder="password">
+                         type="password" :placeholder="passwordLang[lang]">
                 </div>
                 <p class="help is-danger" v-if="errorPassword">{{errorPasswordLang[lang]}}</p>
               </div>
               <button
-                      :class="[submitted ?
+                :class="[submitted ?
                       'button is-info is-rounded is-large is-fullwidth is-loading' :
                       'button is-info is-rounded is-large is-fullwidth']">
                 {{ submitButton[lang] }} <i class="fa fa-sign-in" aria-hidden="true"></i>
@@ -45,8 +45,8 @@
             </form>
             <br>
             <div>
-              <p> ¿Tiene cuenta de administrador? Haga click
-                <router-link to="/administrator/login"> aquí </router-link>
+              <p> ¿Tiene cuenta de habitante? Haga click
+                <router-link to="/login"> aquí </router-link>
               </p>
             </div>
           </div>
@@ -58,13 +58,13 @@
 
 <script>
 import { ref } from 'vue';
-import { Login } from '@/api/Login';
+import { LoginAdmin } from '@/api/LoginAdmin';
 import { PMHCrypto } from '@/methods/PMHCrypto';
 import Cookie from 'js-cookie';
 import { useRouter } from 'vue-router';
 
 export default {
-  name: 'Login',
+  name: 'AdministratorLogin',
   setup() {
     const router = useRouter();
     const session = Cookie.get('PMHSESSION');
@@ -80,8 +80,8 @@ export default {
     const errorUsername = ref(false);
     const errorPasswordLang = ref(['La contraseña no puede estar vacía', 'Password input can not be empty']);
     const errorPassword = ref(false);
-    const username = ref('habitante0');
-    const password = ref('habitante0');
+    const username = ref('sergio');
+    const password = ref('sergio');
     const submitButton = ref(['Enviar', 'Submit']);
     const submitted = ref(false);
     const errorForm = ref(false);
@@ -98,27 +98,36 @@ export default {
         submitted.value = true;
         errorNoUserFound.value = false;
         errorForm.value = false;
-        const { user, statusUser, convivientes } = await Login({
+        const { user, statusRes } = await LoginAdmin({
           username: username.value,
           password: password.value,
         });
 
         // Si el usuario existe y la contraseña es correcta
-        switch (statusUser.value) {
+        switch (statusRes.value) {
           case 200: // El usuario y la contraseña son correctas
             /* eslint-disable */
+            console.log(user.value);
             const { cuentaUsuario } = user.value;
+            console.log(1);
             const { encrypt } = PMHCrypto();
             const PMHSESSION = encrypt(cuentaUsuario.username + '¥' + cuentaUsuario.id, cuentaUsuario.salt);
+            console.log(2);
             const user_rol = encrypt(cuentaUsuario.rol, cuentaUsuario.salt);
+            console.log(3);
             localStorage.setItem('PMHSESSION', PMHSESSION);
+            console.log(4);
             localStorage.setItem('SALT', cuentaUsuario.salt);
+            console.log(5);
             localStorage.setItem('USER_PRO', JSON.stringify(user.value));
+            console.log(6);
             localStorage.setItem('USER_ROL', user_rol);
+            console.log(7);
             Cookie.set('PMHSESSION', PMHSESSION);
+            console.log(8);
             Cookie.set('SALT', cuentaUsuario.salt);
-            localStorage.setItem('CONV', JSON.stringify(convivientes.value));
-            window.location.href = '/'; // Se usa esto en vez de router.push porque si no, no recarga la barra de navegación
+            console.log(9);
+            // window.location.href = '/'; // Se usa esto en vez de router.push porque si no, no recarga la barra de navegación
             break;
           case 350: // Error en la combinación usuario/contraseña.
             errorNoUserFound.value = true;
@@ -168,7 +177,7 @@ export default {
       submitForm,
     };
   },
-};
+}
 </script>
 
 <style scoped>

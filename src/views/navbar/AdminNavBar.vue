@@ -19,9 +19,6 @@
         <router-link to="/admin/operations/list" class="navbar-item" v-if="session">
           {{operationsLang[lang]}}
         </router-link>
-        <router-link to="/admin/requests/list" class="navbar-item" v-if="session">
-          {{requestLang[lang]}}
-        </router-link>
         <div class="navbar-item">
           <div class="buttons">
             <button class="button is-primary" @click="logout" v-if="session">
