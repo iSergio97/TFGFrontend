@@ -16,8 +16,11 @@
     <div id="navbarBasicExample" class="navbar-menu">
 
       <div class="navbar-end">
-        <router-link to="/admin/operations/list" class="navbar-item" v-if="session">
+        <router-link to="/administrator/operations/list" class="navbar-item" v-if="session">
           {{operationsLang[lang]}}
+        </router-link>
+        <router-link to="/administrator/statistics" class="navbar-item" v-if="session">
+          Estadísticas
         </router-link>
         <div class="navbar-item">
           <div class="buttons">

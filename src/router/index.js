@@ -57,6 +57,11 @@ const routes = [
     component: () => import('../views/operations/OperationShow.vue'),
   },
   {
+    path: '/administrator/statistics',
+    name: 'Statistics',
+    component: () => import('../views/Statistics.vue'),
+  },
+  {
     path: '/',
     name: 'Home',
     component: Home,

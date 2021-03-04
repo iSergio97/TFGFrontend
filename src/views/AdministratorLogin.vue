@@ -127,7 +127,7 @@ export default {
             console.log(8);
             Cookie.set('SALT', cuentaUsuario.salt);
             console.log(9);
-            // window.location.href = '/'; // Se usa esto en vez de router.push porque si no, no recarga la barra de navegación
+            window.location.href = '/'; // Se usa esto en vez de router.push porque si no, no recarga la barra de navegación
             break;
           case 350: // Error en la combinación usuario/contraseña.
             errorNoUserFound.value = true;

@@ -8,6 +8,7 @@
 </template>
 
 <script>
+// import axios from 'axios';
 import UserNavbar from '@/views/navbar/UserNavbar.vue';
 import AdminNavbar from '@/views/navbar/AdminNavBar.vue';
 import { PMHSession } from '@/methods/PMHSession';
@@ -20,6 +21,8 @@ export default {
   },
   setup() {
     const { localSession } = PMHSession('/user/profile');
+    // axios.get('http://localhost:8080/sistema/administrador/prueba')
+    //   .then((res) => { console.log(res.data.object); });
 
     return { localSession };
   },
