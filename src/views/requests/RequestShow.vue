@@ -28,11 +28,7 @@ export default {
       localStorage.clear();
       window.location.href = '/';
     }
-
-    const rol = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT'));
-    if (rol !== 'HABITANTE') {
-      window.location.href = '/';
-    }
+    // Se ha optado por reutilizar este módulo
     const convivientes = JSON.parse(localStorage.getItem('CONV'));
     const route = useRoute();
     const idRequest = ref(Number(route.params.id));

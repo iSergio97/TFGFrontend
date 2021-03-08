@@ -1,11 +1,11 @@
 <template>
-  <h1> RequestList component view </h1>
-  <router-link to="/user/requests/new"> Nueva solicitud </router-link>
+  <h1> RequestList component view pero de administrador </h1>
 </template>
 
 <script>
 export default {
   name: 'RequestList',
+  // TODO: REVISAR SI ESTAMOS EN ADMIN O EN USUARIO PARA LISTAR TODO O EN FUNCIÓN DEL USUARIO
 };
 </script>
 

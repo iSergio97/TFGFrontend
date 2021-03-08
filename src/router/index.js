@@ -47,6 +47,16 @@ const routes = [
     component: () => import('../views/requests/RequestShow.vue'),
   },
   {
+    path: '/administrator/requests/list',
+    name: 'RequestList',
+    component: () => import('../views/requests/RequestList.vue'), // Listado de solicitudes
+  },
+  {
+    path: '/administrator/requests/show/:id',
+    name: 'RequestShow',
+    component: () => import('../views/requests/RequestShow.vue'), // Show de la solicitud en cuestión
+  },
+  {
     path: '/administrator/operations/list',
     name: 'OperationList',
     component: () => import('../views/operations/OperationList.vue'),
