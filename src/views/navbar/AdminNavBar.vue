@@ -79,7 +79,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 nav {
   background: #B8C1C8;
   border-bottom: 1px solid #989EA4;

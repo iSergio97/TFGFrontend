@@ -1,5 +1,5 @@
 <template>
-  <h1> OperationList component view </h1>
+  <br>
   <Suspense>
     <template #default>
       <OperationListController/>
