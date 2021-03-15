@@ -41,15 +41,33 @@ export default {
     const pruebaArchivo = (e) => {
       const formData = new FormData();
       const file = e.target.files[0];
-      formData.append('file', file);
-      formData.append('name', file.name);
-      axios.post(`${BASE_URL}/solicitud/document`, formData, {
-        headers: {
+      formData.append('file', file, file.name);
+      // formData.append('name', file.name);
+      const solicitud = {
+        fecha: new Date(),
+        solicitante: props.userLogged,
+        justificacion: '',
+        tipo: 'A',
+        subtipo: 'AO',
+        estado: 'P',
+        identificacion: '17476938L',
+        nombre: 'Habitante 0',
+        primerApellido: 'Primer Apellido Hab0',
+        segundoApellido: 'Segundo Apellido Hab0',
+        viviendaNuevaID: 10,
+        fechaNacimiento: '1947-07-17 17:26:07',
+        viviendaId: 10,
+        pais: 'ESPAÑA',
+        provincia: 'SEVILLA',
+        municipio: 'ÉCIJA',
+      };
+      console.log(BASE_URL);
+      axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud, {
+        /* headers: {
           'Content-Type': 'multipart/boundary',
-        },
+        }, */
       }).then((res) => { console.log(res); });
       archivo.value.nombre = e.target.files[0].name;
-      console.log(e.target.files);
     };
     const submitForm = () => {
       const formData = new FormData();

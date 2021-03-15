@@ -33,8 +33,8 @@ const routes = [
   },
   {
     path: '/user/requests/list',
-    name: 'RequestList',
-    component: () => import('../views/requests/RequestList.vue'),
+    name: 'UserRequestList',
+    component: () => import('../views/requests/UserRequestList.vue'),
   },
   {
     path: '/user/requests/new',
@@ -50,6 +50,7 @@ const routes = [
     path: '/administrator/requests/list',
     name: 'RequestList',
     component: () => import('../views/requests/RequestList.vue'), // Listado de solicitudes
+    alias: '/administrator/requests/list',
   },
   {
     path: '/administrator/requests/show/:id',
