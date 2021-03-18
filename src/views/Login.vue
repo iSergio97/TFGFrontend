@@ -1,16 +1,8 @@
 /* eslint-disable */
 <template>
-  <section class="hero">
+  <section class="hero" id="error">
     <div class="hero-body">
       <div class="container has-text-centered">
-        <div class="notification is-danger" v-if="errorForm">
-          <button class="delete" onclick="this.parentElement.style.display='none'"></button>
-          {{errorFormRes[lang]}}
-        </div>
-        <div class="notification is-danger" v-if="errorNoUserFound">
-          <button class="delete" onclick="this.parentElement.style.display='none'"></button>
-          {{noUserFound[lang]}}
-        </div>
         <div class="column is-4 is-offset-4">
           <h3 class="title has-text-black">Login</h3>
           <hr class="login-hr">
@@ -62,6 +54,7 @@ import { Login } from '@/api/Login';
 import { PMHCrypto } from '@/methods/PMHCrypto';
 import Cookie from 'js-cookie';
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 
 export default {
   name: 'Login',
@@ -118,18 +111,30 @@ export default {
             Cookie.set('PMHSESSION', PMHSESSION);
             Cookie.set('SALT', cuentaUsuario.salt);
             localStorage.setItem('CONV', JSON.stringify(convivientes.value));
+            await Swal.fire('¡Bienvenido!', 'Ha iniciado sesión.\nAhora será redirigido a la página principal', 'success')
             window.location.href = '/'; // Se usa esto en vez de router.push porque si no, no recarga la barra de navegación
             break;
           case 350: // Error en la combinación usuario/contraseña.
             errorNoUserFound.value = true;
             submitted.value = false;
+            // await Swal.fire('Error', 'Usuario o contraseña incorrecta', 'error')
+            await Swal.fire({
+              title: 'Error',
+              text: 'Usuario o contraseña incorrecta',
+              icon: 'error',
+              target: document.getElementById("error"),
+            });
             break;
           case 370: // Error inesperado, inténtelo de nuevo más tarde.
             errorForm.value = false;
             submitted.value = false;
             break;
           case 404:
-            alert('Error en la base de datos');
+            if(isMobile) {
+              await Swal.fire('Oops...', 'El sistema operativo iOS no acepta el almacén de cierta información necesaria.\n\nSi desea continuar, inicie sesión con otro dispositivo', 'error')
+            } else {
+              await Swal.fire('Oops...', 'Se ha producido un error en la base de datos. Inténtelo de nuevo más tarde', 'error')
+            }
             submitted.value = false;
             errorForm.value = true;
             // router.push('/database-error');

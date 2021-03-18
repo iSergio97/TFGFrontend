@@ -32,20 +32,24 @@ export default {
     userLogged: Object,
   },
   setup(props) {
+    const formData = new FormData();
     const archivo = ref({
       nombre: '',
       tamaño: '',
     });
-    console.log(props.convivientes);
-    console.log(props.userLogged.nombre);
     const pruebaArchivo = (e) => {
-      const formData = new FormData();
       const file = e.target.files[0];
+      console.log(e.target.files);
       formData.append('file', file, file.name);
-      // formData.append('name', file.name);
+      archivo.value.nombre = e.target.files[0].name;
+    };
+    const submitForm = async () => {
+      /* eslint-disable */
       const solicitud = {
         fecha: new Date(),
-        solicitante: props.userLogged,
+        solicitante: {
+          id: props.userLogged.id
+        },
         justificacion: '',
         tipo: 'A',
         subtipo: 'AO',
@@ -54,24 +58,30 @@ export default {
         nombre: 'Habitante 0',
         primerApellido: 'Primer Apellido Hab0',
         segundoApellido: 'Segundo Apellido Hab0',
-        viviendaNuevaID: 10,
-        fechaNacimiento: '1947-07-17 17:26:07',
+        viviendaNueva: { id: 10 },
+        fechaNacimiento: new Date('1947-07-17 17:26:07'),
         viviendaId: 10,
         pais: 'ESPAÑA',
         provincia: 'SEVILLA',
         municipio: 'ÉCIJA',
+        documentos: [],
       };
-      console.log(BASE_URL);
-      axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud, {
-        /* headers: {
+
+      await axios.post(`${BASE_URL}solicitud/document`, formData, {
+        headers: {
           'Content-Type': 'multipart/boundary',
-        }, */
-      }).then((res) => { console.log(res); });
-      archivo.value.nombre = e.target.files[0].name;
-    };
-    const submitForm = () => {
-      const formData = new FormData();
-      console.log(formData);
+        },
+      })
+        .then((res) => {
+          console.log(res.data);
+          for(let i = 0; i < res.data.length; i++) {
+            solicitud.documentos.push({ id: res.data[i].id, });
+          }
+          // solicitud.documentos.push({ id: res.data.id, });
+        });
+
+      await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud);
+      console.log(solicitud.documentos);
     };
     return {
       archivo,

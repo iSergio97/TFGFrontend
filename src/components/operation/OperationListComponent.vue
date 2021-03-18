@@ -1,62 +1,73 @@
 <template>
-  <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-    <a :disabled="indexPag > 0 ? disabled : ''"
-       @click="prevPage"
-       class="pagination-previous"
-       id="prevbutton">Página anterior</a>
-    <a :disabled="indexPag < paginas - 1 ? disabled : ''"
-       @click="nextPage"
-       class="pagination-next"
-       id="nextButton">Siguiente página</a>
-    <ul class="pagination-list">
-      <li><a class="pagination-link" @click="indexPag = 0">Página 1</a></li>
-      <li v-if="indexPag > 0">
-        <a class="pagination-link" @click="indexPag -= 1">{{ indexPag }}
-        </a>
-      </li>
-      <li><span class="pagination-ellipsis">&hellip;</span></li>
-      <li><a class="pagination-link is-current" >{{ indexPag + 1 }}</a></li>
-      <li><span class="pagination-ellipsis">&hellip;</span></li>
-      <li v-if="indexPag < paginas - 2">
-        <a class="pagination-link" aria-current="page" @click="indexPag += 1">{{ indexPag  + 2}}</a>
-      </li>
-      <li><a class="pagination-link" @click="indexPag = paginas - 1">Página {{ paginas }}</a></li>
-    </ul>
-  </nav>
-  <table class="table">
-    <thead>
-    <tr>
-      <th>
-        <abbr title="ID de la operación"> ID </abbr>
-      </th>
-      <th> <abbr title="Tipo de la operación (A)lta, (B)aja o (M)odificación"> Tipo</abbr></th>
-      <th> Habitante </th>
-      <th> Fecha </th>
-      <th> Solicitud relacionada </th>
-    </tr>
-    </thead>
-    <tbody v-for="operation in operacionesPaginadas" :key="operation.id">
-    <tr>
-      <th>{{operation.id}}</th>
-      <td> {{operation.tipo}}</td>
-      <!-- eslint-disable -->
-      <td> {{operation.habitante.primerApellido}} {{operation.habitante.segundoApellido}}, {{operation.habitante.nombre}}</td>
-      <td>
-        {{new Date(operation.fechaOperacion).getDate()}}/{{new Date(operation.fechaOperacion).getMonth()}}/{{new Date(operation.fechaOperacion).getFullYear()}}</td>
-      <!-- eslint-enable -->
-      <td>
-        <a :href="'/administrator/requests/show/' + operation.solicitud.id">
-          + info
-        </a>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <div v-if="operaciones.length > 0">
+    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+      <a :disabled="indexPag > 0 ? disabled : ''"
+         @click="prevPage"
+         class="pagination-previous"
+         id="prevbutton">Página anterior</a>
+      <a :disabled="indexPag < paginas - 1 ? disabled : ''"
+         @click="nextPage"
+         class="pagination-next"
+         id="nextButton">Siguiente página</a>
+      <ul class="pagination-list">
+        <li><a class="pagination-link" @click="indexPag = 0">Página 1</a></li>
+        <li v-if="indexPag > 0">
+          <a class="pagination-link" @click="indexPag -= 1">{{ indexPag }}
+          </a>
+        </li>
+        <li><span class="pagination-ellipsis">&hellip;</span></li>
+        <li><a class="pagination-link is-current" >{{ indexPag + 1 }}</a></li>
+        <li><span class="pagination-ellipsis">&hellip;</span></li>
+        <li v-if="indexPag < paginas - 2">
+          <a class="pagination-link" aria-current="page" @click="indexPag += 1">
+            {{ indexPag  + 2}}
+          </a>
+        </li>
+        <li><a class="pagination-link" @click="indexPag = paginas - 1">Página {{ paginas }}</a></li>
+      </ul>
+    </nav>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>
+          <abbr title="ID de la operación"> ID </abbr>
+        </th>
+        <th> <abbr title="Tipo de la operación (A)lta, (B)aja o (M)odificación"> Tipo</abbr></th>
+        <th> Habitante </th>
+        <th> Fecha </th>
+        <th> Solicitud relacionada </th>
+      </tr>
+      </thead>
+      <tbody v-for="operation in operacionesPaginadas" :key="operation.id">
+      <tr>
+        <th>{{operation.id}}</th>
+        <td> {{operation.tipo}}</td>
+        <!-- eslint-disable -->
+        <td> {{operation.habitante.primerApellido}} {{operation.habitante.segundoApellido}}, {{operation.habitante.nombre}}</td>
+        <td>
+          {{new Date(operation.fechaOperacion).getDate()}}/{{new Date(operation.fechaOperacion).getMonth()}}/{{new Date(operation.fechaOperacion).getFullYear()}}</td>
+        <!-- eslint-enable -->
+        <td>
+          <a :href="'/administrator/requests/show/' + operation.solicitud.id">
+            + info
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div v-else class="box">
+    <h3> Actualmente no se ha registrado ninguna operación.
+      Si desea registrar una, acuda a la lista de solicitudes para aceptar una.
+      <button @click="test">Hello world</button>
+    </h3>
+  </div>
 </template>
 
 <script>
 import { ref, watch } from 'vue';
 import { OperationGET } from '@/api/OperationGET';
+import Swal from 'sweetalert2';
 
 export default {
   name: 'OperationListComponent',
@@ -64,7 +75,6 @@ export default {
     /* eslint-disable */
     const operaciones = ref(null);
     const { lista } = await OperationGET();
-    setTimeout(function(){}, 30000);
     operaciones.value = await lista.value;
     const indexPag = ref(0);
     const operacionesPag = (indexPag) => {
@@ -83,6 +93,33 @@ export default {
         indexPag.value--;
       }
     };
+
+    const test = () => {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this imaginary file!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, keep it'
+      }).then((result) => {
+        if (result.value) {
+          Swal.fire(
+            'Deleted!',
+            'Your imaginary file has been deleted.',
+            'success'
+          )
+          // For more information about handling dismissals please visit
+          // https://sweetalert2.github.io/#handling-dismissals
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          Swal.fire(
+            'Cancelled',
+            'Your imaginary file is safe :)',
+            'error'
+          )
+        }
+      })
+    }
     // watchEffect((operacionesPaginadas) => {indexPag});
     watch(indexPag, (indexPag) => {
       supLimit = operacionesPag(indexPag);
@@ -99,6 +136,7 @@ export default {
       indexPag,
       nextPage,
       prevPage,
+      test,
     };
   },
 };

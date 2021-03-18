@@ -7,7 +7,11 @@ export const LoginAdmin = async (props) => {
   const user = ref({});
   const statusRes = ref(0);
 
-  await axios.get(`${BASE_URL}sistema/administrador/login?username=${props.username}&password=${props.password}`)
+  const params = new URLSearchParams();
+  params.append("username", props.username);
+  params.append("password", props.password);
+
+  await axios.post(`${BASE_URL}sistema/administrador/login`, params)
     .then((res) => {
       const { status, object } = res.data;
       user.value = object;

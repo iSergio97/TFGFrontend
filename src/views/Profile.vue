@@ -15,17 +15,9 @@
       <div class='container profile'>
         <div class='section profile-heading'>
           <div class='columns is-mobile is-multiline'>
-            <ConvivientesCard :convivientes="convivientes"/>
             <div class='column is-6-tablet is-4-mobile has-text-centered'>
               <div class="card">
                 <div class="card-content">
-                  <div class="notification is-success is-light" v-if="formSubmittedOK">
-                    <button class="delete"
-                            onclick="this.parentElement.style.display='none'">
-                    </button>
-                    <p> ¡Petición realizada con éxito!</p>
-                    <p> Se va a proceder a cerrar su sesión</p>
-                  </div>
                   <p class="subtitle">
                     Cambiar nombre de usuario
                   </p>
@@ -131,6 +123,7 @@ import WebHeaderCard from '@/components/profile/WebHeaderCard.vue';
 import ConvivientesCard from '@/components/profile/ConvivientesCard.vue';
 import MobileHeaderCard from '@/components/profile/MobileHeaderCard.vue';
 import { UserAccount } from '@/api/UserAccount';
+import Swal from 'sweetalert2';
 
 export default {
   name: 'Profile',
@@ -183,11 +176,14 @@ export default {
       /* eslint-disable */
       apellidos = computed(() => `${user.primerApellido} ${user.segundoApellido}`);
       /* eslint-enable */
-      address = user.vivienda !== null ? `${user.vivienda.calle} Nº ${user.vivienda.numero}` : 'Actualmente no tiene asignado ninguna vivienda';
+      address = user.vivienda !== null ? `${user.vivienda.calle.nombre} Nº ${user.vivienda.numero}` : 'Actualmente no tiene asignado ninguna vivienda';
       const fechaNacimiento = new Date(user.fechaNacimiento);
       birthDate = `${fechaNacimiento.getDate()}/${fechaNacimiento.getMonth() + 1}/${fechaNacimiento.getFullYear()}`;
-      console.log(user.tarjetaIdentificacion);
-      tarjetaIdentificacion = user.tarjetaIdentificacion.codigoTarjeta === 0 ? 'Identificación correspondiente con un menor de edad' : user.identificacion;
+      if (user.identificacion !== undefined) {
+        tarjetaIdentificacion = 'Esta persona no tiene ninguna identificación asociada';
+      } else {
+        tarjetaIdentificacion = user.tarjetaIdentificacion.codigoTarjeta === 0 ? 'Identificación correspondiente con un menor de edad' : user.identificacion;
+      }
       email = user.email;
       username = ref(user.cuentaUsuario.username);
       password = ref('habitante0');
@@ -204,12 +200,13 @@ export default {
         if (status.value === 200) {
           formSubmittedOK.value = true;
         }
-        setTimeout(() => {
-          Cookie.remove('PMHSESSION');
-          Cookie.remove('SALT');
-          localStorage.clear();
-          window.location.href = '/';
-        }, 3500); // Comprobar si 3.5s es mucho, poco o está OK.
+        await Swal.fire('¡Petición realizada con éxito!', 'Se va a proceder a cerrar su sesión', 'success')
+          .then(() => {
+            Cookie.remove('PMHSESSION');
+            Cookie.remove('SALT');
+            localStorage.clear();
+            window.location.href = '/';
+          });
       };
     } catch {
       alert(alertErrorStorage.value[lang]);

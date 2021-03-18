@@ -37,6 +37,12 @@ export default {
     email: String,
     tarjetaIdentificacion: String,
   },
+  setup() {
+    const { innerWidth } = window;
+    return {
+      innerWidth,
+    };
+  },
 };
 </script>
 
