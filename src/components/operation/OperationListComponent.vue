@@ -123,10 +123,7 @@ export default {
     // watchEffect((operacionesPaginadas) => {indexPag});
     watch(indexPag, (indexPag) => {
       supLimit = operacionesPag(indexPag);
-      console.log(supLimit);
-      console.log(indexPag*10);
       operacionesPaginadas.value = operaciones.value.slice(indexPag * 10, supLimit);
-      console.log(operacionesPaginadas.value);
     });
 
     return {
