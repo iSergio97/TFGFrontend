@@ -9,7 +9,7 @@
                 <p class="control">
                   <span class="select">
                     <label>
-                      <select v-model="opcion">
+                      <select v-model="opcion" class="is-expanded">
                         <option selected value="A">Alta</option>
                         <option value="B">Baja</option>
                         <option value="M">Modificación</option>
@@ -32,9 +32,11 @@
                         <option v-if="opcion === 'B'" value="BNI" disabled>
                           Las solicitudes de baja no está disponibles
                         </option>
-                        <option v-if="opcion === 'M'" value="MD">Cambio de domicilio</option>
-                        <option v-if="opcion === 'M'" value="MV">
+                        <option v-if="opcion === 'M'" value="MD">
                           Modificación datos personales
+                        </option>
+                        <option v-if="opcion === 'M'" value="MV">
+                          Cambio de domicilio
                         </option>
                         <option v-if="opcion === 'M'" value="MRE">
                           Renovación empadronamiento
@@ -44,46 +46,50 @@
                   </span>
                 </p>
               </div>
-              <div v-if="opcion === 'A'">
-                <div v-if="subOpcion === 'ACR'">
-                  <p> ACR </p>
-                </div>
-                <div v-else>
-                  <p> AIM</p>
-                </div>
+              <div v-if="opcion === 'A' || subOpcion === 'MV'">
+                <p> Dropdown de viviendas</p>
               </div>
-              <div v-if="opcion === 'B'">
-                <div class="box">
-                  <p>
-                    Se ha dejado esta operación para manos de los ayuntamientos,
-                    pues este tipo de operaciones precisan de operaciones con terceros (INE)
-                    para poder actualizar los datos
-                  </p>
-                </div>
+              <div v-else-if="subOpcion === 'MD'">
+                <p> Form con datos personales </p>
               </div>
-              <div v-else>
-                <div v-if="opcion === 'M'">
-                  <div v-if="subOpcion === 'MD'">
-                    <p> MD </p>
-                  </div>
-                  <div v-else-if="subOpcion === 'MV'">
-                    <p> MV </p>
-                  </div>
-                  <div v-else>
-                    <p> MRE </p>
-                  </div>
-                </div>
+              <div id="file">
+                <label>
+                  <input class="file-input" type="file" :onchange="adjuntarArchivo">
+                  <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label">
+                  Choose a file…
+                </span>
+              </span>
+                </label>
               </div>
             </form>
           </div>
         </div>
       </div>
     </div>
-    <div class="column is-one-quarters">
+    <div class="column is-one-quarters" id="files">
       <div class="card">
         <div class="card-content">
           <div class="content">
-            <p> Stats de requests </p>
+            <div v-if="archivos.length > 0">
+              <ul v-for="file in archivos" :key="file.name">
+                <li v-if="file.type === 'PDF'" class="title is-5">
+                  <i class="far fa-file-pdf"></i> {{file.name}}
+                  <button class="delete" @click="deleteArchivo(file)"></button>
+                </li>
+                <li v-else-if="file.type === 'PNG' || file.type === 'JPG' || file.type === 'JPGE'"
+                   class="title is-5">
+                  <i class="far fa-file-image"></i> {{file.name}}
+                  <button class="delete" @click="deleteArchivo(file)"></button>
+                </li>
+              </ul>
+            </div>
+            <div v-else>
+              No existe ningún documento adjunto a la solicitud
+            </div>
           </div>
         </div>
       </div>
@@ -95,6 +101,7 @@
 import { ref, watch } from 'vue';
 import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
+import Swal from 'sweetalert2';
 // import Cookie from 'js-cookie';
 
 export default {
@@ -121,20 +128,56 @@ export default {
     const nombre = ref(props.userLogged.nombre);
     const primerApellido = ref(props.userLogged.primerApellido);
     const segundoApellido = ref(props.userLogged.segundoApellido);
-    console.log(props.userLogged);
+    // console.log(props.userLogged);
     const fechaNacimiento  = ref(new Date(props.userLogged.fechaNacimiento));
     const tIdentificacion = props.userLogged.identificacion !== null ?
       ref(props.userLogged.identificacion) : ref('');
-    console.log(tIdentificacion.value);
+    // console.log(tIdentificacion.value);
     /* eslint-enable */
-    const archivo = ref({
-      nombre: '',
-      tamaño: '',
-    });
-    const pruebaArchivo = (e) => {
+    const archivosName = ref([]);
+    const archivos = ref([]);
+    const adjuntarArchivo = (e) => {
+      e.preventDefault();
+      // console.log(archivosName.value);
+      // console.log(archivos.value);
       const file = e.target.files[0];
       formData.append('file', file, file.name);
-      archivo.value.nombre = e.target.files[0].name;
+      if (!archivosName.value.includes(file.name)) {
+        archivosName.value.push(file.name);
+        const type = file.name.toString().split('.');
+        // type = type[type.length - 1];
+        archivos.value.push({
+          name: file.name,
+          type: type[type.length - 1].toUpperCase(),
+        });
+      }
+    };
+    const deleteFile = (file) => {
+      Swal.fire({
+        title: '¿Desea eliminar este documento?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'No',
+        confirmButtonText: 'Sí',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const index = archivosName.value.indexOf(file.name);
+          const { length } = archivosName.value;
+          archivosName.value = archivosName.value
+            .slice(0, index)
+            .concat(archivosName.value.slice(index + 1, length + 1));
+          archivos.value = archivos.value
+            .slice(0, index)
+            .concat(archivos.value.slice(index + 1, length + 1));
+          Swal.fire(
+            'OK',
+            'Se ha eliminado el archivo de forma correcta',
+            'success',
+          );
+        }
+      });
     };
     const submitForm = async () => {
       /* eslint-disable */
@@ -177,10 +220,11 @@ export default {
       await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud);
     };
     return {
-      archivo,
+      archivos,
       opcion,
       subOpcion,
-      pruebaArchivo,
+      adjuntarArchivo,
+      deleteArchivo: deleteFile,
       submitForm,
     };
   },
@@ -190,5 +234,17 @@ export default {
 <style>
 * {
   text-align: center;
+}
+
+input[type="file"]{
+  height:0;
+}
+
+input[type="file"]::-webkit-file-upload-button{
+  height:0;
+}
+
+li {
+  list-style-type: none;
 }
 </style>

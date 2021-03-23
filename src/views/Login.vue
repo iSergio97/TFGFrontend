@@ -111,7 +111,6 @@ export default {
             Cookie.set('PMHSESSION', PMHSESSION);
             Cookie.set('SALT', cuentaUsuario.salt);
             localStorage.setItem('CONV', JSON.stringify(convivientes.value));
-            await Swal.fire('¡Bienvenido!', 'Ha iniciado sesión.\nAhora será redirigido a la página principal', 'success')
             window.location.href = '/'; // Se usa esto en vez de router.push porque si no, no recarga la barra de navegación
             break;
           case 350: // Error en la combinación usuario/contraseña.
