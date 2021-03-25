@@ -1,5 +1,14 @@
 <template>
-  <h1> RequestList component view pero de administrador </h1>
+  <Suspense>
+    <template #default>
+      <OperationListController/>
+    </template>
+    <template #fallback>
+      <div class="loading-spinner">
+        <Loading />
+      </div>
+    </template>
+  </Suspense>
 </template>
 
 <script>

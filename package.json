@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@syncfusion/ej2-vue-dropdowns": "^18.4.49",
     "apexcharts": "^3.25.0",
     "axios": "^0.21.1",
     "buefy": "^0.9.4",

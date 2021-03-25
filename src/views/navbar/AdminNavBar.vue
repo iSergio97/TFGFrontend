@@ -1,8 +1,7 @@
 <template>
   <nav class="navbar is-info" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <router-link class="navbar-item" to="/">
-        <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+      <router-link class="navbar-item-logo" to="/">
       </router-link>
 
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
@@ -90,4 +89,10 @@ nav {
   position: sticky;
   top: -1px;
 }
+.navbar-item-logo {
+  background: url("../../images/logo_transparent.png") no-repeat center center;
+  background-size: cover;
+  width: 220px;
+}
+
 </style>

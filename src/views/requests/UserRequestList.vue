@@ -1,5 +1,6 @@
 <template>
   <h1> RequestList component view pero de usuario </h1>
+  <Suspense></Suspense>
 </template>
 
 <script>

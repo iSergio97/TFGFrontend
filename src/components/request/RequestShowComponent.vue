@@ -13,7 +13,7 @@ export default {
   },
   setup(props) {
     const idRequest = ref(props.id);
-    // console.log('RequestShowComponent');
+    console.log('RequestShowComponent');
     return {
       idRequest,
     };

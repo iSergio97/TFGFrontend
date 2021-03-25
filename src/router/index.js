@@ -38,13 +38,13 @@ const routes = [
   },
   {
     path: '/user/requests/new',
-    name: 'RequestNew',
-    component: () => import('../views/requests/RequestNew.vue'),
+    name: 'UserRequestNew',
+    component: () => import('../views/requests/UserRequestNew.vue'),
   },
   {
     path: '/user/requests/show/:id',
-    name: 'RequestShow',
-    component: () => import('../views/requests/RequestShow.vue'),
+    name: 'UserRequestShow',
+    component: () => import('../views/requests/UserRequestShow.vue'),
   },
   {
     path: '/administrator/requests/list',

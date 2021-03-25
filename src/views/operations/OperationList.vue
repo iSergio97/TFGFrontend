@@ -6,7 +6,7 @@
     </template>
     <template #fallback>
       <div class="loading-spinner">
-        <Loading />
+        <LoadingDiv />
       </div>
     </template>
   </Suspense>
@@ -14,13 +14,13 @@
 
 <script>
 import OperationListController from '@/components/operation/OperationListComponent.vue';
-import Loading from '@/components/Loading.vue';
+import LoadingDiv from '@/components/LoadingDiv.vue';
 
 export default {
   name: 'OperationList',
   components: {
     OperationListController,
-    Loading,
+    LoadingDiv,
   },
 };
 </script>

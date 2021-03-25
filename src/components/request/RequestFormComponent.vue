@@ -47,7 +47,8 @@
                 </p>
               </div>
               <div v-if="opcion === 'A' || subOpcion === 'MV'">
-                <p> Dropdown de viviendas</p>
+                <!-- <ejs-dropdownlist placeholder="Elija calle" fields=""> </ejs-dropdownlist> -->
+                <p> MV </p>
               </div>
               <div v-else-if="subOpcion === 'MD'">
                 <p> Form con datos personales </p>
@@ -78,12 +79,12 @@
               <ul v-for="file in archivos" :key="file.name">
                 <li v-if="file.type === 'PDF'" class="title is-5">
                   <i class="far fa-file-pdf"></i> {{file.name}}
-                  <button class="delete" @click="deleteArchivo(file)"></button>
+                  <button class="delete" @click="deleteFile(file)"></button>
                 </li>
                 <li v-else-if="file.type === 'PNG' || file.type === 'JPG' || file.type === 'JPGE'"
                    class="title is-5">
                   <i class="far fa-file-image"></i> {{file.name}}
-                  <button class="delete" @click="deleteArchivo(file)"></button>
+                  <button class="delete" @click="deleteFile(file)"></button>
                 </li>
               </ul>
             </div>
@@ -101,16 +102,15 @@
 import { ref, watch } from 'vue';
 import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
+import { CallesGET } from '@/api/CallesGET';
 import Swal from 'sweetalert2';
-// import Cookie from 'js-cookie';
 
 export default {
   name: 'RequestFormComponent',
   props: {
-    convivientes: Array,
     userLogged: Object,
   },
-  setup(props) {
+  async setup(props) {
     const formData = new FormData();
     const opcion = ref('A');
     // ['ACR', 'AIM', 'MD', 'MV', 'MRN']
@@ -124,6 +124,9 @@ export default {
         subOpcion.value = 'MD';
       }
     });
+    const { lista } = await CallesGET();
+    const calles = ref(lista);
+    console.log(calles.value[0].nombre);
     /* eslint-disable */
     const nombre = ref(props.userLogged.nombre);
     const primerApellido = ref(props.userLogged.primerApellido);
@@ -223,8 +226,9 @@ export default {
       archivos,
       opcion,
       subOpcion,
+      calles,
       adjuntarArchivo,
-      deleteArchivo: deleteFile,
+      deleteFile,
       submitForm,
     };
   },
