@@ -47,7 +47,22 @@
                 </p>
               </div>
               <div v-if="opcion === 'A' || subOpcion === 'MV'">
-                <!-- <ejs-dropdownlist placeholder="Elija calle" fields=""> </ejs-dropdownlist> -->
+                <div class="field">
+                  <p class="select">
+                    <span class="select">
+                      <label>
+                        <select v-model="vivienda">
+                          <option
+                            v-for="vivienda in viviendas"
+                            :value="vivienda.id"
+                            :key="vivienda.id">
+                            {{vivienda.calle.nombre}} {{vivienda.numero}}
+                          </option>
+                        </select>
+                      </label>
+                    </span>
+                  </p>
+                </div>
                 <p> MV </p>
               </div>
               <div v-else-if="subOpcion === 'MD'">
@@ -102,7 +117,7 @@
 import { ref, watch } from 'vue';
 import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
-import { CallesGET } from '@/api/CallesGET';
+import { ViviendasGET } from '@/api/ViviendasGET';
 import Swal from 'sweetalert2';
 
 export default {
@@ -115,6 +130,12 @@ export default {
     const opcion = ref('A');
     // ['ACR', 'AIM', 'MD', 'MV', 'MRN']
     const subOpcion = ref('ACR');
+    const options = [{
+      country: 'canada',
+      meta: {
+        code: 'ca',
+      },
+    }];
     watch(opcion, (selectedOption) => {
       if (selectedOption === 'A') {
         subOpcion.value = 'ACR';
@@ -124,9 +145,10 @@ export default {
         subOpcion.value = 'MD';
       }
     });
-    const { lista } = await CallesGET();
-    const calles = ref(lista);
-    console.log(calles.value[0].nombre);
+    const { lista } = await ViviendasGET();
+    const viviendas = ref(lista);
+    const vivienda = ref('');
+    console.log(viviendas.value);
     /* eslint-disable */
     const nombre = ref(props.userLogged.nombre);
     const primerApellido = ref(props.userLogged.primerApellido);
@@ -226,7 +248,9 @@ export default {
       archivos,
       opcion,
       subOpcion,
-      calles,
+      viviendas,
+      vivienda,
+      options,
       adjuntarArchivo,
       deleteFile,
       submitForm,
@@ -250,5 +274,9 @@ input[type="file"]::-webkit-file-upload-button{
 
 li {
   list-style-type: none;
+}
+
+#selectInput {
+  width: 65%;
 }
 </style>

@@ -3,12 +3,12 @@ import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
 
 /* eslint-disable */
-export const CallesGET = async () => {
+export const ViviendasGET = async () => {
   const lista = ref([]);
   const statusCalles = ref(0);
   const request = ref({});
 
-  await axios.get(`${BASE_URL}solicitud/calles/all`)
+  await axios.get(`${BASE_URL}solicitud/viviendas/all`)
     .then((res) => {
       const { status, object } = res.data;
       lista.value = object;
