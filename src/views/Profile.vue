@@ -170,7 +170,7 @@ export default {
     let submitForm;
     const formSubmittedOK = ref(false);
     try {
-      user = JSON.parse(localStorage.getItem('USER_PRO'));
+      user = JSON.parse(decrypt(localStorage.getItem('USER_PRO'), localStorage.getItem('SALT')));
       image = new URL(user.image);
       nombre = user.nombre;
       /* eslint-disable */

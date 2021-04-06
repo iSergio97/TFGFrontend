@@ -1,31 +1,6 @@
 <template>
-  <div v-if="operaciones.length > 0">
-    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-      <a :disabled="indexPag > 0 ? disabled : ''"
-         @click="prevPage"
-         class="pagination-previous"
-         id="prevbutton">Página anterior</a>
-      <a :disabled="indexPag < paginas - 1 ? disabled : ''"
-         @click="nextPage"
-         class="pagination-next"
-         id="nextButton">Siguiente página</a>
-      <ul class="pagination-list">
-        <li><a class="pagination-link" @click="indexPag = 0">Página 1</a></li>
-        <li v-if="indexPag > 0">
-          <a class="pagination-link" @click="indexPag -= 1">{{ indexPag }}
-          </a>
-        </li>
-        <li><span class="pagination-ellipsis">&hellip;</span></li>
-        <li><a class="pagination-link is-current" >{{ indexPag + 1 }}</a></li>
-        <li><span class="pagination-ellipsis">&hellip;</span></li>
-        <li v-if="indexPag < paginas - 2">
-          <a class="pagination-link" aria-current="page" @click="indexPag += 1">
-            {{ indexPag  + 2}}
-          </a>
-        </li>
-        <li><a class="pagination-link" @click="indexPag = paginas - 1">Página {{ paginas }}</a></li>
-      </ul>
-    </nav>
+  <div v-if="operaciones.length === 0">
+    <PaginacionBoton :list="operaciones" />
     <table class="table">
       <thead>
       <tr>
@@ -65,75 +40,23 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { OperationGET } from '@/api/OperationGET';
-import Swal from 'sweetalert2';
+import PaginacionBoton from '@/components/PaginacionBoton.vue';
 
 export default {
   name: 'OperationListComponent',
+  components: {
+    PaginacionBoton,
+  },
   async setup() {
     /* eslint-disable */
     const operaciones = ref(null);
     const { lista } = await OperationGET();
     operaciones.value = await lista.value;
-    const indexPag = ref(0);
-    const operacionesPag = (indexPag) => {
-      return indexPag * 10 + 10;// Se toman 10 elementos por página
-    };
-    let supLimit = operacionesPag(indexPag.value);
-    const operacionesPaginadas = ref(operaciones.value.slice(indexPag.value * 10, supLimit));
-    const paginas = ref(Math.ceil(operaciones.value.length / 10)); // Redondeamos operaciones
-    const nextPage = () => {
-      if(indexPag.value < paginas.value - 1) {
-        indexPag.value++;
-      }
-    };
-    const prevPage = () => {
-      if(indexPag.value > 0) {
-        indexPag.value--;
-      }
-    };
-
-    const test = () => {
-      Swal.fire({
-        title: 'Are you sure?',
-        text: 'You will not be able to recover this imaginary file!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, keep it'
-      }).then((result) => {
-        if (result.value) {
-          Swal.fire(
-            'Deleted!',
-            'Your imaginary file has been deleted.',
-            'success'
-          )
-          // For more information about handling dismissals please visit
-          // https://sweetalert2.github.io/#handling-dismissals
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          Swal.fire(
-            'Cancelled',
-            'Your imaginary file is safe :)',
-            'error'
-          )
-        }
-      })
-    }
-    // watchEffect((operacionesPaginadas) => {indexPag});
-    watch(indexPag, (indexPag) => {
-      supLimit = operacionesPag(indexPag);
-      operacionesPaginadas.value = operaciones.value.slice(indexPag * 10, supLimit);
-    });
 
     return {
       operaciones,
-      operacionesPaginadas,
-      paginas,
-      indexPag,
-      nextPage,
-      prevPage,
-      test,
     };
   },
 };
@@ -147,9 +70,4 @@ export default {
 table {
   margin: 0 auto;
 }
-
-#nextButton {
-
-}
-
 </style>

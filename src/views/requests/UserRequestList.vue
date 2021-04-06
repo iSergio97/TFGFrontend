@@ -1,12 +1,27 @@
 <template>
-  <h1> RequestList component view pero de usuario </h1>
-  <Suspense></Suspense>
+  <br>
+  <Suspense>
+    <template #default>
+      <RequestListComponent/>
+    </template>
+    <template #fallback>
+      <div class="loading-spinner">
+        <LoadingDiv />
+      </div>
+    </template>
+  </Suspense>
 </template>
 
 <script>
+import RequestListComponent from '@/components/request/RequestListComponent.vue';
+import LoadingDiv from '@/components/LoadingDiv.vue';
+
 export default {
   name: 'UserRequestList',
-  // TODO: REVISAR SI ESTAMOS EN ADMIN O EN USUARIO PARA LISTAR TODO O EN FUNCIÓN DEL USUARIO
+  components: {
+    RequestListComponent,
+    LoadingDiv,
+  },
 };
 </script>
 

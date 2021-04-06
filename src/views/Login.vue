@@ -77,18 +77,12 @@ export default {
     const password = ref('habitante0');
     const submitButton = ref(['Enviar', 'Submit']);
     const submitted = ref(false);
-    const errorForm = ref(false);
-    const errorFormRes = ref(['Se ha producido un error. Inténtelo de nuevo más tarde', 'An error has occurred. Try it again later ']);
-    const errorNoUserFound = ref(false);
-    const noUserFound = ref(['El usuario o la contraseña son incorrectas', 'Username or password are incorrect']);
     const isMobile = /iPhone|iPad|iPod/.test(navigator.userAgent);
     const submitForm = async () => {
       errorUsername.value = username.value.trim() === '';
       errorPassword.value = password.value.trim() === '';
       if (!errorUsername.value && !errorPassword.value) {
         submitted.value = true;
-        errorNoUserFound.value = false;
-        errorForm.value = false;
         const { user, statusUser, convivientes } = await Login({
           username: username.value,
           password: password.value,
@@ -102,9 +96,10 @@ export default {
             const { encrypt } = PMHCrypto();
             const PMHSESSION = encrypt(cuentaUsuario.username + '¥' + cuentaUsuario.id, cuentaUsuario.salt);
             const user_rol = encrypt(cuentaUsuario.rol, cuentaUsuario.salt);
+            const user_value = JSON.stringify(user.value);
             localStorage.setItem('PMHSESSION', PMHSESSION);
             localStorage.setItem('SALT', cuentaUsuario.salt);
-            localStorage.setItem('USER_PRO', JSON.stringify(user.value));
+            localStorage.setItem('USER_PRO', encrypt(user_value, cuentaUsuario.salt));
             localStorage.setItem('USER_ROL', user_rol);
             Cookie.set('PMHSESSION', PMHSESSION);
             Cookie.set('SALT', cuentaUsuario.salt);
@@ -112,7 +107,6 @@ export default {
             window.location.href = '/'; // Se usa esto en vez de router.push porque si no, no recarga la barra de navegación
             break;
           case 350: // Error en la combinación usuario/contraseña.
-            errorNoUserFound.value = true;
             submitted.value = false;
             // await Swal.fire('Error', 'Usuario o contraseña incorrecta', 'error')
             await Swal.fire({
@@ -123,8 +117,13 @@ export default {
             });
             break;
           case 370: // Error inesperado, inténtelo de nuevo más tarde.
-            errorForm.value = false;
             submitted.value = false;
+            await Swal.fire({
+              title: 'Error inesperado',
+              text: 'Se ha producido un error inesperado. Inténtelo de nuevo más tarde',
+              icon: 'error',
+              target: document.getElementById("error"),
+            });
             break;
           case 404:
             if(isMobile) {
@@ -133,7 +132,6 @@ export default {
               await Swal.fire('Oops...', 'Se ha producido un error en la base de datos. Inténtelo de nuevo más tarde', 'error')
             }
             submitted.value = false;
-            errorForm.value = true;
             break;
           default:
             await router.push('/database-error');
@@ -154,10 +152,6 @@ export default {
       lang,
       submitted,
       submitButton,
-      errorForm,
-      errorFormRes,
-      noUserFound,
-      errorNoUserFound,
       submitForm,
     };
   },

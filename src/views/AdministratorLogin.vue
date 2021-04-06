@@ -3,14 +3,6 @@
   <section class="hero">
     <div class="hero-body">
       <div class="container has-text-centered">
-        <div class="notification is-danger" v-if="errorForm">
-          <button class="delete" onclick="this.parentElement.style.display='none'"></button>
-          {{errorFormRes[lang]}}
-        </div>
-        <div class="notification is-danger" v-if="errorNoUserFound">
-          <button class="delete" onclick="this.parentElement.style.display='none'"></button>
-          {{noUserFound[lang]}}
-        </div>
         <div class="column is-4 is-offset-4">
           <h3 class="title has-text-black">Adminitrator Login</h3>
           <hr class="login-hr">
@@ -62,6 +54,7 @@ import { LoginAdmin } from '@/api/LoginAdmin';
 import { PMHCrypto } from '@/methods/PMHCrypto';
 import Cookie from 'js-cookie';
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 
 export default {
   name: 'AdministratorLogin',
@@ -84,20 +77,14 @@ export default {
     const password = ref('sergio');
     const submitButton = ref(['Enviar', 'Submit']);
     const submitted = ref(false);
-    const errorForm = ref(false);
-    const errorFormRes = ref(['Se ha producido un error. Inténtelo de nuevo más tarde', 'An error has occurred. Try it again later ']);
     const errorNoUserFound = ref(false);
-    const noUserFound = ref(['El usuario o la contraseña son incorrectas', 'Username or password are incorrect']);
     const isMobile = /iPhone|iPad|iPod|/i.test(navigator.userAgent);
-    const errorSafariLogin = ref(['Existe un error con los navegadores privados (Safari en iOS) que bloquea las sesiones empleadas en esta aplicación.\nSi desea usar la aplicación, emplee otro navegador como Firefox o Google Chrome',
-      'There is an error with private browsers (Safari on iOS) that blocks the sessions used in this application.\nIf you want to use the application, please use another browser such as Firefox or Google Chrome ']);
     const submitForm = async () => {
       errorUsername.value = username.value.trim() === '';
       errorPassword.value = password.value.trim() === '';
       if (!errorUsername.value && !errorPassword.value) {
         submitted.value = true;
         errorNoUserFound.value = false;
-        errorForm.value = false;
         const { user, statusRes } = await LoginAdmin({
           username: username.value,
           password: password.value,
@@ -107,53 +94,43 @@ export default {
         switch (statusRes.value) {
           case 200: // El usuario y la contraseña son correctas
             /* eslint-disable */
-            console.log(user.value);
             const { cuentaUsuario } = user.value;
-            console.log(1);
             const { encrypt } = PMHCrypto();
             const PMHSESSION = encrypt(cuentaUsuario.username + '¥' + cuentaUsuario.id, cuentaUsuario.salt);
-            console.log(2);
             const user_rol = encrypt(cuentaUsuario.rol, cuentaUsuario.salt);
-            console.log(3);
+            const user_value = JSON.stringify(user.value);
             localStorage.setItem('PMHSESSION', PMHSESSION);
-            console.log(4);
             localStorage.setItem('SALT', cuentaUsuario.salt);
-            console.log(5);
-            localStorage.setItem('USER_PRO', JSON.stringify(user.value));
-            console.log(6);
+            localStorage.setItem('USER_PRO', encrypt(user_value, cuentaUsuario.salt));
             localStorage.setItem('USER_ROL', user_rol);
-            console.log(7);
             Cookie.set('PMHSESSION', PMHSESSION);
-            console.log(8);
             Cookie.set('SALT', cuentaUsuario.salt);
-            console.log(9);
             window.location.href = '/'; // Se usa esto en vez de router.push porque si no, no recarga la barra de navegación
             break;
           case 350: // Error en la combinación usuario/contraseña.
-            errorNoUserFound.value = true;
             submitted.value = false;
+            await Swal.fire({
+              title: 'Error',
+              text: 'Usuario o contraseña incorrecta',
+              icon: 'error',
+              target: document.getElementById("error"),
+            });
             break;
           case 370: // Error inesperado, inténtelo de nuevo más tarde.
-            errorForm.value = false;
             submitted.value = false;
+            await Swal.fire('Oops...', 'Se ha producido un error inesperado. Inténtelo de nuevo más tarde', 'error')
             break;
           case 404:
-            alert('Error en la base de datos');
-            submitted.value = false;
-            errorForm.value = true;
-            // router.push('/database-error');
-            break;
-          default: //
-            // TODO: Redirigir a la página de error de conexión con la BBDD
             if(isMobile) {
-              alert(errorSafariLogin.value[lang]);
-              break;
+              await Swal.fire('Oops...', 'El sistema operativo iOS no acepta el almacén de cierta información necesaria.\n\nSi desea continuar, inicie sesión con otro dispositivo', 'error');
             } else {
-              alert('Error en la base de datos');
-              submitted.value = false;
-              router.push('/database-error');
-              break;
+              await Swal.fire('Oops...', 'Se ha producido un error en la base de datos. Inténtelo de nuevo más tarde', 'error');
             }
+            submitted.value = false;
+            break;
+          default:
+            await router.push('/database-error');
+            break;
         }
       }
     };
@@ -170,9 +147,6 @@ export default {
       lang,
       submitted,
       submitButton,
-      errorForm,
-      errorFormRes,
-      noUserFound,
       errorNoUserFound,
       submitForm,
     };

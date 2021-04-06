@@ -20,7 +20,6 @@ export default {
   },
   setup() {
     const { localSession } = PMHSession('/user/profile');
-
     return { localSession };
   },
 };
