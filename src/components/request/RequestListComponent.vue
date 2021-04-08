@@ -25,7 +25,7 @@
         <!-- eslint-disable -->
         <td> {{request.solicitante.primerApellido}} {{request.solicitante.segundoApellido}}, {{request.solicitante.nombre}}</td>
         <td>
-          {{new Date(request.fechaOperacion).getDate()}}/{{new Date(request.fechaOperacion).getMonth()}}/{{new Date(request.fechaOperacion).getFullYear()}}</td>
+          {{new Date(request.fecha).getDate()}}/{{new Date(request.fecha).getMonth()}}/{{new Date(request.fecha).getFullYear()}}</td>
       </tr>
       </tbody>
     </table>

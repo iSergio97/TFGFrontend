@@ -53,10 +53,10 @@
                       <label>
                         <select v-model="vivienda">
                           <option
-                            v-for="vivienda in viviendas"
-                            :value="vivienda.id"
-                            :key="vivienda.id">
-                            {{vivienda.calle.nombre}} {{vivienda.numero}}
+                            v-for="viv in viviendas"
+                            :value="viv.id"
+                            :key="viv.id">
+                            {{viv.calle.nombre}} {{viv.numero}}
                           </option>
                         </select>
                       </label>
@@ -81,6 +81,7 @@
               </span>
                 </label>
               </div>
+              <input type="button" :onclick="submitForm" value="Enviar">
             </form>
           </div>
         </div>
@@ -147,30 +148,24 @@ export default {
     });
     const { lista } = await ViviendasGET();
     const viviendas = ref(lista);
-    const vivienda = ref('');
-    console.log(viviendas.value);
+    const vivienda = ref(viviendas.value[0].id);
     /* eslint-disable */
     const nombre = ref(props.userLogged.nombre);
     const primerApellido = ref(props.userLogged.primerApellido);
     const segundoApellido = ref(props.userLogged.segundoApellido);
-    // console.log(props.userLogged);
     const fechaNacimiento  = ref(new Date(props.userLogged.fechaNacimiento));
     const tIdentificacion = props.userLogged.identificacion !== null ?
       ref(props.userLogged.identificacion) : ref('');
-    // console.log(tIdentificacion.value);
     /* eslint-enable */
     const archivosName = ref([]);
     const archivos = ref([]);
     const adjuntarArchivo = (e) => {
       e.preventDefault();
-      // console.log(archivosName.value);
-      // console.log(archivos.value);
       const file = e.target.files[0];
       formData.append('file', file, file.name);
       if (!archivosName.value.includes(file.name)) {
         archivosName.value.push(file.name);
         const type = file.name.toString().split('.');
-        // type = type[type.length - 1];
         archivos.value.push({
           name: file.name,
           type: type[type.length - 1].toUpperCase(),
@@ -206,27 +201,47 @@ export default {
     };
     const submitForm = async () => {
       /* eslint-disable */
-      const solicitud = {
+      // TODO: Realizar comprobación de tipo de documento en función del patrón de la misma
+      let tipoIdentificacion = 16;
+      if(tIdentificacion.value.match("\\d{8}\\w")) {
+        tipoIdentificacion = 17;
+      } else if(tIdentificacion.value.match("\\d{7}\\w")) {
+        tipoIdentificacion = 18;
+      }
+      const solicitudDatosPersonales = {
+        fecha: new Date(),
+        solicitante: {
+          id: props.userLogged.id
+        },
+        estado: 'P',
+        justificacion: '',
+        tipo: opcion.value,
+        subtipo: subOpcion.value,
+        nombre: nombre.value,
+        primerApellido: primerApellido.value,
+        segundoApellido: segundoApellido.value,
+        fechaNacimiento: fechaNacimiento.value,
+        tipoIdentificacion: { id: tipoIdentificacion },
+        // identificacion: tIdentificacion,
+        documentos: [],
+      };
+
+      const solicitudVivienda = {
         fecha: new Date(),
         solicitante: {
           id: props.userLogged.id
         },
         justificacion: '',
-        tipo: 'A',
-        subtipo: 'AO',
+        tipo: opcion.value,
+        subtipo: subOpcion.value,
         estado: 'P',
-        identificacion: '17476938L',
-        nombre: 'Habitante 0',
-        primerApellido: 'Primer Apellido Hab0',
-        segundoApellido: 'Segundo Apellido Hab0',
-        viviendaNueva: { id: 10 },
-        fechaNacimiento: new Date('1947-07-17 17:26:07'),
-        viviendaId: 10,
-        pais: 'ESPAÑA',
-        provincia: 'SEVILLA',
-        municipio: 'ÉCIJA',
+        vivienda: {
+          id: vivienda.id
+        },
         documentos: [],
       };
+
+      let solicitud;
 
       if (formData.get('file') !== null) {
         await axios.post(`${BASE_URL}solicitud/document`, formData, {
@@ -235,12 +250,29 @@ export default {
           },
         })
           .then((res) => {
-            console.log(res.data);
-            for(let i = 0; i < res.data.length; i++) {
-              solicitud.documentos.push({ id: res.data[i].id, });
+            if(opcion.value === 'A' || subOpcion.value !== 'MV') {
+              for(let i = 0; i < res.data.length; i++) {
+                solicitudDatosPersonales.documentos.push({ id: res.data[i].id, });
+              }
+            } else {
+              for(let i = 0; i < res.data.length; i++) {
+                solicitudVivienda.documentos.push({ id: res.data[i].id, });
+              }
             }
           });
       }
+
+      if(opcion.value === 'A' || subOpcion.value !== 'MV') {
+        solicitud = solicitudDatosPersonales;
+      } else {
+        solicitud = solicitudVivienda;
+      }
+
+      const habitante = {
+        id: 6,
+      };
+
+      // await axios.post(`${BASE_URL}solicitud/prueba`, habitante);
 
       await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud);
     };

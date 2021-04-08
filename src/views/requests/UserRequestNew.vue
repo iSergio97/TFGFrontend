@@ -13,6 +13,7 @@
 import { ref } from 'vue';
 import RequestFormComponent from '@/components/request/RequestFormComponent.vue';
 import LoadingDiv from '@/components/LoadingDiv.vue';
+import { PMHCrypto } from '@/methods/PMHCrypto';
 
 export default {
   name: 'UserRequestNew',
@@ -21,7 +22,8 @@ export default {
     LoadingDiv,
   },
   setup() {
-    const localUser = JSON.parse(localStorage.getItem('USER_PRO'));
+    const { decrypt } = new PMHCrypto();
+    const localUser = JSON.parse(decrypt(localStorage.getItem('USER_PRO'), localStorage.getItem('SALT')));
     const userLogged = ref(localUser);
 
     return {
