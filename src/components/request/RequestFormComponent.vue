@@ -81,7 +81,11 @@
               </span>
                 </label>
               </div>
-              <input type="button" :onclick="submitForm" value="Enviar">
+              <div class="e-text-center">
+                <br>
+                <input type="button" :onclick="submitForm" value="Enviar"
+                       class="button is-info is-outlined is-rounded">
+              </div>
             </form>
           </div>
         </div>
@@ -201,7 +205,6 @@ export default {
     };
     const submitForm = async () => {
       /* eslint-disable */
-      // TODO: Realizar comprobación de tipo de documento en función del patrón de la misma
       let tipoIdentificacion = 16;
       if(tIdentificacion.value.match("\\d{8}\\w")) {
         tipoIdentificacion = 17;
@@ -244,7 +247,7 @@ export default {
       let solicitud;
 
       if (formData.get('file') !== null) {
-        await axios.post(`${BASE_URL}solicitud/document`, formData, {
+        await axios.post(`${BASE_URL}solicitud/document/new`, formData, {
           headers: {
             'Content-Type': 'multipart/boundary',
           },
@@ -268,13 +271,42 @@ export default {
         solicitud = solicitudVivienda;
       }
 
-      const habitante = {
-        id: 6,
-      };
+      await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud)
+      .then((res) => {
+        if(res.status === 200) {
+          // Swal.fire('Solicitud enviada', 'Se ha enviado su solicitud. Se le va a redirigir al listado de solicitudes', 'success');
+          let timerInterval;
+          Swal.fire({
+            title: 'Solicitud enviada',
+            html: 'Se ha enviado su solicitud. Se le va a redirigir al listado de solicitudes',
+            timer: 2000,
+            icon: 'success',
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading()
+              timerInterval = setInterval(() => {
+                const content = Swal.getContent()
+                if (content) {
+                  const b = content.querySelector('b')
+                  if (b) {
+                    b.textContent = Swal.getTimerLeft()
+                  }
+                }
+              }, 100)
+            },
+            willClose: () => {
+              clearInterval(timerInterval)
+            }
+          }).then((result) => {
 
-      // await axios.post(`${BASE_URL}solicitud/prueba`, habitante);
+          }).catch(() => {
 
-      await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud);
+          });
+          formData.delete('file');
+        } else {
+          Swal.fire('Oops...', 'Se ha producido un error inesperado tratando su solicitud. Inténtelo de nuevo más tarde.', 'error');
+        }
+      });
     };
     return {
       archivos,
