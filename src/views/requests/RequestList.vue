@@ -1,7 +1,7 @@
 <template>
   <Suspense>
     <template #default>
-      <OperationListController/>
+      <h3> Admin Request List</h3>
     </template>
     <template #fallback>
       <div class="loading-spinner">

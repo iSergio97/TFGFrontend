@@ -34,23 +34,17 @@ const routes = [
   {
     path: '/user/requests/list',
     name: 'UserRequestList',
-    component: () => import('../views/requests/UserRequestList.vue'),
+    component: () => import('../views/requests/User/UserRequestList.vue'),
   },
   {
     path: '/user/requests/new',
     name: 'UserRequestNew',
-    component: () => import('../views/requests/UserRequestNew.vue'),
+    component: () => import('../views/requests/User/UserRequestNew.vue'),
   },
   {
     path: '/user/requests/show/:id',
     name: 'UserRequestShow',
-    component: () => import('../views/requests/UserRequestShow.vue'),
-  },
-  {
-    path: '/administrator/requests/list',
-    name: 'RequestList',
-    component: () => import('../views/requests/RequestList.vue'), // Listado de solicitudes
-    alias: '/administrator/requests/list',
+    component: () => import('../views/requests/User/UserRequestShow.vue'),
   },
   {
     path: '/administrator/requests/show/:id',

@@ -45,7 +45,11 @@
       </thead>
       <tbody v-for="request in itemsPaginados" :key="request.id">
       <tr>
-        <th>{{request.id}}</th>
+        <th>
+          <router-link :to="{name: 'UserRequestShow', params: {id: request.id}}">
+            {{request.id}}
+          </router-link>
+        </th>
         <td> {{request.tipo}}</td>
         <td> {{request.subtipo}}</td>
         <td> {{request.estado}}</td>
@@ -82,10 +86,18 @@ export default {
     /* eslint-disable */
     const { decrypt } = PMHCrypto();
     const { id } = JSON.parse(decrypt(localStorage.getItem('USER_PRO'), localStorage.getItem('SALT')));
-    const { lista } = await SolicitudesGET({ user: true }, id);
+    let lista;
+    if(localStorage.getItem('requests') === null) {
+      lista = ref((await SolicitudesGET({ user: true }, id)).lista);
+      localStorage.setItem('requests', JSON.stringify(lista.value));
+    } else {
+      lista = ref(JSON.parse(localStorage.getItem('requests')));
+    }
+
+    console.log(lista);
     const indexPag = ref(0);
     const itemsPerList = (indexPag) => {
-      return indexPag.value * 10 + 10;// Se toman 10 elementos por página
+      return indexPag * 10 + 10;// Se toman 10 elementos por página
     };
 
     const itemsPag = (indexPag) => {
@@ -104,7 +116,10 @@ export default {
       }
     };
     let supLimit = itemsPerList(indexPag.value);
+    console.log(indexPag.value);
+    console.log(supLimit);
     const itemsPaginados = ref(lista.value.slice(indexPag.value * 10, supLimit));
+    console.log(itemsPaginados.value);
     watch(indexPag, (indexPag) => {
       supLimit = itemsPag(indexPag);
       itemsPaginados.value = lista.value.slice(indexPag * 10, supLimit);

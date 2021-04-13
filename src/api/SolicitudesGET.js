@@ -7,7 +7,6 @@ export const SolicitudesGET = async (user, userId) => {
   const lista = ref([]);
   const statusSolicitudes = ref(0);
   const request = ref({});
-  console.log('userID', userId);
 
   if(user) {
     await axios.get(`${BASE_URL}solicitud/habitante/mine`, {
