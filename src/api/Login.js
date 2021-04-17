@@ -4,9 +4,8 @@ import { BASE_URL } from '@/api/BASE_URL';
 
 /* eslint-disable */
 export const Login = async (props) => {
-  const user = ref({});
+  const lista = ref({});
   const statusUser = ref(0);
-  const convivientes = ref([]);
   const statusConvivientes = ref(0);
 
   const params = new URLSearchParams();
@@ -16,13 +15,13 @@ export const Login = async (props) => {
   await axios.post(`${BASE_URL}habitante/login`, params) //?username=${props.username}&password=${props.password}`)
     .then((res) => {
       const { status, object } = res.data;
-      user.value = object;
+      lista.value = object;
       statusUser.value = status;
     })
     .catch(() => statusUser.value = 404);
 
   return {
-    user,
+    lista,
     statusUser,
     convivientes,
     statusConvivientes,

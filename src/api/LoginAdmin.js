@@ -4,7 +4,7 @@ import { BASE_URL } from '@/api/BASE_URL';
 
 /* eslint-disable */
 export const LoginAdmin = async (props) => {
-  const user = ref({});
+  const lista = ref({});
   const statusRes = ref(0);
 
   const params = new URLSearchParams();
@@ -14,7 +14,7 @@ export const LoginAdmin = async (props) => {
   await axios.post(`${BASE_URL}sistema/administrador/login`, params)
     .then((res) => {
       const { status, object } = res.data;
-      user.value = object;
+      lista.value = object;
       statusRes.value = status;
     })
     .catch(() => {
@@ -22,7 +22,7 @@ export const LoginAdmin = async (props) => {
     });
 
   return {
-    user,
+    lista,
     statusRes,
   };
 };

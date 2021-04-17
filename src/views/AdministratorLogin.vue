@@ -85,7 +85,7 @@ export default {
       if (!errorUsername.value && !errorPassword.value) {
         submitted.value = true;
         errorNoUserFound.value = false;
-        const { user, statusRes } = await LoginAdmin({
+        const { lista, statusRes } = await LoginAdmin({
           username: username.value,
           password: password.value,
         });
@@ -94,6 +94,8 @@ export default {
         switch (statusRes.value) {
           case 200: // El usuario y la contraseña son correctas
             /* eslint-disable */
+            const user = ref(lista.value[0]);
+            const token = lista.value[1];
             const { cuentaUsuario } = user.value;
             const { encrypt } = PMHCrypto();
             const PMHSESSION = encrypt(cuentaUsuario.username + '¥' + cuentaUsuario.id, cuentaUsuario.salt);
@@ -103,6 +105,7 @@ export default {
             localStorage.setItem('SALT', cuentaUsuario.salt);
             localStorage.setItem('USER_PRO', encrypt(user_value, cuentaUsuario.salt));
             localStorage.setItem('USER_ROL', user_rol);
+            Cookie.set('token', token);
             Cookie.set('PMHSESSION', PMHSESSION);
             Cookie.set('SALT', cuentaUsuario.salt);
             window.location.href = '/'; // Se usa esto en vez de router.push porque si no, no recarga la barra de navegación

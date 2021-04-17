@@ -83,7 +83,7 @@ export default {
       errorPassword.value = password.value.trim() === '';
       if (!errorUsername.value && !errorPassword.value) {
         submitted.value = true;
-        const { user, statusUser, convivientes } = await Login({
+        const { lista, statusUser, convivientes } = await Login({
           username: username.value,
           password: password.value,
         });
@@ -92,6 +92,8 @@ export default {
         switch (statusUser.value) {
           case 200: // El usuario y la contraseña son correctas
             /* eslint-disable */
+            const user = ref(lista.value[0]);
+            const token = lista.value[1];
             const { cuentaUsuario } = user.value;
             const { encrypt } = PMHCrypto();
             const PMHSESSION = encrypt(cuentaUsuario.username + '¥' + cuentaUsuario.id, cuentaUsuario.salt);
@@ -101,6 +103,7 @@ export default {
             localStorage.setItem('SALT', cuentaUsuario.salt);
             localStorage.setItem('USER_PRO', encrypt(user_value, cuentaUsuario.salt));
             localStorage.setItem('USER_ROL', user_rol);
+            Cookie.set('token', token);
             Cookie.set('PMHSESSION', PMHSESSION);
             Cookie.set('SALT', cuentaUsuario.salt);
             localStorage.setItem('CONV', JSON.stringify(convivientes.value));
