@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
+import Cookie from 'js-cookie';
 
 /* eslint-disable */
 export const SolicitudesGET = async (user, userId) => {
@@ -8,11 +9,17 @@ export const SolicitudesGET = async (user, userId) => {
   const statusSolicitudes = ref(0);
   const request = ref({});
 
+  const token = Cookie.get('token');
+  console.log("Bearer:", token);
+
   if(user) {
     await axios.get(`${BASE_URL}solicitud/habitante/mine`, {
       params: {
         userId,
-      }
+      },
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
     })
       .then((res) => {
         const { status, object } = res.data;

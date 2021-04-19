@@ -83,7 +83,7 @@ export default {
       errorPassword.value = password.value.trim() === '';
       if (!errorUsername.value && !errorPassword.value) {
         submitted.value = true;
-        const { lista, statusUser, convivientes } = await Login({
+        const { lista, statusUser } = await Login({
           username: username.value,
           password: password.value,
         });
@@ -106,7 +106,6 @@ export default {
             Cookie.set('token', token);
             Cookie.set('PMHSESSION', PMHSESSION);
             Cookie.set('SALT', cuentaUsuario.salt);
-            localStorage.setItem('CONV', JSON.stringify(convivientes.value));
             window.location.href = '/'; // Se usa esto en vez de router.push porque si no, no recarga la barra de navegación
             break;
           case 350: // Error en la combinación usuario/contraseña.

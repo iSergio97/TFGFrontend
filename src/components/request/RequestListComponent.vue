@@ -94,7 +94,6 @@ export default {
       lista = ref(JSON.parse(localStorage.getItem('requests')));
     }
 
-    console.log(lista);
     const indexPag = ref(0);
     const itemsPerList = (indexPag) => {
       return indexPag * 10 + 10;// Se toman 10 elementos por página
@@ -116,10 +115,7 @@ export default {
       }
     };
     let supLimit = itemsPerList(indexPag.value);
-    console.log(indexPag.value);
-    console.log(supLimit);
     const itemsPaginados = ref(lista.value.slice(indexPag.value * 10, supLimit));
-    console.log(itemsPaginados.value);
     watch(indexPag, (indexPag) => {
       supLimit = itemsPag(indexPag);
       itemsPaginados.value = lista.value.slice(indexPag * 10, supLimit);

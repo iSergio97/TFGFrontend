@@ -198,15 +198,16 @@ export default {
           newPassword: newPassword.value,
         });
         if (status.value === 200) {
-          formSubmittedOK.value = true;
+          await Swal.fire('¡Petición realizada con éxito!', 'Se va a proceder a cerrar su sesión', 'success')
+            .then(() => {
+              Cookie.remove('PMHSESSION');
+              Cookie.remove('SALT');
+              localStorage.clear();
+              window.location.href = '/';
+            });
+        } else {
+          await Swal.fire('¡Se ha producido un error!', 'Inténtelo de nuevo más tarde. <br> Sentimos el inconveniente', 'error');
         }
-        await Swal.fire('¡Petición realizada con éxito!', 'Se va a proceder a cerrar su sesión', 'success')
-          .then(() => {
-            Cookie.remove('PMHSESSION');
-            Cookie.remove('SALT');
-            localStorage.clear();
-            window.location.href = '/';
-          });
       };
     } catch {
       alert(alertErrorStorage.value[lang]);

@@ -23,7 +23,6 @@ export const Login = async (props) => {
   return {
     lista,
     statusUser,
-    convivientes,
     statusConvivientes,
   };
 };

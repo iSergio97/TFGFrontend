@@ -124,6 +124,8 @@ import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
 import { ViviendasGET } from '@/api/ViviendasGET';
 import Swal from 'sweetalert2';
+import { useRouter } from 'vue-router';
+import Cookie from 'js-cookie';
 
 export default {
   name: 'RequestFormComponent',
@@ -131,6 +133,7 @@ export default {
     userLogged: Object,
   },
   async setup(props) {
+    const router = useRouter();
     const formData = new FormData();
     const opcion = ref('A');
     // ['ACR', 'AIM', 'MD', 'MV', 'MRN']
@@ -150,6 +153,7 @@ export default {
         subOpcion.value = 'MD';
       }
     });
+    console.log('Antes de await viviendasGet');
     const { lista } = await ViviendasGET();
     const viviendas = ref(lista);
     const vivienda = ref(viviendas.value[0].id);
@@ -186,6 +190,7 @@ export default {
         cancelButtonText: 'No',
         confirmButtonText: 'Sí',
       }).then((result) => {
+        console.log(result);
         if (result.isConfirmed) {
           const index = archivosName.value.indexOf(file.name);
           const { length } = archivosName.value;
@@ -200,6 +205,7 @@ export default {
             'Se ha eliminado el archivo de forma correcta',
             'success',
           );
+          router.push('/user/requests/list');
         }
       });
     };
@@ -245,11 +251,13 @@ export default {
       };
 
       let solicitud;
-
+      const token = Cookie.get('token');
+      console.log(token);
       if (formData.get('file') !== null) {
         await axios.post(`${BASE_URL}solicitud/document/new`, formData, {
           headers: {
             'Content-Type': 'multipart/boundary',
+            'Authorization': `Bearer ${token}`,
           },
         })
           .then((res) => {
@@ -271,7 +279,11 @@ export default {
         solicitud = solicitudVivienda;
       }
 
-      await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud)
+      await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      })
       .then((res) => {
         if(res.status === 200) {
           // Swal.fire('Solicitud enviada', 'Se ha enviado su solicitud. Se le va a redirigir al listado de solicitudes', 'success');
@@ -323,7 +335,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 * {
   text-align: center;
 }
