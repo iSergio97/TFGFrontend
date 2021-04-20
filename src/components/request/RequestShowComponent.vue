@@ -5,7 +5,44 @@
       <div class="card">
         <div class="card-content">
           <div class="content">
-            Tarjeta izquierda
+            <div class="field">
+              <label class="label">Nombre</label>
+              <div class="control">
+                <input class="input" type="text" v-model="request.nombre" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="field">
+              <label class="label">Primer apellido</label>
+              <div class="control">
+                <input class="input" type="text" v-model="request.primerApellido" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="field">
+              <label class="label">Segundp apellido</label>
+              <div class="control">
+                <input class="input" type="text" v-model="request.segundoApellido" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="field">
+              <label class="label">Fecha de nacimiento</label>
+              <div class="control">
+                <input class="input" type="date" v-model="fechaNacimiento" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="field">
+              <label class="label">Identificación</label>
+              <div class="control">
+                <input class="input" type="text" v-model="request.identificacion" disabled>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -19,11 +56,36 @@
           <div class="content has-text-left">
             <strong>Fecha de creación:</strong> {{fechaCreacion}}
           </div>
-          <div class="content">
+          <div class="content is-vcenteredv">
               <div class="content has-text-left">
-                <strong>Estado:</strong> Rechazada
+                <article :class="'message ' + color" style="width: 30%">
+                  <div class="message-header is-centered">
+                    <p>{{ estado }}</p>
+                  </div>
+                </article>
               </div>
-              <!-- TODO: Cambiar botón por estado y que se alinee a la izquierda -->
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="card">
+        <div class="card-content">
+          <div class="content is-centered">
+            <strong>Documentos adjuntos:</strong>
+            <div v-if="archivos.length > 0">
+              <ul v-for="file in archivos" :key="file.name">
+                <li v-if="file.name.split('.')[1].toUpperCase() === 'PDF'" class="title is-5"
+                    @click="downloadFile(file)">
+                  <i class="far fa-file-pdf"></i> {{file.name}}
+                </li>
+                <li v-else-if="file.name.split('.')[1].toUpperCase() === 'PNG' ||
+                file.name.split('.')[1].toUpperCase() === 'JPG' ||
+                file.name.split('.')[1].toUpperCase() === 'JPGE'"
+                    class="title is-5" @click="downloadFile(file)">
+                  <i class="far fa-file-image"></i> {{file.name}}
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -34,6 +96,9 @@
 <script>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
+import { BASE_URL } from '@/api/BASE_URL';
+import Cookie from 'js-cookie';
 
 export default {
   name: 'RequestShowComponent',
@@ -54,29 +119,66 @@ export default {
     const solicitante = computed(() => `${request.solicitante.nombre}  ${request.solicitante.primerApellido} ${request.solicitante.segundoApellido}`);
     const fecha = request.fecha;
     const fechaCreacion = computed(() => `${new Date(fecha).getDate()}/${new Date(fecha).getMonth()}/${new Date(fecha).getFullYear()}`);
+    const archivos = ref(request.documentos);
+    const fechaNacimiento = ref(new Date(request.fechaNacimiento).toISOString().split('T')[0]);
+    console.log(archivos.value.documentos);
+    for(let i = 0; i < archivos.value.length; i++) {
+      let file = archivos.value[i];
+      console.log(file);
+    }
+
     let estado;
+    let color;
     switch (request.estado) {
       case 'A':
         estado = 'Aceptada';
+        color = 'is-sucess';
         break;
       case 'R':
         estado = 'Rechazada';
+        color = 'is-danger';
         break;
       case 'P':
         estado = 'Pendiente';
+        color = 'is-warning';
         break;
       case 'C':
         estado = 'Cancelada';
+        color = 'is-dark';
         break;
       default:
         estado = 'Estado desconocido';
         break;
     }
-    console.log(fechaCreacion.value);
+    const downloadFile = async (file) => {
+      console.log(file);
+      const type = file.name.split('.')[1].toUpperCase() === 'PDF' ? 'application/pdf' : 'image/png';
+      console.log(type);
+      const id = file.id;
+      const token = Cookie.get('token');
+      await axios({
+        url: `${BASE_URL}solicitud/document/${id}`,
+        method: 'GET',
+        responseType: 'blob',
+        params: {
+          requestId: request.id
+        },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      }).then((res) => {
+        const url = URL.createObjectURL(new Blob([res.data], {type: type}));
+        window.open(url);
+      });
+    }
     /* eslint-enable */
-    console.log('request', request);
+    // console.log('request', request);
     return {
       request,
+      color,
+      downloadFile,
+      fechaNacimiento,
+      archivos,
       solicitante,
       fechaCreacion,
       estado,
@@ -88,5 +190,13 @@ export default {
 <style scoped>
 * {
   text-align: center;
+}
+
+input[type="text"], input[type="date"] {
+  width: 35%;
+}
+
+ul {
+  list-style-type: none;
 }
 </style>

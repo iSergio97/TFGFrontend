@@ -1,5 +1,5 @@
 <template>
-  <RequestFormComponent :convivientes="convivientes" :userLogged="userLogged"/>
+  <RequestFormComponent :userLogged="userLogged"/>
 </template>
 
 <script>
@@ -33,7 +33,7 @@ export default {
       window.location.href = '/';
     }
     const convivientes = JSON.parse(localStorage.getItem('CONV'));
-    const userLogged = JSON.parse(localStorage.getItem('USER_PRO'));
+    const userLogged = JSON.parse(decrypt(localStorage.getItem('USER_PRO')));
 
     return {
       convivientes,

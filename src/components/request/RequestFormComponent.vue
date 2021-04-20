@@ -66,8 +66,40 @@
                 <p> MV </p>
               </div>
               <div v-else-if="subOpcion === 'MD'">
-                <p> Form con datos personales </p>
+                <div class="is-centered">
+                  <div class="field">
+                    <label class="label">Nombre</label>
+                    <div class="control">
+                      <input class="input" type="text" v-model="nombre">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">Primer apellido</label>
+                    <div class="control">
+                      <input class="input" type="text" v-model="primerApellido">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">Segundo apellido</label>
+                    <div class="control">
+                      <input class="input" type="text" v-model="segundoApellido">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">Fecha de nacimiento</label>
+                    <div class="control">
+                      <input class="input" type="date" v-model="fechaNacimiento">
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">Identificación</label>
+                    <div class="control">
+                      <input class="input" type="text" v-model="tIdentificacion">
+                    </div>
+                  </div>
+                </div>
               </div>
+              <br>
               <div id="file">
                 <label>
                   <input class="file-input" type="file" :onchange="adjuntarArchivo">
@@ -76,7 +108,7 @@
                   <i class="fas fa-upload"></i>
                 </span>
                 <span class="file-label">
-                  Choose a file…
+                  Adjuntar documento
                 </span>
               </span>
                 </label>
@@ -109,7 +141,8 @@
               </ul>
             </div>
             <div v-else>
-              No existe ningún documento adjunto a la solicitud
+              Actualmente, la solicitud no presenta ningún documento asociado.
+              Si lo envía así, el sistema se lo marcará como rechazada de forma automática.
             </div>
           </div>
         </div>
@@ -153,7 +186,6 @@ export default {
         subOpcion.value = 'MD';
       }
     });
-    console.log('Antes de await viviendasGet');
     const { lista } = await ViviendasGET();
     const viviendas = ref(lista);
     const vivienda = ref(viviendas.value[0].id);
@@ -161,7 +193,7 @@ export default {
     const nombre = ref(props.userLogged.nombre);
     const primerApellido = ref(props.userLogged.primerApellido);
     const segundoApellido = ref(props.userLogged.segundoApellido);
-    const fechaNacimiento  = ref(new Date(props.userLogged.fechaNacimiento));
+    const fechaNacimiento  = ref(new Date(props.userLogged.fechaNacimiento).toISOString().split('T')[0]);
     const tIdentificacion = props.userLogged.identificacion !== null ?
       ref(props.userLogged.identificacion) : ref('');
     /* eslint-enable */
@@ -190,7 +222,6 @@ export default {
         cancelButtonText: 'No',
         confirmButtonText: 'Sí',
       }).then((result) => {
-        console.log(result);
         if (result.isConfirmed) {
           const index = archivosName.value.indexOf(file.name);
           const { length } = archivosName.value;
@@ -230,6 +261,7 @@ export default {
         primerApellido: primerApellido.value,
         segundoApellido: segundoApellido.value,
         fechaNacimiento: fechaNacimiento.value,
+        identificacion: tIdentificacion.value,
         tipoIdentificacion: { id: tipoIdentificacion },
         // identificacion: tIdentificacion,
         documentos: [],
@@ -245,14 +277,13 @@ export default {
         subtipo: subOpcion.value,
         estado: 'P',
         vivienda: {
-          id: vivienda.id
+          id: vivienda.value,
         },
         documentos: [],
       };
 
       let solicitud;
       const token = Cookie.get('token');
-      console.log(token);
       if (formData.get('file') !== null) {
         await axios.post(`${BASE_URL}solicitud/document/new`, formData, {
           headers: {
@@ -285,8 +316,12 @@ export default {
         }
       })
       .then((res) => {
-        if(res.status === 200) {
-          // Swal.fire('Solicitud enviada', 'Se ha enviado su solicitud. Se le va a redirigir al listado de solicitudes', 'success');
+        if(res.data.status === 200) {
+          // Añadimos la request a la lista de requests
+          const { object } = res.data;
+          const arrayRequests = JSON.parse(localStorage.getItem("requests"));
+          arrayRequests.push(object);
+          localStorage.setItem("requests", JSON.stringify(arrayRequests));
           let timerInterval;
           Swal.fire({
             title: 'Solicitud enviada',
@@ -307,10 +342,10 @@ export default {
               }, 100)
             },
             willClose: () => {
-              clearInterval(timerInterval)
+              clearInterval(timerInterval);
             }
-          }).then((result) => {
-
+          }).then(() => {
+            router.push('/user/requests/list');
           }).catch(() => {
 
           });
@@ -321,6 +356,11 @@ export default {
       });
     };
     return {
+      nombre,
+      primerApellido,
+      segundoApellido,
+      tIdentificacion,
+      fechaNacimiento,
       archivos,
       opcion,
       subOpcion,
@@ -352,7 +392,8 @@ li {
   list-style-type: none;
 }
 
-#selectInput {
-  width: 65%;
+input[type="text"], input[type="date"] {
+  width: 35%;
 }
+
 </style>
