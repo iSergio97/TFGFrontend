@@ -2,7 +2,7 @@
   <br>
   <div class="columns is-centered">
     <div class="column">
-      <div class="card">
+      <div class="card" v-if="request.tipo === 'A' || request.subTipo === 'MD'">
         <div class="card-content">
           <div class="content">
             <div class="field">
@@ -42,6 +42,49 @@
               <div class="control">
                 <input class="input" type="text" v-model="request.identificacion" disabled>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" v-else>
+        <div class="card">
+          <div class="card-content">
+            <div class="content">
+              <div class="field">
+                <label class="label">Nuevo domicilio</label>
+                <div class="control">
+                  <input class="input" type="text" v-model="domicilio" disabled>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="card">
+        <div class="card-content">
+          <div class="content">
+            <div class="field" v-if="isAdmin">
+              <label class="label">Estado</label>
+              <div class="control">
+                <select v-model="status">
+                  <option value="A">Aceptar</option>
+                  <option value="R">Rechazar</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Justificación</label>
+              <div class="control">
+                <textarea class="textarea" type="textarea"
+                       :required="status === 'R'" v-model="justificacion"
+                          :disabled="!isAdmin"
+                ></textarea>
+              </div>
+              <br>
+              <button class="button is-info" v-if="isAdmin" @click="modificarSolicitud">
+                Enviar
+              </button>
             </div>
           </div>
         </div>
@@ -99,6 +142,8 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
 import Cookie from 'js-cookie';
+import { PMHCrypto } from '@/methods/PMHCrypto';
+import Swal from 'sweetalert2';
 
 export default {
   name: 'RequestShowComponent',
@@ -121,11 +166,11 @@ export default {
     const fechaCreacion = computed(() => `${new Date(fecha).getDate()}/${new Date(fecha).getMonth()}/${new Date(fecha).getFullYear()}`);
     const archivos = ref(request.documentos);
     const fechaNacimiento = ref(new Date(request.fechaNacimiento).toISOString().split('T')[0]);
-    console.log(archivos.value.documentos);
-    for(let i = 0; i < archivos.value.length; i++) {
-      let file = archivos.value[i];
-      console.log(file);
-    }
+    const status = request.estado;
+    const domicilio = computed(() => `${request.vivienda.calle.nombre} ${request.vivienda.numero}`);
+    const { decrypt } = new PMHCrypto();
+    const isAdmin = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT')) === 'ADMINISTRADOR';
+    console.log(isAdmin)
 
     let estado;
     let color;
@@ -171,17 +216,68 @@ export default {
         window.open(url);
       });
     }
+    const justificacion = ref(request.justificacion);
+    const modificarSolicitud = () => {
+      const token = Cookie.get('token');
+      axios.post(`${BASE_URL}solicitud/administrador/update`, {
+        solicitudId: request.id,
+        estado: status,
+        justificacion: justificacion
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }).then((res) => {
+        if(res.status === 200) {
+          let timerInterval;
+          Swal.fire({
+            title: 'Solicitud enviada',
+            html: 'Se ha actualizado la solicitud. Se le va a redirigir al listado de solicitudes',
+            timer: 2000,
+            icon: 'success',
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading()
+              timerInterval = setInterval(() => {
+                const content = Swal.getContent()
+                if (content) {
+                  const b = content.querySelector('b')
+                  if (b) {
+                    b.textContent = Swal.getTimerLeft()
+                  }
+                }
+              }, 100)
+            },
+            willClose: () => {
+              clearInterval(timerInterval);
+            }
+          }).then(() => {
+            router.push('/admninistrator/requests/list');
+          }).catch(() => {
+
+          });
+        }
+      })
+      .catch(() => {
+        Swal.fire('Oops...', 'Se ha producido un error al editar el estado de la solicitud. \nPosiblemente esta solicitud ya haya sido aceptada o rechazada por otro administrador.\nO el habitante haya decidido cancelarla.', 'error');
+      });
+    }
     /* eslint-enable */
     // console.log('request', request);
     return {
       request,
       color,
       downloadFile,
+      status,
+      isAdmin,
+      justificacion,
+      domicilio,
       fechaNacimiento,
       archivos,
       solicitante,
       fechaCreacion,
       estado,
+      modificarSolicitud,
     };
   },
 };
@@ -194,6 +290,9 @@ export default {
 
 input[type="text"], input[type="date"] {
   width: 35%;
+}
+textarea {
+  width: 60%;
 }
 
 ul {

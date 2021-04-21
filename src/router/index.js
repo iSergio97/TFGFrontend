@@ -4,6 +4,7 @@ import DatabaseError from '@/views/RouterError.vue';
 import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
 import AdministratorLogin from '@/views/AdministratorLogin.vue';
+import { PMHCrypto } from '@/methods/PMHCrypto';
 
 const routes = [
   {
@@ -80,20 +81,39 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const session = Cookie.get('PMHSESSION');
-  if (session === undefined && to.name === 'DatabaseError') {
+  const { decrypt } = new PMHCrypto();
+  // TODO: REVISAR RUTAS. REFACTORIZAR
+  if (to.name === 'Home') {
     next();
-    return;
-  }
-  if (session === undefined && !to.name.includes('Login')) {
-    if (to.name !== 'Home') {
-      next({ name: 'Login' });
-    } else {
-      next();
-    }
-  } else if (session !== undefined && (to.name === 'Login' || to.name === 'AdministratorLogin')) {
-    next({ name: 'Home' });
   } else {
-    next();
+    if (session === undefined && to.name === 'DatabaseError') {
+      next();
+      return;
+    }
+    if (session === undefined && !to.name.includes('Login')) {
+      if (to.name !== 'Home') {
+        next({ name: 'Login' });
+      } else {
+        next();
+      }
+    } else if (session !== undefined && (to.name === 'Login' || to.name === 'AdministratorLogin')) {
+      next({ name: 'Home' });
+    } else {
+      /* eslint-disable */
+      if (session !== undefined) {
+        let rol = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT'));
+        if (rol === 'HABITANTE') {
+          rol = 'USER';
+        }
+        if (to.path.toUpperCase().indexOf(rol) !== -1) {
+          next();
+        } else {
+          next({ name: 'Home' });
+        }
+      } else {
+        next();
+      }
+    }
   }
 });
 

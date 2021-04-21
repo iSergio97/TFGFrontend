@@ -113,10 +113,12 @@
               </span>
                 </label>
               </div>
+              <br>
               <div class="e-text-center">
+                <button type="button" :class="isSubmitted ? 'is-loading' : ''"
+                        :onclick="submitForm" value="Enviar"
+                        class="button is-info is-outlined is-rounded">Enviar</button>
                 <br>
-                <input type="button" :onclick="submitForm" value="Enviar"
-                       class="button is-info is-outlined is-rounded">
               </div>
             </form>
           </div>
@@ -168,6 +170,7 @@ export default {
   async setup(props) {
     const router = useRouter();
     const formData = new FormData();
+    const isSubmitted = ref(false);
     const opcion = ref('A');
     // ['ACR', 'AIM', 'MD', 'MV', 'MRN']
     const subOpcion = ref('ACR');
@@ -236,12 +239,12 @@ export default {
             'Se ha eliminado el archivo de forma correcta',
             'success',
           );
-          router.push('/user/requests/list');
         }
       });
     };
     const submitForm = async () => {
       /* eslint-disable */
+      isSubmitted.value = true;
       let tipoIdentificacion = 16;
       if(tIdentificacion.value.match("\\d{8}\\w")) {
         tipoIdentificacion = 17;
@@ -283,6 +286,7 @@ export default {
       };
 
       let solicitud;
+      let estado;
       const token = Cookie.get('token');
       if (formData.get('file') !== null) {
         await axios.post(`${BASE_URL}solicitud/document/new`, formData, {
@@ -292,16 +296,24 @@ export default {
           },
         })
           .then((res) => {
+            estado = res.status;
             if(opcion.value === 'A' || subOpcion.value !== 'MV') {
-              for(let i = 0; i < res.data.length; i++) {
-                solicitudDatosPersonales.documentos.push({ id: res.data[i].id, });
-              }
+              solicitudDatosPersonales.documentos = res.data;
+              /* for(let i = 0; i < res.data.length; i++) {
+                solicitudDatosPersonales.documentos.push(res.data[i]);
+              } */
+              solicitudDatosPersonales.documentos= res.data;
             } else {
-              for(let i = 0; i < res.data.length; i++) {
-                solicitudVivienda.documentos.push({ id: res.data[i].id, });
-              }
+              /* for(let i = 0; i < res.data.length; i++) {
+                solicitudVivienda.documentos.push(res.data[i]);
+              } */
+              solicitudVivienda.documentos = res.data;
             }
-          });
+          })
+        .catch(() => {
+          isSubmitted.value = false;
+          Swal.fire('Oops...', 'Se ha producido un error tratando su solicitud.\nPosiblemente, el tamaño del conjunto de documentos es superior al que acepta el sistema.', 'error');
+        });
       }
 
       if(opcion.value === 'A' || subOpcion.value !== 'MV') {
@@ -310,52 +322,56 @@ export default {
         solicitud = solicitudVivienda;
       }
 
-      await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        }
-      })
-      .then((res) => {
-        if(res.data.status === 200) {
-          // Añadimos la request a la lista de requests
-          const { object } = res.data;
-          const arrayRequests = JSON.parse(localStorage.getItem("requests"));
-          arrayRequests.push(object);
-          localStorage.setItem("requests", JSON.stringify(arrayRequests));
-          let timerInterval;
-          Swal.fire({
-            title: 'Solicitud enviada',
-            html: 'Se ha enviado su solicitud. Se le va a redirigir al listado de solicitudes',
-            timer: 2000,
-            icon: 'success',
-            timerProgressBar: true,
-            didOpen: () => {
-              Swal.showLoading()
-              timerInterval = setInterval(() => {
-                const content = Swal.getContent()
-                if (content) {
-                  const b = content.querySelector('b')
-                  if (b) {
-                    b.textContent = Swal.getTimerLeft()
-                  }
+      if(estado === 200) {
+        await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        })
+          .then((res) => {
+            if(res.data.status === 200) {
+              // Añadimos la request a la lista de requests
+              const { object } = res.data;
+              const arrayRequests = JSON.parse(localStorage.getItem("requests"));
+              arrayRequests.push(object);
+              localStorage.setItem("requests", JSON.stringify(arrayRequests));
+              let timerInterval;
+              Swal.fire({
+                title: 'Solicitud enviada',
+                html: 'Se ha enviado su solicitud. Se le va a redirigir al listado de solicitudes',
+                timer: 2000,
+                icon: 'success',
+                timerProgressBar: true,
+                didOpen: () => {
+                  Swal.showLoading()
+                  timerInterval = setInterval(() => {
+                    const content = Swal.getContent()
+                    if (content) {
+                      const b = content.querySelector('b')
+                      if (b) {
+                        b.textContent = Swal.getTimerLeft()
+                      }
+                    }
+                  }, 100)
+                },
+                willClose: () => {
+                  clearInterval(timerInterval);
                 }
-              }, 100)
-            },
-            willClose: () => {
-              clearInterval(timerInterval);
-            }
-          }).then(() => {
-            router.push('/user/requests/list');
-          }).catch(() => {
+              }).then(() => {
+                router.push('/user/requests/list');
+              }).catch(() => {
 
+              });
+              formData.delete('file');
+            } else {
+              isSubmitted.value = false;
+             Swal.fire('Oops...', 'Se ha producido un error inesperado tratando su solicitud. Inténtelo de nuevo más tarde.', 'error');
+            }
           });
-          formData.delete('file');
-        } else {
-          Swal.fire('Oops...', 'Se ha producido un error inesperado tratando su solicitud. Inténtelo de nuevo más tarde.', 'error');
-        }
-      });
+      }
     };
     return {
+      isSubmitted,
       nombre,
       primerApellido,
       segundoApellido,

@@ -1,4 +1,4 @@
-import { ref, watchEffect } from 'vue';
+import { ref } from 'vue';
 import Cookie from 'js-cookie';
 import { PMHCrypto } from '@/methods/PMHCrypto';
 
@@ -14,14 +14,6 @@ export const PMHSession = (path) => {
   const localSession = ref(0);
   const userRolSession = ref(false);
   const adminRolSession = ref(false);
-  watchEffect(() => [localSession, userRolSession, adminRolSession]);
-  watchEffect(() => [
-    localStorage.getItem('PMHSESSION'),
-    localStorage.getItem('USER_PRO'),
-    localStorage.getItem('SALT'),
-    localStorage.getItem('USER_ROL'),
-    Cookie.get('PMHSESSION'),
-    Cookie.get('SALT')]);
   if (localStorage.getItem('PMHSESSION') === null ||
       localStorage.getItem('USER_PRO') === null ||
       localStorage.getItem('SALT') === null ||
