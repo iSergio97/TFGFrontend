@@ -1,20 +1,26 @@
 <template>
   <Suspense>
     <template #default>
-      <h3> Admin Request List</h3>
+      <AdminRequestListComponent />
     </template>
     <template #fallback>
       <div class="loading-spinner">
-        <Loading />
+        <LoadingDiv />
       </div>
     </template>
   </Suspense>
 </template>
 
 <script>
+import AdminRequestListComponent from '@/components/request/AdminRequestListComponent.vue';
+import LoadingDiv from '@/components/LoadingDiv.vue';
+
 export default {
   name: 'AdministratorRequestList',
-  // TODO: REVISAR SI ESTAMOS EN ADMIN O EN USUARIO PARA LISTAR TODO O EN FUNCIÓN DEL USUARIO
+  components: {
+    AdminRequestListComponent,
+    LoadingDiv,
+  },
 };
 </script>
 
