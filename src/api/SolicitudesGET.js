@@ -10,9 +10,9 @@ export const SolicitudesGET = async (user, userId) => {
   const request = ref({});
 
   const token = Cookie.get('token');
-  console.log("Bearer:", token);
+  console.log(userId);
 
-  if(user) {
+  if(user.user) {
     await axios.get(`${BASE_URL}solicitud/habitante/mine`, {
       params: {
         userId,
@@ -28,7 +28,11 @@ export const SolicitudesGET = async (user, userId) => {
       })
       .catch(() => statusSolicitudes.value = 404);
   } else {
-    await axios.get(`${BASE_URL}solicitud/administrador/all`)
+    await axios.get(`${BASE_URL}solicitud/administrador/all`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
       .then((res) => {
         const { status, object } = res.data;
         lista.value = object;

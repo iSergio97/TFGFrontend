@@ -126,7 +126,7 @@ import { UserAccount } from '@/api/UserAccount';
 import Swal from 'sweetalert2';
 
 export default {
-  name: 'Profile',
+  name: 'UserProfile',
   components: {
     WebHeaderCard,
     ConvivientesCard,

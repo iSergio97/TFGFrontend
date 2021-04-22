@@ -13,7 +13,7 @@ export default {
   components: {
     RequestShowComponent,
   },
-  name: 'RequestShow',
+  name: 'AdministratorRequestShow',
   setup() {
     const { decrypt } = PMHCrypto();
     const alertErrorStorage = ref(['Se ha producido un error con su sesión, debe iniciar sesión de nuevo', 'An error has occurred with your session, you will be logged out.']);

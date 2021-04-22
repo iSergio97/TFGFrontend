@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Cookie from 'js-cookie';
-import DatabaseError from '@/views/RouterError.vue';
 import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
 import AdministratorLogin from '@/views/AdministratorLogin.vue';
 import { PMHCrypto } from '@/methods/PMHCrypto';
+import RouterError from '@/views/RouterError.vue';
 
 const routes = [
   {
-    path: '/database-error',
-    name: 'DatabaseError',
-    component: DatabaseError,
+    path: '/route-error',
+    name: 'RouterError',
+    component: RouterError,
   },
   {
     path: '/login',
@@ -24,8 +24,8 @@ const routes = [
   },
   {
     path: '/user/profile',
-    name: 'Profile',
-    component: () => import('../views/Profile.vue'),
+    name: 'UserProfile',
+    component: () => import('../views/UserProfile.vue'),
   },
   {
     path: '/administrator/system',
@@ -48,23 +48,28 @@ const routes = [
     component: () => import('../views/requests/User/UserRequestShow.vue'),
   },
   {
+    path: '/administrator/requests/list',
+    name: 'AdministratorRequestList',
+    component: () => import('../views/requests/Admin/AdministratorRequestList.vue'), // Listado de solicitudes
+  },
+  {
     path: '/administrator/requests/show/:id',
-    name: 'RequestShow',
-    component: () => import('../views/requests/RequestShow.vue'), // Show de la solicitud en cuestión
+    name: 'AdministratorRequestShow',
+    component: () => import('../views/requests/Admin/AdministratorRequestShow.vue'), // Show de la solicitud en cuestión
   },
   {
     path: '/administrator/operations/list',
-    name: 'OperationList',
+    name: 'AdministratorOperationList',
     component: () => import('../views/operations/OperationList.vue'),
   },
   {
     path: '/administrator/operations/show/:id',
-    name: 'OperationShow',
+    name: 'AdministratorOperationShow',
     component: () => import('../views/operations/OperationShow.vue'),
   },
   {
     path: '/administrator/statistics',
-    name: 'Statistics',
+    name: 'AdministratorStatistics',
     component: () => import('../views/Statistics.vue'),
   },
   {
@@ -79,39 +84,34 @@ const router = createRouter({
   routes,
 });
 
+/* eslint-disable */
 router.beforeEach((to, from, next) => {
   const session = Cookie.get('PMHSESSION');
   const { decrypt } = new PMHCrypto();
-  // TODO: REVISAR RUTAS. REFACTORIZAR
-  if (to.name === 'Home') {
+  if(to.name === undefined) {
+    next({ name: 'RouterError' });
+  }
+  if (to.name === 'Home' || to.name === 'RouterError') {
     next();
   } else {
-    if (session === undefined && to.name === 'DatabaseError') {
-      next();
-      return;
-    }
-    if (session === undefined && !to.name.includes('Login')) {
-      if (to.name !== 'Home') {
-        next({ name: 'Login' });
-      } else {
+    if (!session) {
+      if (to.name.indexOf('Login') !== -1) {
         next();
+      } else {
+        next({ name: 'Home' });
       }
-    } else if (session !== undefined && (to.name === 'Login' || to.name === 'AdministratorLogin')) {
-      next({ name: 'Home' });
     } else {
-      /* eslint-disable */
-      if (session !== undefined) {
-        let rol = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT'));
-        if (rol === 'HABITANTE') {
-          rol = 'USER';
-        }
-        if (to.path.toUpperCase().indexOf(rol) !== -1) {
+      const userRol = localStorage.getItem('USER_ROL');
+      const salt = Cookie.get('SALT');
+      let rol = decrypt(userRol, salt);
+      if (to.name.toUpperCase().indexOf(rol) !== -1) {
+        next();
+      } else {
+        if (to.name.indexOf('Login') !== -1) {
           next();
         } else {
           next({ name: 'Home' });
         }
-      } else {
-        next();
       }
     }
   }

@@ -97,7 +97,7 @@ export default {
             const { cuentaUsuario } = user.value;
             const { encrypt } = PMHCrypto();
             const PMHSESSION = encrypt(cuentaUsuario.username + '¥' + cuentaUsuario.id, cuentaUsuario.salt);
-            const user_rol = encrypt(cuentaUsuario.rol, cuentaUsuario.salt);
+            const user_rol = encrypt('USER', cuentaUsuario.salt);
             const user_value = JSON.stringify(user.value);
             localStorage.setItem('PMHSESSION', PMHSESSION);
             localStorage.setItem('SALT', cuentaUsuario.salt);

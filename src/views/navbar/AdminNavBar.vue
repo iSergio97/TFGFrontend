@@ -18,8 +18,11 @@
         <router-link to="/administrator/operations/list" class="navbar-item" v-if="session">
           {{operationsLang[lang]}}
         </router-link>
-        <router-link to="/administrator/statistics" class="navbar-item" v-if="session">
-          Estadísticas
+        <router-link to="/administrator/requests/list" class="navbar-item" v-if="session">
+          Solicitudes
+        </router-link>
+        <router-link to="/administrator/system" class="navbar-item" v-if="session">
+          Sistema/Estadísticas
         </router-link>
         <div class="navbar-item">
           <div class="buttons">

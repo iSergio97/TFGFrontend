@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: 'RequestList',
+  name: 'AdministratorRequestList',
   // TODO: REVISAR SI ESTAMOS EN ADMIN O EN USUARIO PARA LISTAR TODO O EN FUNCIÓN DEL USUARIO
 };
 </script>
