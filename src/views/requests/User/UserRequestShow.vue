@@ -1,5 +1,15 @@
 <template>
-  <RequestShowComponent :id="idRequest"/>
+  <br>
+  <Suspense>
+    <template #default>
+      <RequestShowComponent :id="idRequest"/>
+    </template>
+    <template #fallback>
+      <div class="loading-spinner">
+        <LoadingDiv />
+      </div>
+    </template>
+  </Suspense>
 </template>
 
 <script>
@@ -27,13 +37,10 @@ export default {
       window.location.href = '/';
     }
     // Se ha optado por reutilizar este módulo
-    const convivientes = JSON.parse(localStorage.getItem('CONV'));
     const route = useRoute();
     const idRequest = ref(Number(route.params.id));
-    console.log(idRequest.value);
 
     return {
-      convivientes,
       idRequest,
     };
   },

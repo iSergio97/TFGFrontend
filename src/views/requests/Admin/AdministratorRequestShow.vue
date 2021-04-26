@@ -1,5 +1,15 @@
 <template>
-  <RequestShowComponent :id="idRequest" />
+  <br>
+  <Suspense>
+    <template #default>
+      <RequestShowComponent :id="idRequest" />
+    </template>
+    <template #fallback>
+      <div class="loading-spinner">
+        <LoadingDiv />
+      </div>
+    </template>
+  </Suspense>
 </template>
 
 <script>

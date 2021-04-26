@@ -149,7 +149,7 @@ export default {
     }
 
     const rol = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT'));
-    if (rol !== 'HABITANTE') {
+    if (rol !== 'USER') {
       window.location.href = '/';
     }
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);

@@ -10,7 +10,6 @@ export const SolicitudesGET = async (user, userId) => {
   const request = ref({});
 
   const token = Cookie.get('token');
-  console.log(userId);
 
   if(user.user) {
     await axios.get(`${BASE_URL}solicitud/habitante/mine`, {

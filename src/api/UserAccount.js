@@ -9,12 +9,15 @@ export const UserAccount = async (props) => {
 
   const token = Cookie.get('token');
 
-  await axios.post(`${BASE_URL}habitante/user-account/edit`, {
+  console.log(props);
+
+  await axios.post(`${BASE_URL}habitante/perfil`, {
     id: props.id,
     newUsername: props.newUsername,
     currentPassword: props.currentPassword,
     newPassword: props.newPassword,
-  }, {
+  },
+    {
     headers: {
       'Authorization': `Bearer ${token}`,
     },

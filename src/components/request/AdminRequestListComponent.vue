@@ -83,13 +83,7 @@ export default {
     /* eslint-disable */
     const { decrypt } = PMHCrypto();
     const { id } = JSON.parse(decrypt(localStorage.getItem('USER_PRO'), localStorage.getItem('SALT')));
-    let lista;
-    if(localStorage.getItem('requests') === null) {
-      lista = ref((await SolicitudesGET({ user: false }, id)).lista);
-      localStorage.setItem('requests', JSON.stringify(lista.value));
-    } else {
-      lista = ref(JSON.parse(localStorage.getItem('requests')));
-    }
+    let lista = ref((await SolicitudesGET({ user: false }, id)).lista);
 
     const indexPag = ref(0);
     const itemsPerList = (indexPag) => {

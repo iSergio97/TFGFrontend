@@ -1,5 +1,5 @@
 <template>
-  <div v-if="operaciones.length > 0">
+  <div v-if="lista.length > 0">
     <nav class="pagination is-centered" role="navigation" aria-label="pagination">
       <a :disabled="indexPag > 0 ? disabled : ''"
          @click="prevPage"
@@ -33,6 +33,11 @@
           <abbr title="ID de la operación"> ID </abbr>
         </th>
         <th> <abbr title="Tipo de la operación (A)lta, (B)aja o (M)odificación"> Tipo</abbr></th>
+        <th> <abbr title="
+        Subtipo de la operación (Alta por cambio de Residencia(ACR), Alta de Inmigrantes (AIM),
+        Modificación de vivienda (MV), Modificación de datos personales (MDP)
+        o Modificación por Renovación de Empadronamiento (MRE) (exclusivo para extranjeros)">
+          Subtipo</abbr></th>
         <th> Habitante </th>
         <th> Fecha </th>
         <th> Solicitud relacionada </th>
@@ -42,6 +47,7 @@
       <tr>
         <th>{{operation.id}}</th>
         <td> {{operation.tipo}}</td>
+        <td> {{operation.subtipo}}</td>
         <!-- eslint-disable -->
         <td> {{operation.habitante.primerApellido}} {{operation.habitante.segundoApellido}}, {{operation.habitante.nombre}}</td>
         <td>
@@ -71,19 +77,17 @@ export default {
   name: 'OperationListComponent',
   async setup() {
     /* eslint-disable */
-    const operaciones = ref(null);
     const { lista } = await OperationGET();
-    operaciones.value = await lista.value;
     const indexPag = ref(0);
     const itemsPerList = (indexPag) => {
-      return indexPag.value * 10 + 10;// Se toman 10 elementos por página
+      return indexPag * 10 + 10;// Se toman 10 elementos por página
     };
 
     const itemsPag = (indexPag) => {
       return indexPag * 10 + 10;
     }
 
-    const paginas = ref(Math.ceil(operaciones.value.length / 10)); // Redondeamos operaciones
+    const paginas = ref(Math.ceil(lista.value.length / 10)); // Redondeamos operaciones
     const nextPage = () => {
       if(indexPag.value < paginas.value - 1) {
         indexPag.value++;
@@ -95,14 +99,16 @@ export default {
       }
     };
     let supLimit = itemsPerList(indexPag.value);
-    const itemsPaginados = ref(operaciones.value.slice(indexPag.value * 10, supLimit));
+    const itemsPaginados = ref(lista.value.slice(indexPag.value * 10, supLimit));
+    console.log(itemsPaginados.value.length);
     watch(indexPag, (indexPag) => {
       supLimit = itemsPag(indexPag);
-      itemsPaginados.value = operaciones.value.slice(indexPag * 10, supLimit);
+      itemsPaginados.value = lista.value.slice(indexPag * 10, supLimit);
     });
 
+
     return {
-      operaciones,
+      lista,
       itemsPaginados,
       itemsPag,
       paginas,

@@ -157,17 +157,50 @@ export default {
   props: {
     id: Number,
   },
-  setup(props) {
+  async setup(props) {
+    /* eslint-disable */
+    const { decrypt } = new PMHCrypto();
     const idRequest = ref(props.id);
     const router = useRouter();
     if (Number.isNaN(idRequest.value)) {
       router.push('/database-error');
     }
-    const requests = JSON.parse(localStorage.getItem('requests'));
-    /* eslint-disable */
-    const request = requests.find((req) => {
-      return req.id === idRequest.value;
-    });
+    const userId = JSON.parse(decrypt(localStorage.getItem('USER_PRO'), localStorage.getItem('SALT'))).id;
+    let requests = localStorage.getItem('requests');
+    let request;
+    if (requests === null) {
+      const urlUser = `${BASE_URL}solicitud/${idRequest.value}`;
+      const urlAdmin = `${BASE_URL}solicitud/administrador/${idRequest.value}`;
+      let url = '';
+      const isAdmin = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT')) === 'ADMINISTRATOR';
+      if(isAdmin) {
+        url = urlAdmin;
+      } else {
+        url = urlUser;
+      }
+      const token = Cookie.get('token');
+      await axios.get(url, {
+        params: {
+          userId: userId,
+        },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        const {status, object } = res.data;
+        if (status !== 200) {
+          router.push('/database-error');
+        }
+        request = object;
+      });
+    } else {
+      requests = JSON.parse(requests);
+      request = requests.find((req) => {
+        return req.id === idRequest.value;
+      });
+    }
+    console.log(request);
     const solicitante = computed(() => `${request.solicitante.nombre}  ${request.solicitante.primerApellido} ${request.solicitante.segundoApellido}`);
     const fecha = request.fecha;
     const fechaCreacion = computed(() => `${new Date(fecha).getDate()}/${new Date(fecha).getMonth()}/${new Date(fecha).getFullYear()}`);
@@ -176,7 +209,6 @@ export default {
     const statusRequest = ref(request.estado);
     const status = ref('A');
     const domicilio = computed(() => `${request.vivienda.calle.nombre} ${request.vivienda.numero}`);
-    const { decrypt } = new PMHCrypto();
     const isAdmin = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT')) === 'ADMINISTRATOR';
 
     let estado;

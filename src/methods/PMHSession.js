@@ -29,7 +29,7 @@ export const PMHSession = (path) => {
   } else {
     const { decrypt } = PMHCrypto();
     const userRol = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT'));
-    localSession.value = userRol === 'HABITANTE' ? 1 : 2;
+    localSession.value = userRol === 'USER' ? 1 : 2;
   }
 
   userRolSession.value = (path !== 'user' && localSession.value === 1);
