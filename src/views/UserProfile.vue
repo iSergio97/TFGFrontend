@@ -136,22 +136,7 @@ export default {
     const { decrypt } = PMHCrypto();
     const alertErrorStorage = ref(['Se ha producido un error con su sesión, debe iniciar sesión de nuevo', 'An error has occurred with your session, you will be logged out.']);
     const lang = Cookie.get('lang') !== undefined ? Cookie.get('lang') : 0;
-    const convivientes = JSON.parse(localStorage.getItem('CONV'));
 
-    const lsSession = decrypt(localStorage.getItem('PMHSESSION'), localStorage.getItem('SALT'));
-    const cookieSession = decrypt(Cookie.get('PMHSESSION'), Cookie.get('SALT'));
-    if (lsSession !== cookieSession) {
-      alert(alertErrorStorage.value[lang]);
-      Cookie.remove('PMHSESSION');
-      Cookie.remove('SALT');
-      localStorage.clear();
-      window.location.href = '/';
-    }
-
-    const rol = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT'));
-    if (rol !== 'USER') {
-      window.location.href = '/';
-    }
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     let user;
     let image;
@@ -191,6 +176,10 @@ export default {
       newPassword = ref('habitante0');
       confirmNewPassword = ref('habitante0');
       submitForm = async () => {
+        if (newPassword.value !== confirmNewPassword.value) {
+          alert('Ambas contraseñas nuevas deben coincidir');
+          return;
+        }
         const { status } = await UserAccount({
           id: user.cuentaUsuario.id,
           newUsername: username.value,
@@ -205,6 +194,8 @@ export default {
               localStorage.clear();
               window.location.href = '/';
             });
+        } else if (status.value === 370 || status.value === 380 || status.value === 390) {
+          await Swal.fire('¡Se ha producido un error!', 'El nombre de usuario está en uso o la contraseña actual no es correcta.', 'error');
         } else {
           await Swal.fire('¡Se ha producido un error!', 'Inténtelo de nuevo más tarde. <br> Sentimos el inconveniente', 'error');
         }
@@ -232,7 +223,6 @@ export default {
       birthDate,
       tarjetaIdentificacion,
       email,
-      convivientes,
       isMobile,
       alertErrorStorage,
       lang,

@@ -316,13 +316,15 @@ export default {
         });
       }
 
-      if(opcion.value === 'A' || subOpcion.value !== 'MV') {
-        solicitud = solicitudDatosPersonales;
-      } else {
+      if(opcion.value === 'A' || subOpcion.value !== 'MD') {
         solicitud = solicitudVivienda;
+      } else {
+        solicitud = solicitudDatosPersonales;
       }
 
-      if(estado === 200) {
+      console.log('solicitud', solicitud);
+
+      if(estado === 200 || estado === undefined) {
         await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -332,14 +334,10 @@ export default {
             if(res.data.status === 200) {
               // Añadimos la request a la lista de requests
               const { object } = res.data;
-              console.log('obtenemos el localStorage');
               const arrayRequests = JSON.parse(localStorage.getItem("requests"));
-              console.log('hacemosp push');
               arrayRequests.push(object);
-              console.log('añadimos el objeto al localstorage');
               localStorage.setItem("requests", JSON.stringify(arrayRequests));
               let timerInterval;
-              console.log('activamos la alerta');
               Swal.fire({
                 title: 'Solicitud enviada',
                 html: 'Se ha enviado su solicitud. Se le va a redirigir al listado de solicitudes',

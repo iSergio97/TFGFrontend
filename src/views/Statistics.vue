@@ -27,6 +27,9 @@
 import AreaChartCard from '@/components/statistics/AreaChartCard.vue';
 import PieChartCard from '@/components/statistics/PieChartCard.vue';
 import BarChartCard from '@/components/statistics/BarChartCard.vue';
+import axios from 'axios';
+import { BASE_URL } from '@/api/BASE_URL';
+import Cookie from 'js-cookie';
 
 export default {
   name: 'Statistics',
@@ -38,11 +41,20 @@ export default {
   data() {
     return {
       isMobile: false,
+      token: Cookie.get('token'),
     };
   },
   methods: {
+    /* eslint-disable */
     esInvocado() {
-      console.log(this.isMobile);
+      axios.get(`${BASE_URL}estadisticas/filter/modificacion`, {
+        headers: {
+          'Authorization': `Bearer ${this.token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      });
     },
   },
   mounted() {

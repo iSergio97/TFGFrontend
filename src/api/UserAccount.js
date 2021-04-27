@@ -9,9 +9,7 @@ export const UserAccount = async (props) => {
 
   const token = Cookie.get('token');
 
-  console.log(props);
-
-  await axios.post(`${BASE_URL}habitante/perfil`, {
+  await axios.post(`${BASE_URL}perfil/actualizar`, {
     id: props.id,
     newUsername: props.newUsername,
     currentPassword: props.currentPassword,
