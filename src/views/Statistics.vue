@@ -1,13 +1,13 @@
 <template>
   <div v-if="isMobile" class="columns">
     <div class="column">
-      <PieChartCard />
+      <Doughnut :solicitudes="[solicitudesPorEstado.aceptadas,
+         solicitudesPorEstado.rechazadas,
+          solicitudesPorEstado.canceladas,
+           solicitudesPorEstado.pendientes]"/>
     </div>
     <div class="column">
         <AreaChartCard />
-    </div>
-    <div class="column">
-      <BarChartCard />
     </div>
   </div>
   <div v-else>
@@ -70,8 +70,6 @@
 
 <script>
 import AreaChartCard from '@/components/statistics/AreaChartCard.vue';
-import PieChartCard from '@/components/statistics/PieChartCard.vue';
-import BarChartCard from '@/components/statistics/BarChartCard.vue';
 import Doughnut from '@/components/statistics/Doughnut.vue';
 import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
@@ -81,8 +79,6 @@ export default {
   name: 'Statistics',
   components: {
     AreaChartCard,
-    PieChartCard,
-    BarChartCard,
     Doughnut,
   },
   data() {
