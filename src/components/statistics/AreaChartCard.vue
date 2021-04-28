@@ -5,7 +5,6 @@
 </template>
 
 <script>
-// import VueApexChart from 'vue3-apexcharts';
 import VueApexChart from 'vue3-apexcharts';
 
 export default {
@@ -25,7 +24,7 @@ export default {
         },
         plotOptions: {
           bar: {
-            horizontal: true,
+            horizontal: false,
           },
         },
         dataLabels: {

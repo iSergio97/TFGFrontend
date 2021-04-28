@@ -10,15 +10,60 @@
       <BarChartCard />
     </div>
   </div>
-  <div v-else class="columns">
-    <div class="column">
-      <AreaChartCard />
+  <div v-else>
+    <div class="columns">
+      <div class="column">
+        <article class="message is-success">
+          <div class="message-header">
+            <p>Solicitudes aceptadas</p>
+
+          </div>
+          <div class="message-body">
+            {{solicitudesPorEstado.aceptadas}}
+          </div>
+        </article>
+      </div>
+      <div class="column">
+        <article class="message is-danger">
+          <div class="message-header">
+            <p>Solicitudes rechazadas</p>
+          </div>
+          <div class="message-body">
+            {{solicitudesPorEstado.rechazadas}}
+          </div>
+        </article>
+      </div>
+      <div class="column">
+        <article class="message">
+          <div class="message-header">
+            <p>Solicitudes canceladas</p>
+          </div>
+          <div class="message-body">
+            {{solicitudesPorEstado.canceladas}}
+          </div>
+        </article>
+      </div>
+      <div class="column">
+        <article class="message is-warning">
+          <div class="message-header">
+            <p>Solicitudes pendientes</p>
+          </div>
+          <div class="message-body">
+            {{solicitudesPorEstado.pendientes}}
+          </div>
+        </article>
+      </div>
     </div>
-    <div class="column">
-      <PieChartCard />
-    </div>
-    <div class="column">
-      <BarChartCard />
+    <div class="columns" v-if="isLoaded">
+      <div class="column">
+        <Doughnut :solicitudes="[solicitudesPorEstado.aceptadas,
+         solicitudesPorEstado.rechazadas,
+          solicitudesPorEstado.canceladas,
+           solicitudesPorEstado.pendientes]"/>
+      </div>
+      <div class="column">
+        <AreaChartCard />
+      </div>
     </div>
   </div>
 </template>
@@ -27,6 +72,7 @@
 import AreaChartCard from '@/components/statistics/AreaChartCard.vue';
 import PieChartCard from '@/components/statistics/PieChartCard.vue';
 import BarChartCard from '@/components/statistics/BarChartCard.vue';
+import Doughnut from '@/components/statistics/Doughnut.vue';
 import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
 import Cookie from 'js-cookie';
@@ -37,38 +83,62 @@ export default {
     AreaChartCard,
     PieChartCard,
     BarChartCard,
+    Doughnut,
   },
   data() {
     return {
       isMobile: false,
+      isLoaded: false,
+      solicitudesPorEstado: {
+        aceptadas: 0,
+        rechazadas: 0,
+        canceladas: 0,
+        pendientes: 0,
+      },
+      ratioSolicitudes: 0.0,
+      solicitudesDate: [],
       token: Cookie.get('token'),
     };
   },
   methods: {
     /* eslint-disable */
-    esInvocado() {
-      axios.get(`${BASE_URL}estadisticas/filter/modificacion`, {
+    fluctuacion() {
+      axios.get(`${BASE_URL}estadisticas/fluctuacion`, {
         headers: {
           'Authorization': `Bearer ${this.token}`,
         },
       })
       .then((res) => {
-        console.log(res);
+        let estados = res.data.object;
+        this.solicitudesPorEstado = {
+          aceptadas: estados[0],
+          rechazadas: estados[1],
+          canceladas: estados[2],
+          pendientes: estados[3],
+        };
+        this.isLoaded = true;
       });
     },
+    solicitudesDateMethod() {
+      axios.get(`${BASE_URL}estadisticas/solicitudes-fecha`, {
+        headers: {
+          'Authorization': `Bearer ${this.token}`,
+        }
+      }).then((res) => {
+        this.solicitudesDate = res.data.object;
+        console.log(res.data.object);
+      })
+    }
   },
   mounted() {
-    this.esInvocado();
+    this.fluctuacion();
+    this.solicitudesDateMethod()
   },
-  // setup() {
-  //   console.log('Se accede a statistics');
-  //   const isMobile = ref(false);
-  //   return {
-  //     isMobile,
-  //   };
-  // },
 };
 </script>
 
 <style scoped>
+* {
+  text-align: center;
+}
 </style>
