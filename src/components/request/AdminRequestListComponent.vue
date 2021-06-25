@@ -1,5 +1,4 @@
 <template>
-  <br>
   <div v-if="lista.length > 0">
     <nav class="pagination is-centered" role="navigation" aria-label="pagination">
       <a :disabled="indexPag > 0 ? disabled : ''"

@@ -1,39 +1,41 @@
 <template>
-  <nav class="navbar is-info" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <router-link class="navbar-item-logo" to="/">
-      </router-link>
-
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
-         data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-
-    <div id="navbarBasicExample" class="navbar-menu">
-
-      <div class="navbar-end">
-        <router-link to="/user/profile" class="navbar-item" v-if="session">
-          {{profileLang[lang]}}
+  <header class="header">
+    <nav class="navbar is-info" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <router-link class="navbar-item-logo" to="/">
         </router-link>
-        <router-link to="/user/requests/list" class="navbar-item" v-if="session">
-          {{requestLang[lang]}}
-        </router-link>
-        <div class="navbar-item">
-          <div class="buttons">
-            <button class="button is-primary" @click="logout" v-if="session">
-              <strong>{{logoutLang[lang]}}</strong>
-            </button>
-            <router-link to="login" class="button is-primary" v-if="!session">
-              <strong> {{ loginLang[lang] }} </strong>
-            </router-link>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+           data-target="navbarBasicExample">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div id="navbarBasicExample" class="navbar-menu">
+
+        <div class="navbar-end">
+          <router-link to="/user/profile" class="navbar-item" v-if="session">
+            {{profileLang[lang]}}
+          </router-link>
+          <router-link to="/user/requests/list" class="navbar-item" v-if="session">
+            {{requestLang[lang]}}
+          </router-link>
+          <div class="navbar-item">
+            <div class="buttons">
+              <button class="button is-primary" @click="logout" v-if="session">
+                <strong>{{logoutLang[lang]}}</strong>
+              </button>
+              <router-link to="login" class="button nav-link" v-if="!session">
+                <strong> {{ loginLang[lang] }} </strong>
+              </router-link>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </header>
   <router-view/>
 </template>
 
@@ -81,8 +83,6 @@ export default {
 <style scoped>
 nav {
   background: #B8C1C8;
-  border-bottom: 1px solid #989EA4;
-  border-top: 1px solid #717D85;
   margin: 0;
   padding: 2px 0 0 12px;
   position: -webkit-sticky;
@@ -95,4 +95,5 @@ nav {
   background-size: cover;
   width: 220px;
 }
+
 </style>

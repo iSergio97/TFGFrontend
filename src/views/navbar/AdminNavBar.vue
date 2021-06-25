@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar is-info" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-info transparent" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <router-link class="navbar-item-logo" to="/">
       </router-link>
@@ -84,8 +84,6 @@ export default {
 <style scoped>
 nav {
   background: #B8C1C8;
-  border-bottom: 1px solid #989EA4;
-  border-top: 1px solid #717D85;
   margin: 0;
   padding: 2px 0 0 12px;
   position: -webkit-sticky;
