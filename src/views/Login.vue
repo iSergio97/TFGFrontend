@@ -1,6 +1,5 @@
-/* eslint-disable */
+<!-- eslint-disable -->
 <template>
-  <section class="hero" id="error">
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="column is-4 is-offset-4">
@@ -45,10 +44,10 @@
         </div>
       </div>
     </div>
-  </section>
 </template>
 
 <script>
+/* eslint-disable */
 import { ref } from 'vue';
 import { Login } from '@/api/Login';
 import { PMHCrypto } from '@/methods/PMHCrypto';

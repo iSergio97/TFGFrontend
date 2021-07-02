@@ -1,3 +1,4 @@
+<!-- eslint-disable -->
 <template>
   <nav class="navbar is-info transparent" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
@@ -41,6 +42,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import Cookie from 'js-cookie';
 import { ref } from 'vue';
 
@@ -82,14 +84,6 @@ export default {
 </script>
 
 <style scoped>
-nav {
-  background: #B8C1C8;
-  margin: 0;
-  padding: 2px 0 0 12px;
-  position: -webkit-sticky;
-  position: sticky;
-  top: -1px;
-}
 .navbar-item-logo {
   background: url("../../images/logo_transparent.png") no-repeat center center;
   background-size: cover;
