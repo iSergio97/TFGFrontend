@@ -107,7 +107,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .navbar-item-logo {
   background: url("../../images/logo_transparent.png") no-repeat center center;
   background-size: cover;

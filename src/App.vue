@@ -30,10 +30,25 @@ export default {
 html,
 body {
   font-family: "Open Sans";
+  overflow-y: hidden !important;
+  height: 100%;
 }
 
 img {
   padding: 5px;
   border: 1px solid #ccc;
+}
+
+body {
+  background: url(./images/v996-016.jpg) no-repeat center center;
+  background-size: cover;
+}
+
+html {
+  background-color: #F8F8FF;
+}
+
+.tabs > p > a {
+  border: 0;
 }
 </style>

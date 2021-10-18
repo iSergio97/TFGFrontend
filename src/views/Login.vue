@@ -31,7 +31,7 @@
                       :class="[submitted ?
                       'button is-info is-rounded is-large is-fullwidth is-loading' :
                       'button is-info is-rounded is-large is-fullwidth']">
-                {{ submitButton[lang] }} <i class="fa fa-sign-in" aria-hidden="true"></i>
+                      <span>{{submitButton[lang]}}</span><span class="icon"><i class="fa fa-sign-in" aria-hidden="true"></i></span>
               </button>
             </form>
             <br>

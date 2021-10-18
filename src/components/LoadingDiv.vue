@@ -1,53 +1,28 @@
 <template>
-  <div class="lds-ring">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
+  <scale-loader :loading="loading" :color="color" :width="size" :height="height"></scale-loader>
 </template>
 
 <script>
+import ScaleLoader from 'vue-spinner/src/ScaleLoader.vue';
+
 export default {
   name: 'LoadingDiv',
+  components: {
+    ScaleLoader,
+  },
+  setup() {
+    const color = 'rgba(34,193,195,0.8)';
+    const size = '5px';
+    const height = '60px';
+
+    return {
+      color,
+      size,
+      height,
+    };
+  },
 };
 </script>
 
 <style>
-.lds-ring {
-  display: inline-block;
-  position: fixed;
-  width: 80px;
-  height: 80px;
-}
-.lds-ring div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-  border: 8px solid black;
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: black transparent transparent transparent;
-}
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
-}
-@keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 </style>

@@ -26,5 +26,8 @@ export default {
 </script>
 
 <style scoped>
-
+.loading-spinner {
+  margin: auto;
+  padding-top: 15%;
+}
 </style>
