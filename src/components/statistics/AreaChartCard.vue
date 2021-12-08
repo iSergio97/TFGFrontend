@@ -1,6 +1,11 @@
 <template>
   <div id="chart">
-    <VueApexChart type="bar" heigth="350" :options="chartOptions" :series="series"></VueApexChart>
+    <VueApexChart
+      type="bar"
+      :heigth="heightData"
+      :options="chartOptions"
+      :series="series">
+    </VueApexChart>
   </div>
 </template>
 
@@ -14,6 +19,8 @@ export default {
   },
   data() {
     return {
+      /* eslint-disable */
+      heightData: innerHeight / 2,
       series: [{
         data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380],
       }],

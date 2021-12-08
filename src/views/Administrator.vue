@@ -1,5 +1,4 @@
 <template>
-  <h1> Administrator template view </h1>
   <Statistics />
 </template>
 

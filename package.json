@@ -23,8 +23,8 @@
     "sweetalert2": "^10.16.9",
     "vue": "^3.2.20",
     "vue-apexcharts": "^1.6.2",
-    "vue-router": "^4.0.12",
     "vue-select": "^3.15.0",
+    "vue-router": "^4.0.12",
     "vue-spinner": "^1.0.4",
     "vue3-apexcharts": "^1.4.1"
   },

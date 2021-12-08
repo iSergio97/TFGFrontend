@@ -1,7 +1,7 @@
 <template>
   <div id="chart">
     <VueApexChart type="donut"
-                  height="350"
+                  :height="heightData"
                   :options="chartOptions"
                   :series="solicitudes">
     </VueApexChart>
@@ -19,6 +19,8 @@ export default {
   props: ['solicitudes'],
   data() {
     return {
+      /* eslint-disable */
+      heightData: innerHeight / 2,
       chartOptions: {
         labels: ['Aceptadas', 'Rechazadas', 'Canceladas', 'Pendientes'],
         colors: ['#48c774', '#f14668', '#000000', '#ffdd57'],
