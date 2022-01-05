@@ -19,24 +19,15 @@
     "eslint": "^7.32.0",
     "js-cookie": "^2.2.1",
     "register-service-worker": "^1.7.2",
-<<<<<<< Updated upstream
     "sass-loader": "^12.2.0",
     "sweetalert2": "^10.16.9",
     "vue": "^3.2.20",
     "vue-apexcharts": "^1.6.2",
-    "vue-select": "^3.15.0",
+    "vue-google-heatmap": "^1.1.0",
     "vue-router": "^4.0.12",
+    "vue-select": "^3.15.0",
     "vue-spinner": "^1.0.4",
     "vue3-apexcharts": "^1.4.1"
-=======
-    "sweetalert2": "^10.15.6",
-    "vue": "^3.0.5",
-    "vue-apexcharts": "^1.6.0",
-    "vue-google-heatmap": "^1.0.1",
-    "vue-router": "^4.0.3",
-    "vue-select": "^3.11.2",
-    "vue3-apexcharts": "^1.2.1"
->>>>>>> Stashed changes
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.14",
