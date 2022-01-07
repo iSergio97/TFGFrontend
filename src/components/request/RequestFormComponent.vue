@@ -10,8 +10,6 @@
                   <span class="select">
                     <label>
                       <select v-model="opcion" class="is-expanded">
-                        <option selected value="A">Alta</option>
-                        <option value="B">Baja</option>
                         <option value="M">Modificación</option>
                       </select>
                     </label>
@@ -23,22 +21,13 @@
                   <span class="select">
                     <label>
                       <select v-model="subOpcion">
-                        <option v-if="opcion === 'A'" value="ACR">
-                          Alta por cambio de residencia
-                        </option>
-                        <option v-if="opcion === 'A'" value="AIM" selected>
-                          Alta de inmigrantes
-                        </option>
-                        <option v-if="opcion === 'B'" value="BNI" disabled>
-                          Las solicitudes de baja no está disponibles
-                        </option>
-                        <option v-if="opcion === 'M'" value="MD">
+                        <option value="MD">
                           Modificación datos personales
                         </option>
-                        <option v-if="opcion === 'M'" value="MV">
+                        <option value="MV">
                           Cambio de domicilio
                         </option>
-                        <option v-if="opcion === 'M'" value="MRE">
+                        <option value="MRE">
                           Renovación empadronamiento
                         </option>
                       </select>
@@ -46,7 +35,7 @@
                   </span>
                 </p>
               </div>
-              <div v-if="opcion === 'A' || subOpcion === 'MV'">
+              <div v-if="subOpcion === 'MV'">
                 <div class="field">
                   <p class="select">
                     <span class="select">
@@ -56,14 +45,13 @@
                             v-for="viv in viviendas"
                             :value="viv.id"
                             :key="viv.id">
-                            {{viv.calle.nombre}} {{viv.numero}}
+                            {{ viv.calle.nombre }} {{ viv.numero }}
                           </option>
                         </select>
                       </label>
                     </span>
                   </p>
                 </div>
-                <p> MV </p>
               </div>
               <div v-else-if="subOpcion === 'MD'">
                 <div class="is-centered">
@@ -117,7 +105,8 @@
               <div class="e-text-center">
                 <button type="button" :class="isSubmitted ? 'is-loading' : ''"
                         :onclick="submitForm" value="Enviar"
-                        class="button is-info is-outlined is-rounded">Enviar</button>
+                        class="button is-info is-outlined is-rounded">Enviar
+                </button>
                 <br>
               </div>
             </form>
@@ -132,12 +121,12 @@
             <div v-if="archivos.length > 0">
               <ul v-for="file in archivos" :key="file.name">
                 <li v-if="file.type === 'PDF'" class="title is-5">
-                  <i class="far fa-file-pdf"></i> {{file.name}}
+                  <i class="far fa-file-pdf"></i> {{ file.name }}
                   <button class="delete" @click="deleteFile(file)"></button>
                 </li>
                 <li v-else-if="file.type === 'PNG' || file.type === 'JPG' || file.type === 'JPGE'"
-                   class="title is-5">
-                  <i class="far fa-file-image"></i> {{file.name}}
+                    class="title is-5">
+                  <i class="far fa-file-image"></i> {{ file.name }}
                   <button class="delete" @click="deleteFile(file)"></button>
                 </li>
               </ul>
@@ -157,7 +146,7 @@
 import { ref, watch } from 'vue';
 import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
-import { ViviendasGET } from '@/api/ViviendasGET';
+import { NumeracionGET, ViviendasGET } from '@/api/NumeracionGET';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import Cookie from 'js-cookie';
@@ -171,16 +160,16 @@ export default {
     const router = useRouter();
     const formData = new FormData();
     const isSubmitted = ref(false);
-    const opcion = ref('A');
+    const opcion = ref('M');
     // ['ACR', 'AIM', 'MD', 'MV', 'MRN']
-    const subOpcion = ref('ACR');
+    const subOpcion = ref('MD');
     const options = [{
       country: 'canada',
       meta: {
         code: 'ca',
       },
     }];
-    watch(opcion, (selectedOption) => {
+    /*watch(opcion, (selectedOption) => {
       if (selectedOption === 'A') {
         subOpcion.value = 'ACR';
       } else if (selectedOption === 'B') {
@@ -188,15 +177,16 @@ export default {
       } else {
         subOpcion.value = 'MD';
       }
-    });
-    const { lista } = await ViviendasGET();
+    });*/
+    const { lista } = await NumeracionGET();
     const viviendas = ref(lista);
     const vivienda = ref(viviendas.value[0].id);
     /* eslint-disable */
     const nombre = ref(props.userLogged.nombre);
     const primerApellido = ref(props.userLogged.primerApellido);
     const segundoApellido = ref(props.userLogged.segundoApellido);
-    const fechaNacimiento  = ref(new Date(props.userLogged.fechaNacimiento).toISOString().split('T')[0]);
+    const fechaNacimiento = ref(new Date(props.userLogged.fechaNacimiento).toISOString()
+      .split('T')[0]);
     const tIdentificacion = props.userLogged.identificacion !== null ?
       ref(props.userLogged.identificacion) : ref('');
     /* eslint-enable */
@@ -208,7 +198,8 @@ export default {
       formData.append('file', file, file.name);
       if (!archivosName.value.includes(file.name)) {
         archivosName.value.push(file.name);
-        const type = file.name.toString().split('.');
+        const type = file.name.toString()
+          .split('.');
         archivos.value.push({
           name: file.name,
           type: type[type.length - 1].toUpperCase(),
@@ -224,31 +215,32 @@ export default {
         cancelButtonColor: '#d33',
         cancelButtonText: 'No',
         confirmButtonText: 'Sí',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const index = archivosName.value.indexOf(file.name);
-          const { length } = archivosName.value;
-          archivosName.value = archivosName.value
-            .slice(0, index)
-            .concat(archivosName.value.slice(index + 1, length + 1));
-          archivos.value = archivos.value
-            .slice(0, index)
-            .concat(archivos.value.slice(index + 1, length + 1));
-          Swal.fire(
-            'OK',
-            'Se ha eliminado el archivo de forma correcta',
-            'success',
-          );
-        }
-      });
+      })
+        .then((result) => {
+          if (result.isConfirmed) {
+            const index = archivosName.value.indexOf(file.name);
+            const { length } = archivosName.value;
+            archivosName.value = archivosName.value
+              .slice(0, index)
+              .concat(archivosName.value.slice(index + 1, length + 1));
+            archivos.value = archivos.value
+              .slice(0, index)
+              .concat(archivos.value.slice(index + 1, length + 1));
+            Swal.fire(
+              'OK',
+              'Se ha eliminado el archivo de forma correcta',
+              'success',
+            );
+          }
+        });
     };
     const submitForm = async () => {
       /* eslint-disable */
       isSubmitted.value = true;
       let tipoIdentificacion = 16;
-      if(tIdentificacion.value.match("\\d{8}\\w")) {
+      if (tIdentificacion.value.match('\\d{8}\\w')) {
         tipoIdentificacion = 17;
-      } else if(tIdentificacion.value.match("\\d{7}\\w")) {
+      } else if (tIdentificacion.value.match('\\d{7}\\w')) {
         tipoIdentificacion = 18;
       }
       const solicitudDatosPersonales = {
@@ -297,12 +289,12 @@ export default {
         })
           .then((res) => {
             estado = res.status;
-            if(opcion.value === 'A' || subOpcion.value !== 'MV') {
+            if (opcion.value === 'A' || subOpcion.value !== 'MV') {
               solicitudDatosPersonales.documentos = res.data;
               /* for(let i = 0; i < res.data.length; i++) {
                 solicitudDatosPersonales.documentos.push(res.data[i]);
               } */
-              solicitudDatosPersonales.documentos= res.data;
+              solicitudDatosPersonales.documentos = res.data;
             } else {
               /* for(let i = 0; i < res.data.length; i++) {
                 solicitudVivienda.documentos.push(res.data[i]);
@@ -310,13 +302,13 @@ export default {
               solicitudVivienda.documentos = res.data;
             }
           })
-        .catch(() => {
-          isSubmitted.value = false;
-          Swal.fire('Oops...', 'Se ha producido un error tratando su solicitud.\nPosiblemente, el tamaño del conjunto de documentos es superior al que acepta el sistema.', 'error');
-        });
+          .catch(() => {
+            isSubmitted.value = false;
+            Swal.fire('Oops...', 'Se ha producido un error tratando su solicitud.\nPosiblemente, el tamaño del conjunto de documentos es superior al que acepta el sistema.', 'error');
+          });
       }
 
-      if(opcion.value === 'A' || subOpcion.value !== 'MD') {
+      if (opcion.value === 'A' || subOpcion.value !== 'MD') {
         solicitud = solicitudVivienda;
       } else {
         solicitud = solicitudDatosPersonales;
@@ -324,19 +316,19 @@ export default {
 
       console.log('solicitud', solicitud);
 
-      if(estado === 200 || estado === undefined) {
+      if (estado === 200 || estado === undefined) {
         await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud, {
           headers: {
             'Authorization': `Bearer ${token}`,
           }
         })
           .then((res) => {
-            if(res.data.status === 200) {
+            if (res.data.status === 200) {
               // Añadimos la request a la lista de requests
               const { object } = res.data;
-              const arrayRequests = JSON.parse(localStorage.getItem("requests"));
+              const arrayRequests = JSON.parse(localStorage.getItem('requests'));
               arrayRequests.push(object);
-              localStorage.setItem("requests", JSON.stringify(arrayRequests));
+              localStorage.setItem('requests', JSON.stringify(arrayRequests));
               let timerInterval;
               Swal.fire({
                 title: 'Solicitud enviada',
@@ -345,29 +337,31 @@ export default {
                 icon: 'success',
                 timerProgressBar: true,
                 didOpen: () => {
-                  Swal.showLoading()
+                  Swal.showLoading();
                   timerInterval = setInterval(() => {
-                    const content = Swal.getContent()
+                    const content = Swal.getContent();
                     if (content) {
-                      const b = content.querySelector('b')
+                      const b = content.querySelector('b');
                       if (b) {
-                        b.textContent = Swal.getTimerLeft()
+                        b.textContent = Swal.getTimerLeft();
                       }
                     }
-                  }, 100)
+                  }, 100);
                 },
                 willClose: () => {
                   clearInterval(timerInterval);
                 }
-              }).then(() => {
-                router.push('/user/requests/list');
-              }).catch(() => {
+              })
+                .then(() => {
+                  router.push('/user/requests/list');
+                })
+                .catch(() => {
 
-              });
+                });
               formData.delete('file');
             } else {
               isSubmitted.value = false;
-             Swal.fire('Oops...', 'Se ha producido un error inesperado tratando su solicitud. Inténtelo de nuevo más tarde.', 'error');
+              Swal.fire('Oops...', 'Se ha producido un error inesperado tratando su solicitud. Inténtelo de nuevo más tarde.', 'error');
             }
           });
       }
@@ -398,12 +392,12 @@ export default {
   text-align: center;
 }
 
-input[type="file"]{
-  height:0;
+input[type="file"] {
+  height: 0;
 }
 
-input[type="file"]::-webkit-file-upload-button{
-  height:0;
+input[type="file"]::-webkit-file-upload-button {
+  height: 0;
 }
 
 li {
@@ -414,4 +408,11 @@ input[type="text"], input[type="date"] {
   width: 35%;
 }
 
+.card, input, select {
+  background-color: transparent;
+}
+
+input, select {
+  border: solid 1px black;
+}
 </style>

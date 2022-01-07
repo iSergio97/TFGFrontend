@@ -4,7 +4,7 @@
       <nav class="navbar">
         <div class="container">
           <div class="navbar-brand">
-            <router-link class="navbar-item-logo" to="/"> </router-link>
+            <router-link class="navbar-item-logo" to="/"></router-link>
             <span class="navbar-burger burger" data-target="navbarMenu">
               <span></span>
               <span></span>
@@ -24,11 +24,12 @@
                     "
                   >
                     <router-link to="/user/requests/list"
-                      >Solicitudes</router-link
+                    >Solicitudes
+                    </router-link
                     >
                   </li>
                   <p class="control">
-                    <a>
+                    <a @click="logout">
                       <span class="icon">
                         <i class="fas fa-sign-out-alt"></i>
                       </span>
@@ -40,14 +41,14 @@
             </div>
             <div class="navbar-end" v-if="!session">
               <div class="tabs is-right">
-                  <p class="control">
-                    <router-link to="/login">
+                <p class="control">
+                  <router-link to="/login">
                       <span class="icon">
                         <i class="fas fa-sign-in-alt"></i>
                       </span>
-                      <span> Iniciar sesión </span>
-                    </router-link>
-                  </p>
+                    <span> Iniciar sesión </span>
+                  </router-link>
+                </p>
               </div>
             </div>
           </div>
@@ -55,39 +56,39 @@
       </nav>
     </div>
   </section>
-  <router-view />
+  <router-view/>
 </template>
 
 <script>
 /* eslint-disable */
-import Cookie from "js-cookie";
-import { ref } from "vue";
-import { useRoute } from "vue-router";
+import Cookie from 'js-cookie';
+import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 export default {
-  name: "UserNavbar",
+  name: 'UserNavbar',
 
   setup() {
     const route = useRoute();
     const componentName = route.name;
-    const session = Cookie.get("PMHSESSION");
+    const session = Cookie.get('PMHSESSION');
     const lang =
-      Cookie.get("lang") !== undefined && Cookie.get("lang") < 2
-        ? Cookie.get("lang")
+      Cookie.get('lang') !== undefined && Cookie.get('lang') < 2
+        ? Cookie.get('lang')
         : 0;
-    const loginLang = ref(["Iniciar sesión", "Login"]);
-    const logoutLang = ref(["Cerrar sesión", "Logout"]);
-    const homeLang = ref(["Inicio", "Home"]);
-    const habitanteLang = ref(["Opciones de habitante", "Habitant options"]);
-    const operationsLang = ref(["Operaciones", "Operations"]);
-    const requestLang = ref(["Solicitudes", "Requests"]);
-    const profileLang = ref(["Perfil", "Profile"]);
-    const reportLang = ref(["Reportar un problema", "Report an issue"]);
+    const loginLang = ref(['Iniciar sesión', 'Login']);
+    const logoutLang = ref(['Cerrar sesión', 'Logout']);
+    const homeLang = ref(['Inicio', 'Home']);
+    const habitanteLang = ref(['Opciones de habitante', 'Habitant options']);
+    const operationsLang = ref(['Operaciones', 'Operations']);
+    const requestLang = ref(['Solicitudes', 'Requests']);
+    const profileLang = ref(['Perfil', 'Profile']);
+    const reportLang = ref(['Reportar un problema', 'Report an issue']);
     const logout = () => {
-      Cookie.remove("PMHSESSION");
-      Cookie.remove("SALT");
+      Cookie.remove('PMHSESSION');
+      Cookie.remove('SALT');
       localStorage.clear();
-      window.location.reload();
+      window.location = '/';
     };
     return {
       componentName,

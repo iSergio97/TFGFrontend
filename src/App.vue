@@ -1,26 +1,26 @@
 /* eslint-disable */
 <template>
   <div v-if="localSession === 0 || localSession === 1">
-    <UserNavbar />
+    <UserNavbar/>
   </div>
   <div v-else>
-    <AdminNavbar />
+    <AdminNavbar/>
   </div>
 </template>
 
 <script>
-import UserNavbar from "@/views/navbar/UserNavbar.vue";
-import AdminNavbar from "@/views/navbar/AdminNavBar.vue";
-import { PMHSession } from "@/methods/PMHSession";
+import UserNavbar from '@/views/navbar/UserNavbar.vue';
+import AdminNavbar from '@/views/navbar/AdminNavBar.vue';
+import { PMHSession } from '@/methods/PMHSession';
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     UserNavbar,
     AdminNavbar,
   },
   setup() {
-    const { localSession } = PMHSession("/user/profile");
+    const { localSession } = PMHSession('/user/profile');
     return { localSession };
   },
 };
@@ -29,7 +29,7 @@ export default {
 <style>
 html,
 body {
-  font-family: "Open Sans";
+  font-family: "Open Sans", "Roboto", "Segoe UI", "GeezaPro", "DejaVu Serif", "sans-serif", "-apple-system", "BlinkMacSystemFont";
   overflow-y: hidden !important;
   height: 100%;
 }
