@@ -10,6 +10,8 @@
                   <span class="select">
                     <label>
                       <select v-model="opcion" class="is-expanded">
+                        <option value="A">Alta</option>
+                        <option value="B">Baja</option>
                         <option value="M">Modificación</option>
                       </select>
                     </label>
@@ -21,13 +23,22 @@
                   <span class="select">
                     <label>
                       <select v-model="subOpcion">
-                        <option value="MD">
+                        <option v-if="opcion === 'A'" value="ACR">
+                          Alta por cambio de residencia
+                        </option>
+                        <option v-if="opcion === 'A'" value="AIM" selected>
+                          Alta de inmigrantes
+                        </option>
+                        <option v-if="opcion === 'B'" value="BNI" disabled>
+                          Las solicitudes de baja no está disponibles
+                        </option>
+                        <option v-if="opcion === 'M'" value="MD">
                           Modificación datos personales
                         </option>
-                        <option value="MV">
+                        <option v-if="opcion === 'M'" value="MV">
                           Cambio de domicilio
                         </option>
-                        <option value="MRE">
+                        <option v-if="opcion === 'M'" value="MRE">
                           Renovación empadronamiento
                         </option>
                       </select>
@@ -35,17 +46,33 @@
                   </span>
                 </p>
               </div>
-              <div v-if="subOpcion === 'MV'">
+              <div v-if="opcion === 'A' || subOpcion === 'MV'">
+                <div class="field">
+                  <p class="select">
+                    <span class="select">
+                      <label>
+                        <select v-model="tipoVivienda">
+                          <option
+                            v-for="(tViv, order) in tipoViviendas"
+                            :value="tViv"
+                            :key="order">
+                            {{ tViv }}
+                          </option>
+                        </select>
+                      </label>
+                    </span>
+                  </p>
+                </div>
                 <div class="field">
                   <p class="select">
                     <span class="select">
                       <label>
                         <select v-model="vivienda">
                           <option
-                            v-for="viv in viviendas"
-                            :value="viv.id"
-                            :key="viv.id">
-                            {{ viv.calle.nombre }} {{ viv.numero }}
+                            v-for="viviendas in tipoViviendas"
+                            :value="viviendas"
+                            :key="viviendas.id">
+                            {{ viviendas }}
                           </option>
                         </select>
                       </label>
@@ -160,16 +187,16 @@ export default {
     const router = useRouter();
     const formData = new FormData();
     const isSubmitted = ref(false);
-    const opcion = ref('M');
+    const opcion = ref('A');
     // ['ACR', 'AIM', 'MD', 'MV', 'MRN']
-    const subOpcion = ref('MD');
+    const subOpcion = ref('ACR');
     const options = [{
       country: 'canada',
       meta: {
         code: 'ca',
       },
     }];
-    /*watch(opcion, (selectedOption) => {
+    watch(opcion, (selectedOption) => {
       if (selectedOption === 'A') {
         subOpcion.value = 'ACR';
       } else if (selectedOption === 'B') {
@@ -177,10 +204,18 @@ export default {
       } else {
         subOpcion.value = 'MD';
       }
-    });*/
+    });
+
     const { lista } = await NumeracionGET();
+    const tipoVivienda = ref('Calle');
+    const tipoViviendas = ref(['Calle', 'Ronda', 'Avenida', 'Distrito']);
     const viviendas = ref(lista);
-    const vivienda = ref(viviendas.value[0].id);
+    const vivienda = ref('');
+    console.log(viviendas.value);
+    watch(tipoVivienda, (selectedOption) => {
+      console.log(selectedOption);
+    });
+    // viviendas.value[0].id
     /* eslint-disable */
     const nombre = ref(props.userLogged.nombre);
     const primerApellido = ref(props.userLogged.primerApellido);
@@ -374,6 +409,8 @@ export default {
       tIdentificacion,
       fechaNacimiento,
       archivos,
+      tipoVivienda,
+      tipoViviendas,
       opcion,
       subOpcion,
       viviendas,
