@@ -69,10 +69,26 @@
                       <label>
                         <select v-model="vivienda">
                           <option
-                            v-for="viviendas in tipoViviendas"
-                            :value="viviendas"
-                            :key="viviendas.id">
-                            {{ viviendas }}
+                            v-for="viv in viviendas"
+                            :value="viv"
+                            :key="viv.id">
+                            {{ viv.nombre }}
+                          </option>
+                        </select>
+                      </label>
+                    </span>
+                  </p>
+                </div>
+                <div class="field">
+                  <p class="select">
+                    <span class="select">
+                      <label>
+                        <select v-model="numeracion">
+                          <option
+                            v-for="num in numeracionesCalle"
+                            :value="num"
+                            :key="num.id">
+                            {{ num.numero }}
                           </option>
                         </select>
                       </label>
@@ -173,7 +189,9 @@
 import { ref, watch } from 'vue';
 import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
-import { NumeracionGET, ViviendasGET } from '@/api/NumeracionGET';
+import { NumeracionGET } from '@/api/NumeracionGET';
+import { HojaGET } from '@/api/HojaGET';
+import { CalleGET } from '@/api/CalleGET';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import Cookie from 'js-cookie';
@@ -206,14 +224,27 @@ export default {
       }
     });
 
-    const { lista } = await NumeracionGET();
     const tipoVivienda = ref('Calle');
     const tipoViviendas = ref(['Calle', 'Ronda', 'Avenida', 'Distrito']);
-    const viviendas = ref(lista);
-    const vivienda = ref('');
-    console.log(viviendas.value);
-    watch(tipoVivienda, (selectedOption) => {
+    const { calles } = await CalleGET(tipoVivienda.value);
+    const viviendas = ref(calles.value);
+    const vivienda = ref(viviendas.value[0]);
+
+    watch(tipoVivienda, async (selectedOption) => {
+      const { calles } = await CalleGET(selectedOption);
+      viviendas.value = calles.value;
+      vivienda.value = viviendas.value[0];
+    });
+
+    const { numeraciones } = await NumeracionGET(vivienda.value.id);
+    const numeracionesCalle = ref(numeraciones.value);
+    const numeracion = ref(numeracionesCalle.value[0]);
+
+    watch(vivienda, async (selectedOption) => {
       console.log(selectedOption);
+      const { numeraciones } = await NumeracionGET(selectedOption.id);
+      numeracionesCalle.value = numeraciones.value;
+      numeracion.value = numeracionesCalle.value[0];
     });
     // viviendas.value[0].id
     /* eslint-disable */
@@ -297,6 +328,10 @@ export default {
         documentos: [],
       };
 
+      const { hojas } = await HojaGET(numeracion.value.id);
+
+      // console.log(hojas.value);
+
       const solicitudVivienda = {
         fecha: new Date(),
         solicitante: {
@@ -306,8 +341,8 @@ export default {
         tipo: opcion.value,
         subtipo: subOpcion.value,
         estado: 'P',
-        vivienda: {
-          id: vivienda.value,
+        hoja: {
+          id: hojas.value[0].id,
         },
         documentos: [],
       };
@@ -415,6 +450,8 @@ export default {
       subOpcion,
       viviendas,
       vivienda,
+      numeracionesCalle,
+      numeracion,
       options,
       adjuntarArchivo,
       deleteFile,

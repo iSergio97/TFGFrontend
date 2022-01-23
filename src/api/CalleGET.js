@@ -4,27 +4,27 @@ import { BASE_URL } from "@/api/BASE_URL";
 import Cookie from "js-cookie";
 
 /* eslint-disable */
-export const NumeracionGET = async calleId => {
-  const numeraciones = ref([]);
+export const CalleGET = async calleTipo => {
+  const calles = ref([]);
   const statusCalles = ref(0);
 
   const token = Cookie.get("token");
 
   await axios
-    .get(`${BASE_URL}solicitud/habitante/numeraciones/${calleId}`, {
+    .get(`${BASE_URL}solicitud/habitante/calles/${calleTipo}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
     .then(res => {
       const { status, object } = res.data;
-      numeraciones.value = object;
+      calles.value = object;
       statusCalles.value = status;
     })
     .catch(() => (statusCalles.value = 404));
 
   return {
-    numeraciones,
+    calles,
     statusCalles
   };
 };
