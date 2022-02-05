@@ -16,11 +16,11 @@
           </a>
         </li>
         <li><span class="pagination-ellipsis">&hellip;</span></li>
-        <li><a class="pagination-link is-current" >{{ indexPag + 1 }}</a></li>
+        <li><a class="pagination-link is-current">{{ indexPag + 1 }}</a></li>
         <li><span class="pagination-ellipsis">&hellip;</span></li>
         <li v-if="indexPag < paginas - 2">
           <a class="pagination-link" aria-current="page" @click="indexPag += 1">
-            {{ indexPag  + 2}}
+            {{ indexPag + 2 }}
           </a>
         </li>
         <li><a class="pagination-link" @click="indexPag = paginas - 1">Página {{ paginas }}</a></li>
@@ -32,31 +32,34 @@
         <th>
           ID
         </th>
-        <th> <abbr title="Tipo de la operación (A)lta, (B)aja o (M)odificación"> Tipo</abbr></th>
-        <th> <abbr title="
+        <th><abbr title="Tipo de la operación (A)lta, (B)aja o (M)odificación"> Tipo</abbr></th>
+        <th><abbr title="
         Subtipo de la operación (Alta por cambio de Residencia(ACR), Alta de Inmigrantes (AIM),
         Modificación de vivienda (MV), Modificación de datos personales (MDP)
         o Modificación por Renovación de Empadronamiento (MRE) (exclusivo para extranjeros)">
           Subtipo</abbr></th>
-        <th> Estado </th>
-        <th> Habitante </th>
-        <th> Fecha </th>
+        <th> Estado</th>
+        <th> Habitante</th>
+        <th> Fecha</th>
       </tr>
       </thead>
       <tbody v-for="request in itemsPaginados" :key="request.id">
       <tr>
         <th>
           <router-link :to="{name: 'AdministratorRequestShow', params: {id: request.id}}">
-            {{request.id}}
+            {{ request.id }}
           </router-link>
         </th>
-        <td> {{request.tipo}}</td>
-        <td> {{request.subtipo}}</td>
-        <td> {{request.estado}}</td>
+        <td> {{ request.tipo }}</td>
+        <td> {{ request.subtipo }}</td>
+        <td> {{ request.estado }}</td>
         <!-- eslint-disable -->
-        <td> {{request.solicitante.primerApellido}} {{request.solicitante.segundoApellido}}, {{request.solicitante.nombre}}</td>
+        <td> {{ request.solicitante.primerApellido }} {{ request.solicitante.segundoApellido }},
+          {{ request.solicitante.nombre }}
+        </td>
         <td>
-          {{new Date(request.fecha).getDate()}}/{{new Date(request.fecha).getMonth()}}/{{new Date(request.fecha).getFullYear()}}</td>
+          {{ new Date(request.fecha).getDate() }}/{{ new Date(request.fecha).getMonth() }}/{{ new Date(request.fecha).getFullYear() }}
+        </td>
       </tr>
       </tbody>
     </table>
@@ -91,11 +94,11 @@ export default {
 
     const itemsPag = (indexPag) => {
       return indexPag * 10 + 10;
-    }
+    };
 
     const paginas = ref(Math.ceil(lista.value.length / 10)); // Redondeamos operaciones
     const nextPage = () => {
-      if(indexPag.value < paginas.value - 1) {
+      if (indexPag.value < paginas.value - 1) {
         indexPag.value++;
       }
     };
@@ -130,5 +133,9 @@ export default {
 
 table {
   margin: 0 auto;
+}
+
+.box, table {
+  background-color: transparent;
 }
 </style>

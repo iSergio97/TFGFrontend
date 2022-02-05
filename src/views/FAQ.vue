@@ -3,11 +3,7 @@
     <h1 class="faq-heading title">Preguntas frecuentes</h1>
     <section class="faq-container">
       <div class="faq">
-
-        <!-- faq question -->
         <h1 class="faq-page subtitle is-4">¿Qué es el PMOH?</h1>
-
-        <!-- faq answer -->
         <div class="faq-body">
           <p>El PMOH o Padrón Municipal Online de Habitantes es el lugar donde puedes realizar las
             gestiones del ayuntamiento, desde tu casa.
@@ -67,29 +63,7 @@
             los datos del ayuntamiento).
           </p>
         </div>
-        <div class="faq">
-          <!-- faq question -->
-          <h1 class="faq-page faq-page subtitle is-4">¿Qué ventajas tiene sobre hacerlas en el
-            propio
-            ayuntamiento?</h1>
-
-          <!-- faq answer -->
-          <div class="faq-body">
-            <p>
-              La mayor ventaja puede ser el tiempo de espera para realizar la solicitud.
-              No necesitas pedir cita, esperar una cola para que llegue tu turno, presentar la
-              solicitud y que te comentne que te faltan documentos por aportar y te la rechacen.
-              Aquí inicias sesión, realizas la solicitud y esperas respuesta. Si te la cancela,
-              vuelves a realizar el proceso en segundos aportando lo que pone en el comentario de la
-              solicitud rechadaza. En cambio, si te la aceptan, ya está todo hecho, el ayuntamiento
-              actualizará tus datos a prinicpios del mes siguiente (se recomienda no realizar
-              operaciones en el ayuntamiento tras realizar una solicitud, pues se darán prioridad a
-              los datos del ayuntamiento).
-            </p>
-          </div>
-        </div>
       </div>
-
     </section>
   </main>
 </template>
@@ -188,7 +162,6 @@ body {
 
 .faq-page:after {
   content: '\25BC';
-  /* Unicode character for "plus" sign (+) */
   font-size: 13px;
   color: #777;
   float: right;
@@ -197,6 +170,5 @@ body {
 
 .active:after {
   content: "\25B2";
-  /* Unicode character for "minus" sign (-) */
 }
 </style>

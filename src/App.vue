@@ -30,7 +30,6 @@ export default {
 html,
 body {
   font-family: "Open Sans", "Roboto", "Segoe UI", "GeezaPro", "DejaVu Serif", "sans-serif", "-apple-system", "BlinkMacSystemFont";
-  overflow-y: hidden !important;
   height: 100%;
 }
 

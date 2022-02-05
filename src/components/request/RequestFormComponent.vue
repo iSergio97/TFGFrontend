@@ -195,6 +195,7 @@ import { CalleGET } from '@/api/CalleGET';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import Cookie from 'js-cookie';
+import { ConvivientesGET } from '@/api/ConvivientesGET';
 
 export default {
   name: 'RequestFormComponent',
@@ -204,6 +205,15 @@ export default {
   async setup(props) {
     const router = useRouter();
     const formData = new FormData();
+
+    const {
+      id,
+      hoja
+    } = props.userLogged.hoja;
+    const { convivientes } = ConvivientesGET(id, hoja);
+
+    console.log(convivientes);
+
     const isSubmitted = ref(false);
     const opcion = ref('A');
     // ['ACR', 'AIM', 'MD', 'MV', 'MRN']
@@ -273,32 +283,17 @@ export default {
       }
     };
     const deleteFile = (file) => {
-      Swal.fire({
-        title: '¿Desea eliminar este documento?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        cancelButtonText: 'No',
-        confirmButtonText: 'Sí',
-      })
-        .then((result) => {
-          if (result.isConfirmed) {
-            const index = archivosName.value.indexOf(file.name);
-            const { length } = archivosName.value;
-            archivosName.value = archivosName.value
-              .slice(0, index)
-              .concat(archivosName.value.slice(index + 1, length + 1));
-            archivos.value = archivos.value
-              .slice(0, index)
-              .concat(archivos.value.slice(index + 1, length + 1));
-            Swal.fire(
-              'OK',
-              'Se ha eliminado el archivo de forma correcta',
-              'success',
-            );
-          }
-        });
+      let confirma = window.confirm('¿Desea eliminar este documento?');
+      if (confirma) {
+        const index = archivosName.value.indexOf(file.name);
+        const { length } = archivosName.value;
+        archivosName.value = archivosName.value
+          .slice(0, index)
+          .concat(archivosName.value.slice(index + 1, length + 1));
+        archivos.value = archivos.value
+          .slice(0, index)
+          .concat(archivos.value.slice(index + 1, length + 1));
+      }
     };
     const submitForm = async () => {
       /* eslint-disable */
@@ -374,7 +369,7 @@ export default {
           })
           .catch(() => {
             isSubmitted.value = false;
-            Swal.fire('Oops...', 'Se ha producido un error tratando su solicitud.\nPosiblemente, el tamaño del conjunto de documentos es superior al que acepta el sistema.', 'error');
+            window.alert('Se ha producido un error tratando su solicitud.\n\nPosiblemente, el tamaño del conjunto de documentos es superior al que acepta el sistema.');
           });
       }
 
@@ -384,9 +379,7 @@ export default {
         solicitud = solicitudDatosPersonales;
       }
 
-      console.log('solicitud', solicitud);
-
-      if (estado === 200 || estado === undefined) {
+      if ((estado === 200 || estado === undefined) && isSubmitted.value !== false) {
         await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -460,6 +453,15 @@ export default {
   },
 };
 </script>
+
+<style>
+@media (max-width: 1318px) {
+  html, body {
+    background: url(../../images/v996-016.jpg) no-repeat center center;
+    background-size: cover;
+  }
+}
+</style>
 
 <style scoped>
 * {

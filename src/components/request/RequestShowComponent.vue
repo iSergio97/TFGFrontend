@@ -97,7 +97,7 @@
                               :disabled="!isAdmin || statusRequest !== 'P'"></textarea>
                   </div>
                   <br>
-                  <div v-show="isAdmin || statusRequest === 'P'">
+                  <div v-show="isAdmin && statusRequest === 'P'">
                     <button class="button is-info">
                       Enviar
                     </button>
@@ -120,8 +120,8 @@
           </div>
           <div class="content is-vcenteredv">
             <div class="content has-text-left">
-              <article :class="'message ' + color" style="width: 30%">
-                <div class="message-header is-centered">
+              <article :class="'message ' + color" style="width: 20%">
+                <div class="message-header is-centered button is-rounded">
                   <p>{{ estado }}</p>
                 </div>
               </article>

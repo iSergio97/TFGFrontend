@@ -1,5 +1,5 @@
 <template>
-  <section class="hero is-fullheight is-default is-bold">
+  <section class="hero is-default is-bold">
     <div class="hero-body">
       <div class="container has-text-centered">
         <div class="columns is-vcentered">
@@ -32,7 +32,10 @@ export default {
 </script>
 
 <style scoped>
+html,
 body {
-  overflow-y: hidden !important;
+  font-family: "Open Sans", "Roboto", "Segoe UI", "GeezaPro", "DejaVu Serif", "sans-serif", "-apple-system", "BlinkMacSystemFont";
+  height: 100%;
 }
+
 </style>

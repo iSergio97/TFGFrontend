@@ -5,7 +5,7 @@
       <nav class="navbar">
         <div class="container">
           <div class="navbar-brand">
-            <router-link class="navbar-item-logo" to="/"> </router-link>
+            <router-link class="navbar-item-logo" to="/"></router-link>
             <span class="navbar-burger burger" data-target="navbarMenu">
               <span></span>
               <span></span>
@@ -25,11 +25,12 @@
                     "
                   >
                     <router-link to="/administrator/system"
-                      >Sistema/Estadísticas</router-link
+                    >Sistema/Estadísticas
+                    </router-link
                     >
                   </li>
                   <p class="control">
-                    <a>
+                    <a @click="logout">
                       <span class="icon">
                         <i class="fas fa-sign-out-alt"></i>
                       </span>
@@ -41,14 +42,14 @@
             </div>
             <div class="navbar-end" v-if="!session">
               <div class="tabs is-right">
-                  <p class="control">
-                    <router-link to="/login">
+                <p class="control">
+                  <router-link to="/login">
                       <span class="icon">
                         <i class="fas fa-sign-in-alt"></i>
                       </span>
-                      <span> Iniciar sesión </span>
-                    </router-link>
-                  </p>
+                    <span> Iniciar sesión </span>
+                  </router-link>
+                </p>
               </div>
             </div>
           </div>
@@ -56,7 +57,7 @@
       </nav>
     </div>
   </section>
-  <router-view />
+  <router-view/>
 </template>
 
 <script>

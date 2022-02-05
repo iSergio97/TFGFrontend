@@ -32,11 +32,9 @@ export default {
     if (rol !== 'HABITANTE') {
       window.location.href = '/';
     }
-    const convivientes = JSON.parse(localStorage.getItem('CONV'));
     const userLogged = JSON.parse(decrypt(localStorage.getItem('USER_PRO')));
 
     return {
-      convivientes,
       userLogged,
     };
   },
@@ -44,5 +42,14 @@ export default {
 </script>
 
 <style scoped>
+template {
+  height: 100%;
+}
 
+html, body {
+  font-family: "Open Sans", "Roboto", "Segoe UI", "GeezaPro", "DejaVu Serif", "sans-serif", "-apple-system", "BlinkMacSystemFont";
+  background: url(../src/images/v996-016.jpg) no-repeat center center;
+  background-size: cover;
+  height: 100%;
+}
 </style>
