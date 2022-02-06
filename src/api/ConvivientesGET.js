@@ -4,7 +4,7 @@ import { BASE_URL } from "@/api/BASE_URL";
 import Cookie from "js-cookie";
 
 /* eslint-disable */
-export const ConvivientesGET = async (hojaId, hoja) => {
+export const ConvivientesGET = async (hojaId, hoja, habId) => {
   const convivientes = ref([]);
   const statusConvivientes = ref(0);
 
@@ -14,6 +14,9 @@ export const ConvivientesGET = async (hojaId, hoja) => {
     .get(`${BASE_URL}habitante/convivientes/${hojaId}/${hoja}`, {
       headers: {
         Authorization: `Bearer ${token}`
+      },
+      params: {
+        habId: habId
       }
     })
     .then(res => {

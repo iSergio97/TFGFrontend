@@ -157,8 +157,8 @@
         </div>
       </div>
     </div>
-    <div class="column is-one-quarters" id="files">
-      <div class="card">
+    <div class="column is-one-quarters">
+      <div class="card" id="files">
         <div class="card-content">
           <div class="content">
             <div v-if="archivos.length > 0">
@@ -177,6 +177,23 @@
             <div v-else>
               Actualmente, la solicitud no presenta ningún documento asociado.
               Si lo envía así, el sistema se lo marcará como rechazada de forma automática.
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class="card" v-if="convivientes.length > 0">
+        <div class="card-content">
+          <div class="content">
+            <div v-for="conviviente in convivientes">
+              <div>
+                <label>
+                  <input type="checkbox" @click="editarSolicitud(conviviente.id)">
+                  {{ conviviente.nombre }}, {{ conviviente.primerApellido }}
+                  {{ conviviente.segundoApellido }}
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -210,9 +227,7 @@ export default {
       id,
       hoja
     } = props.userLogged.hoja;
-    const { convivientes } = ConvivientesGET(id, hoja);
-
-    console.log(convivientes);
+    const { convivientes } = await ConvivientesGET(id, hoja, props.userLogged.id);
 
     const isSubmitted = ref(false);
     const opcion = ref('A');
@@ -251,7 +266,6 @@ export default {
     const numeracion = ref(numeracionesCalle.value[0]);
 
     watch(vivienda, async (selectedOption) => {
-      console.log(selectedOption);
       const { numeraciones } = await NumeracionGET(selectedOption.id);
       numeracionesCalle.value = numeraciones.value;
       numeracion.value = numeracionesCalle.value[0];
@@ -295,6 +309,17 @@ export default {
           .concat(archivos.value.slice(index + 1, length + 1));
       }
     };
+
+    let convivientesEnSolicitud = [];
+
+    const editarSolicitud = (id) => {
+      let conviviente = convivientes.value.filter((conv) => conv.id === id);
+      if (convivientesEnSolicitud.indexOf(conviviente) === -1) {
+        convivientesEnSolicitud.push(conviviente);
+      } else {
+        convivientesEnSolicitud = convivientesEnSolicitud.filter((conv) => conv.id !== conviviente.id);
+      }
+    };
     const submitForm = async () => {
       /* eslint-disable */
       isSubmitted.value = true;
@@ -325,7 +350,7 @@ export default {
 
       const { hojas } = await HojaGET(numeracion.value.id);
 
-      // console.log(hojas.value);
+      console.log([convivientesEnSolicitud.value]);
 
       const solicitudVivienda = {
         fecha: new Date(),
@@ -340,6 +365,7 @@ export default {
           id: hojas.value[0].id,
         },
         documentos: [],
+        grupo: [convivientesEnSolicitud.value],
       };
 
       let solicitud;
@@ -446,9 +472,11 @@ export default {
       numeracionesCalle,
       numeracion,
       options,
+      convivientes,
       adjuntarArchivo,
       deleteFile,
       submitForm,
+      editarSolicitud,
     };
   },
 };

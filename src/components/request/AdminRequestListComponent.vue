@@ -58,7 +58,9 @@
           {{ request.solicitante.nombre }}
         </td>
         <td>
-          {{ new Date(request.fecha).getDate() }}/{{ new Date(request.fecha).getMonth() }}/{{ new Date(request.fecha).getFullYear() }}
+          {{ new Date(request.fecha).getDate() }}/{{
+            new Date(request.fecha).getMonth()
+          }}/{{ new Date(request.fecha).getFullYear() }}
         </td>
       </tr>
       </tbody>
@@ -86,6 +88,8 @@ export default {
     const { decrypt } = PMHCrypto();
     const { id } = JSON.parse(decrypt(localStorage.getItem('USER_PRO'), localStorage.getItem('SALT')));
     let lista = ref((await SolicitudesGET({ user: false }, id)).lista);
+
+    console.log(lista);
 
     const indexPag = ref(0);
     const itemsPerList = (indexPag) => {

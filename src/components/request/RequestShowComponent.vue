@@ -79,7 +79,7 @@
             <div class="field">
               <div class="control">
                 <form @submit="modificarSolicitud">
-                  <div class="field" v-if="isAdmin">
+                  <div class="field" v-if="isAdmin && estado == 'P'">
                     <label class="label">Estado</label>
                     <div :class="status === 'A' ? 'control select is-rounded is-success'
               : 'control select is-rounded is-danger'">
