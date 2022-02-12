@@ -313,11 +313,11 @@ export default {
     let convivientesEnSolicitud = [];
 
     const editarSolicitud = (id) => {
-      let conviviente = convivientes.value.filter((conv) => conv.id === id);
-      if (convivientesEnSolicitud.indexOf(conviviente) === -1) {
-        convivientesEnSolicitud.push(conviviente);
+      if (convivientesEnSolicitud.filter((conv) => conv.id === id).length === 0) {
+        let conviviente = convivientes.value.filter((conv) => conv.id === id);
+        convivientesEnSolicitud.push(conviviente[0]);
       } else {
-        convivientesEnSolicitud = convivientesEnSolicitud.filter((conv) => conv.id !== conviviente.id);
+        convivientesEnSolicitud = convivientesEnSolicitud.filter((conv) => conv.id !== id);
       }
     };
     const submitForm = async () => {
@@ -350,8 +350,6 @@ export default {
 
       const { hojas } = await HojaGET(numeracion.value.id);
 
-      console.log([convivientesEnSolicitud.value]);
-
       const solicitudVivienda = {
         fecha: new Date(),
         solicitante: {
@@ -365,7 +363,7 @@ export default {
           id: hojas.value[0].id,
         },
         documentos: [],
-        grupo: [convivientesEnSolicitud.value],
+        grupo: convivientesEnSolicitud,
       };
 
       let solicitud;

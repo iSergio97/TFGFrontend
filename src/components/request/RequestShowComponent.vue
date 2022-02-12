@@ -79,7 +79,7 @@
             <div class="field">
               <div class="control">
                 <form @submit="modificarSolicitud">
-                  <div class="field" v-if="isAdmin && estado == 'P'">
+                  <div class="field" v-if="isAdmin && estado !== 'P'">
                     <label class="label">Estado</label>
                     <div :class="status === 'A' ? 'control select is-rounded is-success'
               : 'control select is-rounded is-danger'">
@@ -97,7 +97,7 @@
                               :disabled="!isAdmin || statusRequest !== 'P'"></textarea>
                   </div>
                   <br>
-                  <div v-show="isAdmin && statusRequest === 'P'">
+                  <div v-show="isAdmin && estado !== 'P'">
                     <button class="button is-info">
                       Enviar
                     </button>
