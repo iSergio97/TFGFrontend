@@ -5,63 +5,39 @@
         <p class="menu-label">General</p>
         <ul class="menu-list">
           <li>
-            <a class="is-active" href="/bulma-admin-dashboard-template/">
+            <router-link to="system" class="is-active">
               <span class="icon is-small"><i class="fa fa-tachometer"></i></span>
-              <span class="menu-text">Dashboard</span>
-            </a>
+              <span class="menu-text">General</span>
+            </router-link>
           </li>
         </ul>
-        <p class="menu-label">Administration</p>
         <ul class="menu-list">
           <li>
-            <a class="" href="/bulma-admin-dashboard-template/forms/">
-              <span class="icon is-small"><i class="fa fa-pencil-square-o"></i></span>
-              <span class="menu-text">Forms</span>
-            </a>
+            <router-link to="habitantes">
+              <span class="icon is-small"><i class="fa-solid fa-address-card"></i></span>
+              <span class="menu-text">Habitantes</span>
+            </router-link>
           </li>
           <li>
-            <a class="" href="/bulma-admin-dashboard-template/ui-elements/">
+            <router-link class="" to="operaciones">
               <span class="icon is-small"><i class="fa fa-desktop"></i></span>
-              <span class="menu-text">UI Elements</span>
-            </a>
+              <span class="menu-text">Operaciones</span>
+            </router-link>
           </li>
           <li>
-            <a class="" href="/bulma-admin-dashboard-template/tables/">
-              <span class="icon is-small"><i class="fa fa-table"></i></span>
-              <span class="menu-text">Tables</span>
-            </a>
+            <router-link class="" to="solicitudes">
+              <span class="icon is-small"><i class="fa-solid fa-address-card"></i></span>
+              <span class="menu-text">Solicitudes</span>
+            </router-link>
           </li>
           <li>
-            <a class="" href="/bulma-admin-dashboard-template/presentations/">
-              <span class="icon is-small"><i class="fa fa-bar-chart"></i></span>
-              <span class="menu-text">Presentations</span>
-            </a>
-          </li>
-          <li><a class=""><span class="icon is-small"><i
-            class="fa fa-cog"></i></span>
-            <span class="menu-text">Layouts</span></a>
-            <!-- Esta clase hace que se añada la línea gris a la izquierda. Debería ser un botón con 3 campos desplegables-->
-            <ul>
-              <li><a>Members</a></li>
-              <li><a>Plugins</a></li>
-              <li><a>Add a member</a></li>
-            </ul>
+            <router-link class="" to="heatmap">
+              <span class="icon is-small"><i class="fa fa-map"></i></span>
+              <span class="menu-text">Mapa de calor</span>
+            </router-link>
           </li>
         </ul>
-        <p class="menu-label">Live On</p>
-        <ul class="menu-list">
-          <li><a class="" href="/bulma-admin-dashboard-template/additional/"><span
-            class="icon is-small"><i class="fa fa-bug"></i></span> <span class="menu-text">Additional Pages</span></a>
-          </li>
-          <li><a class="" href="/bulma-admin-dashboard-template/extras/"><span
-            class="icon is-small"><i class="fa fa-windows"></i></span> <span class="menu-text">Extras</span></a>
-          </li>
-        </ul>
-        <div class="ads-square"></div>
       </nav>
-      <div id="sidebar-toggler"><span class="icon is-small"><i
-        class="fa fa-angle-double-left"></i></span>
-      </div>
     </aside>
     <main class="main" id="main">
       <div class="columns is-multiline">

@@ -24,7 +24,7 @@
                       componentName === 'AdministratorRequestList' ? 'is-active' : ''
                     "
                   >
-                    <router-link to="/administrator/system"
+                    <router-link to="/administrator/sistema"
                     >Sistema/Estadísticas
                     </router-link
                     >

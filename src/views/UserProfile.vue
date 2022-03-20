@@ -32,7 +32,6 @@
                           v-model="username">
                       </div>
                     </div>
-                    <br>
                     <div class="field">
                       <label>Contraseña</label>
                       <div class="control">
@@ -43,7 +42,6 @@
                           v-model="password">
                       </div>
                     </div>
-                    <br>
                     <div class="field">
                       <label>Confirmar contraseña</label>
                       <div class="control">
@@ -54,7 +52,6 @@
                           v-model="confirmPassword">
                       </div>
                     </div>
-                    <br>
                     <div class="field">
                       <label>Nueva contraseña</label>
                       <div class="control">
@@ -65,7 +62,6 @@
                           v-model="newPassword">
                       </div>
                     </div>
-                    <br>
                     <div class="field">
                       <label>Confirmar nueva contraseña</label>
                       <div class="control">
@@ -109,8 +105,8 @@
         :birth-date="birthDate"
         :email="email"
         :tarjetaIdentificacion="tarjetaIdentificacion"
-        />
-      <ConvivientesCard :convivientes="convivientes" />
+      />
+      <ConvivientesCard :convivientes="convivientes"/>
     </div>
   </div>
 </template>
@@ -161,7 +157,8 @@ export default {
       /* eslint-disable */
       apellidos = computed(() => `${user.primerApellido} ${user.segundoApellido}`);
       /* eslint-enable */
-      address = user.vivienda !== null ? `${user.vivienda.calle.nombre} Nº ${user.vivienda.numero}` : 'Actualmente no tiene asignado ninguna vivienda';
+      console.log(user);
+      address = user.hoja !== undefined ? `${user.hoja.numeracion.calle.tipo} ${user.hoja.numeracion.calle.nombre} Nº ${user.hoja.numeracion.numero}` : 'Actualmente no tiene asignado ninguna vivienda';
       const fechaNacimiento = new Date(user.fechaNacimiento);
       birthDate = `${fechaNacimiento.getDate()}/${fechaNacimiento.getMonth() + 1}/${fechaNacimiento.getFullYear()}`;
       if (user.identificacion !== undefined) {
@@ -200,7 +197,8 @@ export default {
           await Swal.fire('¡Se ha producido un error!', 'Inténtelo de nuevo más tarde. <br> Sentimos el inconveniente', 'error');
         }
       };
-    } catch {
+    } catch (e) {
+      console.log(e);
       alert(alertErrorStorage.value[lang]);
       Cookie.remove('PMHSESSION');
       Cookie.remove('SALT');
@@ -232,6 +230,7 @@ export default {
 };
 </script>
 
+
 <style scoped>
 body {
   margin-top: 3rem;
@@ -241,25 +240,31 @@ body {
 .card.is-horizontal {
   display: flex;
 }
+
 .card.is-horizontal .card-image {
   width: 100%;
   height: 100%;
 }
+
 .card.is-horizontal .card-stacked {
   flex-direction: column;
   flex: 1 1 auto;
   display: flex;
   position: relative;
 }
+
 .card.is-horizontal .card-stacked .card-content {
   flex-grow: 1;
 }
+
 .card.is-fullimage {
   background-color: transparent;
 }
+
 .card.is-fullimage .card-image {
   color: #fff !important;
 }
+
 .card.is-fullimage .card-image .card-stacked {
   position: absolute;
   bottom: 0;
@@ -267,19 +272,24 @@ body {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.65) 100%);
   text-shadow: 0px 0px 2px #000000;
 }
+
 .card.is-fullimage .card-image .card-stacked .card-footer {
   border-color: transparent;
 }
+
 .card.is-fullimage .card-image .card-stacked .title,
 .card.is-fullimage .card-image .card-stacked .subtitle {
   color: inherit;
 }
+
 .card.is-fullimage .card-image .card-stacked a {
   color: inherit;
 }
+
 .card.is-fullimage .card-image .card-stacked a:hover {
   text-decoration: underline;
 }
+
 input {
   width: 70%;
   text-align: center;

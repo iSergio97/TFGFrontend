@@ -38,13 +38,9 @@ img {
   border: 1px solid #ccc;
 }
 
-body {
+html {
   background: url(./images/v996-016.jpg) no-repeat center center;
   background-size: cover;
-}
-
-html {
-  background-color: #F8F8FF;
 }
 
 .tabs > p > a {

@@ -28,7 +28,7 @@ const routes = [
     component: () => import("../views/UserProfile.vue")
   },
   {
-    path: "/administrator/system",
+    path: "/administrator/sistema",
     name: "Administrator",
     component: () => import("../views/Administrator.vue")
   },
@@ -68,9 +68,24 @@ const routes = [
     component: () => import("../views/operations/OperationShow.vue")
   },
   {
-    path: "/administrator/statistics",
+    path: "/administrator/habitantes",
     name: "AdministratorStatistics",
-    component: () => import("../views/Statistics.vue")
+    component: () => import("../components/dashboard/Habitantes.vue")
+  },
+  {
+    path: "/administrator/operaciones",
+    name: "AdministratorStatistics",
+    component: () => import("../components/dashboard/Operaciones.vue")
+  },
+  {
+    path: "/administrator/solicitudes",
+    name: "AdministratorStatistics",
+    component: () => import("../components/dashboard/Solicitudes.vue")
+  },
+  {
+    path: "/administrator/heatmap",
+    name: "AdministratorStatistics",
+    component: () => import("../components/dashboard/Heatmap.vue")
   },
   {
     path: "/FAQ",

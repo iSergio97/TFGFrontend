@@ -480,15 +480,6 @@ export default {
 };
 </script>
 
-<style>
-@media (max-width: 1318px) {
-  html, body {
-    background: url(../../images/v996-016.jpg) no-repeat center center;
-    background-size: cover;
-  }
-}
-</style>
-
 <style scoped>
 * {
   text-align: center;
