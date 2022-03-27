@@ -11,6 +11,7 @@
 
 <script>
 import VueApexChart from 'vue3-apexcharts';
+import { MapaCalorGET } from '@/api/MapaCalorGET';
 
 export default {
   name: 'AreaChartCard',
@@ -22,7 +23,7 @@ export default {
       /* eslint-disable */
       heightData: innerHeight / 2,
       series: [{
-        data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380],
+        data: [0, 0, 0],
       }],
       chartOptions: {
         chart: {
@@ -38,11 +39,35 @@ export default {
           enabled: false,
         },
         xAxis: {
-          categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan', 'United States', 'China', 'Germany'],
+          categories: ['C/ Salto', 'Avda Emigrantes', 'R/ Ferrocarril'],
         },
       },
     };
   },
+  methods: {
+    async fillPoints() {
+      let { mapa } = await MapaCalorGET();
+      let salto = [];
+      let emigrantes = [];
+      let ferrocarril = [];
+      mapa.value.forEach((obj) => {
+        if (obj.calle.includes('SALTO')) {
+          salto = Array(obj.cantidad)
+            .fill(this.salto);
+        } else if (obj.calle.includes('EMIGRANTES')) {
+          emigrantes = Array(obj.cantidad)
+            .fill(this.emigrantes);
+        } else if (obj.calle.includes('FERROCARRIL')) {
+          ferrocarril = Array(obj.cantidad)
+            .fill(this.ferrocarril);
+        }
+      });
+      this.series.data = [...salto, ...emigrantes, ...ferrocarril]; // Corregir esto. Convertir de array de arrays a valores
+    }
+  },
+  async mounted() {
+    await this.fillPoints();
+  }
 };
 </script>
 

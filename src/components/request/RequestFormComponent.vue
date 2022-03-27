@@ -183,7 +183,7 @@
       </div>
       <br>
       <br>
-      <div class="card" v-if="convivientes.length > 0">
+      <div class="card" v-if="convivientes.length > 0 && subOpcion === 'MV'">
         <div class="card-content">
           <div class="content">
             <div v-for="conviviente in convivientes">
@@ -323,11 +323,11 @@ export default {
     const submitForm = async () => {
       /* eslint-disable */
       isSubmitted.value = true;
-      let tipoIdentificacion = 16;
+      let tipoIdentificacion = 22;
       if (tIdentificacion.value.match('\\d{8}\\w')) {
-        tipoIdentificacion = 17;
+        tipoIdentificacion = 23;
       } else if (tIdentificacion.value.match('\\d{7}\\w')) {
-        tipoIdentificacion = 18;
+        tipoIdentificacion = 24;
       }
       const solicitudDatosPersonales = {
         fecha: new Date(),
@@ -480,9 +480,23 @@ export default {
 };
 </script>
 
+<style>
+@media (max-width: 1318px) {
+  html, body {
+    background: url(../../images/v996-016.jpg) no-repeat center center;
+    background-size: cover;
+  }
+}
+</style>
+
 <style scoped>
 * {
   text-align: center;
+}
+
+html, body {
+  background: url(../../images/v996-016.jpg) no-repeat center center;
+  background-size: cover;
 }
 
 input[type="file"] {

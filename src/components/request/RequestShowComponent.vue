@@ -88,19 +88,19 @@
                         <option value="R">Rechazar</option>
                       </select>
                     </div>
+                    <br>
                   </div>
-                  <br>
                   <div class="field">
                     <label class="label">Justificación</label>
                     <textarea class="textarea" :required="status === 'R'"
                               v-model="justificacion"
                               :disabled="!isAdmin || statusRequest !== 'P'"></textarea>
-                  </div>
-                  <br>
-                  <div v-show="isAdmin && estado !== 'P'">
-                    <button class="button is-info">
-                      Enviar
-                    </button>
+                    <br>
+                    <div v-show="isAdmin && estado !== 'P'">
+                      <button class="button is-info">
+                        Enviar
+                      </button>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -225,9 +225,14 @@ export default {
     const statusRequest = ref(request.estado);
     const status = ref('A');
     const { hoja } = request;
-    const tipo = ref(hoja.numeracion.calle.tipo);
-    const nombre = ref(hoja.numeracion.calle.nombre);
-    const numeracion = ref(hoja.numeracion.numero);
+    let tipo = '';
+    let nombre = '';
+    let numeracion = '';
+    if (hoja !== null) {
+      tipo = ref(hoja.numeracion.calle.tipo);
+      nombre = ref(hoja.numeracion.calle.nombre);
+      numeracion = ref(hoja.numeracion.numero);
+    }
     const isAdmin = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT')) === 'ADMINISTRATOR';
 
     let estado;
@@ -348,6 +353,15 @@ export default {
 };
 </script>
 
+<style>
+@media (max-width: 1318px) {
+  html, body {
+    background: url(../../images/v996-016.jpg) no-repeat center center;
+    background-size: auto;
+  }
+}
+</style>
+
 <style scoped>
 * {
   text-align: center;
@@ -363,5 +377,21 @@ textarea {
 
 ul {
   list-style-type: none;
+}
+
+li {
+  list-style-type: none;
+}
+
+input[type="text"], input[type="date"] {
+  width: 35%;
+}
+
+.card, input, select {
+  background-color: transparent;
+}
+
+input, select {
+  border: solid 1px black;
 }
 </style>

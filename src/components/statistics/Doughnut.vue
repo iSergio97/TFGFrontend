@@ -20,10 +20,11 @@ export default {
   data() {
     return {
       /* eslint-disable */
+      requests: [],
       heightData: innerHeight / 2,
       chartOptions: {
-        labels: ['Aceptadas', 'Rechazadas', 'Canceladas', 'Pendientes'],
-        colors: ['#48c774', '#f14668', '#000000', '#ffdd57'],
+        labels: ['Aceptadas', 'Rechazadas', 'Pendientes', 'Rechazadas'],
+        colors: ['#48c774', '#f14668', '#ffdd57', '#000000'],
       },
     };
   },

@@ -68,24 +68,24 @@ const routes = [
     component: () => import("../views/operations/OperationShow.vue")
   },
   {
-    path: "/administrator/habitantes",
-    name: "AdministratorStatistics",
-    component: () => import("../components/dashboard/Habitantes.vue")
+    path: "/administrator/estadisticas/habitantes",
+    name: "AdministratorHabitantes",
+    component: () => import("../components/dashboard/AdministratorHabitantes.vue")
   },
   {
-    path: "/administrator/operaciones",
-    name: "AdministratorStatistics",
-    component: () => import("../components/dashboard/Operaciones.vue")
+    path: "/administrator/estadisticas/operaciones",
+    name: "AdministratorOperaciones",
+    component: () => import("../components/dashboard/AdministratorOperaciones.vue")
   },
   {
-    path: "/administrator/solicitudes",
-    name: "AdministratorStatistics",
-    component: () => import("../components/dashboard/Solicitudes.vue")
+    path: "/administrator/estadisticas/solicitudes",
+    name: "AdministratorSolicitudes",
+    component: () => import("../components/dashboard/AdministratorSolicitudes.vue")
   },
   {
-    path: "/administrator/heatmap",
-    name: "AdministratorStatistics",
-    component: () => import("../components/dashboard/Heatmap.vue")
+    path: "/administrator/estadisticas/heatmap",
+    name: "AdministratorHeatmap",
+    component: () => import("../components/dashboard/AdministratorHeatmap.vue")
   },
   {
     path: "/FAQ",

@@ -1,44 +1,6 @@
 <template>
   <div class="wrapper">
-    <aside id="main-sidebar" class="aside">
-      <nav class="menu active-menu--home">
-        <p class="menu-label">General</p>
-        <ul class="menu-list">
-          <li>
-            <router-link to="system" class="is-active">
-              <span class="icon is-small"><i class="fa fa-tachometer"></i></span>
-              <span class="menu-text">General</span>
-            </router-link>
-          </li>
-        </ul>
-        <ul class="menu-list">
-          <li>
-            <router-link to="habitantes">
-              <span class="icon is-small"><i class="fa-solid fa-address-card"></i></span>
-              <span class="menu-text">Habitantes</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link class="" to="operaciones">
-              <span class="icon is-small"><i class="fa fa-desktop"></i></span>
-              <span class="menu-text">Operaciones</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link class="" to="solicitudes">
-              <span class="icon is-small"><i class="fa-solid fa-address-card"></i></span>
-              <span class="menu-text">Solicitudes</span>
-            </router-link>
-          </li>
-          <li>
-            <router-link class="" to="heatmap">
-              <span class="icon is-small"><i class="fa fa-map"></i></span>
-              <span class="menu-text">Mapa de calor</span>
-            </router-link>
-          </li>
-        </ul>
-      </nav>
-    </aside>
+    <VerticalNav/>
     <main class="main" id="main">
       <div class="columns is-multiline">
         <div class="column">
@@ -200,10 +162,12 @@ import HeatMapComponent from '@/components/statistics/HeatMapComponent.vue';
 import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
 import Cookie from 'js-cookie';
+import VerticalNav from '@/components/statistics/VerticalNav';
 
 export default {
   name: 'Statistics',
   components: {
+    VerticalNav,
     AreaChartCard,
     Doughnut,
     HeatMapComponent,
@@ -264,18 +228,6 @@ export default {
 <style scoped>
 * {
   text-align: center;
-}
-
-.aside {
-  padding: 2em .5em 0 .5em;
-  overflow: hidden;
-  transition: 0.2s width ease-out;
-  position: fixed;
-  top: 64px;
-  left: 0;
-  z-index: 2;
-  width: 250px;
-  border-left: none;
 }
 
 .main {

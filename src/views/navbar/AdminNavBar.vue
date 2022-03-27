@@ -20,12 +20,9 @@
                     <router-link to="/administrator/requests/list">Solicitudes</router-link>
                   </li>
                   <li
-                    :class="
-                      componentName === 'AdministratorRequestList' ? 'is-active' : ''
-                    "
-                  >
-                    <router-link to="/administrator/sistema"
-                    >Sistema/Estadísticas
+                    :class="componentName === 'AdministratorRequestList' ? 'is-active' : ''">
+                    <router-link to="/administrator/estadisticas/habitantes">
+                      Sistema/Estadísticas
                     </router-link
                     >
                   </li>
