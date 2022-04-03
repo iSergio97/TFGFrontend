@@ -73,11 +73,6 @@ const routes = [
     component: () => import("../components/dashboard/AdministratorHabitantes.vue")
   },
   {
-    path: "/administrator/estadisticas/operaciones",
-    name: "AdministratorOperaciones",
-    component: () => import("../components/dashboard/AdministratorOperaciones.vue")
-  },
-  {
     path: "/administrator/estadisticas/solicitudes",
     name: "AdministratorSolicitudes",
     component: () => import("../components/dashboard/AdministratorSolicitudes.vue")

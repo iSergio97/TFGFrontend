@@ -4,7 +4,8 @@
       type="bar"
       :heigth="heightData"
       :options="chartOptions"
-      :series="series">
+      :series="series"
+      ref="areaChart">
     </VueApexChart>
   </div>
 </template>
@@ -18,13 +19,16 @@ export default {
   components: {
     VueApexChart,
   },
+  props: ['data', 'columns', 'colors'],
   data() {
     return {
       /* eslint-disable */
       heightData: innerHeight / 2,
-      series: [{
-        data: [0, 0, 0],
-      }],
+      series: [
+        {
+          data: this.data,
+        }
+      ],
       chartOptions: {
         chart: {
           type: 'bar',
@@ -32,42 +36,17 @@ export default {
         },
         plotOptions: {
           bar: {
-            horizontal: false,
+            distributed: true
           },
         },
-        dataLabels: {
-          enabled: false,
+        xaxis: {
+          categories: this.columns,
         },
-        xAxis: {
-          categories: ['C/ Salto', 'Avda Emigrantes', 'R/ Ferrocarril'],
-        },
+        colors: this.colors,
       },
     };
   },
-  methods: {
-    async fillPoints() {
-      let { mapa } = await MapaCalorGET();
-      let salto = [];
-      let emigrantes = [];
-      let ferrocarril = [];
-      mapa.value.forEach((obj) => {
-        if (obj.calle.includes('SALTO')) {
-          salto = Array(obj.cantidad)
-            .fill(this.salto);
-        } else if (obj.calle.includes('EMIGRANTES')) {
-          emigrantes = Array(obj.cantidad)
-            .fill(this.emigrantes);
-        } else if (obj.calle.includes('FERROCARRIL')) {
-          ferrocarril = Array(obj.cantidad)
-            .fill(this.ferrocarril);
-        }
-      });
-      this.series.data = [...salto, ...emigrantes, ...ferrocarril]; // Corregir esto. Convertir de array de arrays a valores
-    }
-  },
-  async mounted() {
-    await this.fillPoints();
-  }
+  methods: {},
 };
 </script>
 

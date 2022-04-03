@@ -6,10 +6,15 @@
         <div class="column">
           <article class="message is-dark">
             <div class="message-header">
-              <p>Diagrama de barras - Habitantes por direccion</p>
+              <p>Diagrama de barras - Solicitudes</p>
             </div>
-            <div class="message-body">
-              <AreaChartCard :points="points"/>
+            <div class="message-body" v-if="isLoaded">
+              <AreaChartCard :data="solicitudesPorEstado"
+                             :colors="['#48c774', '#f14668', '#ffdd57', '#000000']"
+                             :columns="['Aceptadas', 'Rechadazas', 'Pendientes', 'Rechazadas']"/>
+            </div>
+            <div class="message-body" v-else>
+              <LoadingDiv/>
             </div>
           </article>
         </div>
@@ -52,6 +57,7 @@ export default {
   data() {
     return {
       isLoaded: false,
+      data: [],
       solicitudesPorEstado: {
         aceptadas: 0,
         rechazadas: 0,

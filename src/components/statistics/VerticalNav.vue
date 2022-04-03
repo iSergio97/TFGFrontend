@@ -5,19 +5,13 @@
       <ul class="menu-list">
         <li>
           <router-link to="habitantes">
-            <span class="icon is-small"><i class="fa-solid fa-address-card"></i></span>
+            <span class="icon is-small"><i class="fa-solid fa-people-roof"></i></span>
             <span class="menu-text">Habitantes</span>
           </router-link>
         </li>
         <li>
-          <router-link class="" to="operaciones">
-            <span class="icon is-small"><i class="fa fa-desktop"></i></span>
-            <span class="menu-text">Operaciones</span>
-          </router-link>
-        </li>
-        <li>
           <router-link class="" to="solicitudes">
-            <span class="icon is-small"><i class="fa-solid fa-address-card"></i></span>
+            <span class="icon is-small"><i class="fa fa-desktop"></i></span>
             <span class="menu-text">Solicitudes</span>
           </router-link>
         </li>
