@@ -13,7 +13,7 @@
                                   :width="750"
                                   :height="625"
                                   :initial-zoom="15"
-                                  maxIntensity="1000"
+                                  maxIntensity="1"
                                   :lat="37.5403514"
                                   :lng="-5.0845226"/>
             </div>
@@ -81,14 +81,14 @@ export default {
       let ferrocarril = [];
       mapa.value.forEach((obj) => {
         if (obj.calle.includes('SALTO')) {
-          salto = Array(obj.cantidad)
+          salto = Array(500)
             .fill(this.salto);
           console.log(this.salto);
         } else if (obj.calle.includes('EMIGRANTES')) {
-          emigrantes = Array(obj.cantidad)
+          emigrantes = Array(250)
             .fill(this.emigrantes);
         } else if (obj.calle.includes('FERROCARRIL')) {
-          ferrocarril = Array(obj.cantidad)
+          ferrocarril = Array(1400)
             .fill(this.ferrocarril);
         }
       });
