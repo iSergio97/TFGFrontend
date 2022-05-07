@@ -209,6 +209,7 @@ import { BASE_URL } from '@/api/BASE_URL';
 import { NumeracionGET } from '@/api/NumeracionGET';
 import { HojaGET } from '@/api/HojaGET';
 import { CalleGET } from '@/api/CalleGET';
+import { TiposCalleGET } from '@/api/TiposCalleGET';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import Cookie from 'js-cookie';
@@ -249,8 +250,9 @@ export default {
       }
     });
 
+    const tipoViviendas = (await TiposCalleGET()).tipos;
+    console.log(tipoViviendas[0]);
     const tipoVivienda = ref('Calle');
-    const tipoViviendas = ref(['Calle', 'Ronda', 'Avenida', 'Distrito']);
     const { calles } = await CalleGET(tipoVivienda.value);
     const viviendas = ref(calles.value);
     const vivienda = ref(viviendas.value[0]);

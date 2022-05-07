@@ -102,6 +102,19 @@
                       </button>
                     </div>
                   </div>
+                  <br/>
+                  <div class="field">
+                    <label class="label">Justificación</label>
+                    <textarea class="textarea"
+                              v-model="justificacionHab"
+                              :disabled="isAdmin || statusRequest !== 'P'"></textarea>
+                    <br>
+                    <div v-show="!isAdmin && estado === 'P'">
+                      <button class="button is-info">
+                        Enviar
+                      </button>
+                    </div>
+                  </div>
                 </form>
               </div>
             </div>
@@ -215,7 +228,6 @@ export default {
         return req.id === idRequest.value;
       });
     }
-    console.log(request);
     const solicitante = computed(() => `${request.solicitante.nombre}  ${request.solicitante.primerApellido} ${request.solicitante.segundoApellido}`);
     const fecha = request.fecha;
     const fechaCreacion = computed(() => `${new Date(fecha).getDate()}/${new Date(fecha).getMonth()}/${new Date(fecha).getFullYear()}`);
@@ -279,6 +291,7 @@ export default {
         });
     };
     const justificacion = ref(request.justificacion);
+    const justificacionHab = ref(request.justificacionHab);
     const modificarSolicitud = (e) => {
       e.preventDefault();
       const token = Cookie.get('token');
@@ -339,6 +352,7 @@ export default {
       statusRequest,
       isAdmin,
       justificacion,
+      justificacionHab,
       tipo,
       nombre,
       numeracion,

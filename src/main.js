@@ -1,5 +1,4 @@
 import { createApp } from "vue";
-// import VueGoogleHeatmap from 'vue-google-heatmap';
 import VueGoogleHeatmap from "vue-google-heatmap";
 import App from "./App.vue";
 import "./registerServiceWorker";
