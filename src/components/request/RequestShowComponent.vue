@@ -228,6 +228,12 @@ export default {
         return req.id === idRequest.value;
       });
     }
+
+    if (request === undefined) {
+      router.push('/database-error');
+    }
+
+    console.log("request", request);
     const solicitante = computed(() => `${request.solicitante.nombre}  ${request.solicitante.primerApellido} ${request.solicitante.segundoApellido}`);
     const fecha = request.fecha;
     const fechaCreacion = computed(() => `${new Date(fecha).getDate()}/${new Date(fecha).getMonth()}/${new Date(fecha).getFullYear()}`);

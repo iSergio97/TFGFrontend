@@ -113,7 +113,7 @@ router.beforeEach((to, from, next) => {
       if (to.name.indexOf("Login") !== -1) {
         next();
       } else {
-        next({ name: "Home" });
+        next({ name: "RouterError" });
       }
     } else {
       const userRol = localStorage.getItem("USER_ROL");

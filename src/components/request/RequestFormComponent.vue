@@ -158,6 +158,37 @@
       </div>
     </div>
     <div class="column is-one-quarters">
+      <div class="card">
+        <div class="card-content">
+          <div class="content">
+            <div>
+              Archivos necesarios para la solicitud:
+              <p v-if="opcion === 'A'" value="ACR">
+                Alta por cambio de residencia
+              </p>
+              <p v-if="opcion === 'A'" value="AIM" selected>
+                Alta de inmigrantes
+              </p>
+              <p v-if="opcion === 'B'" value="BNI" disabled>
+                Las solicitudes de baja no está disponibles
+              </p>
+              <p v-if="opcion === 'M'" value="MD">
+                Modificación datos personales
+              </p>
+              <p v-if="opcion === 'M'" value="MV">
+                Cambio de domicilio
+              </p>
+              <p v-if="opcion === 'M'" value="MRE">
+                Renovación empadronamiento
+              </p>
+              <ul>
+                <li> Documento 1</li>
+                <li> Documento 2</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="card" id="files">
         <div class="card-content">
           <div class="content">
@@ -176,7 +207,8 @@
             </div>
             <div v-else>
               Actualmente, la solicitud no presenta ningún documento asociado.
-              Si lo envía así, el sistema se lo marcará como rechazada de forma automática.
+              El sistema no le permitirá enviar la solicitud sin presentar los documentos
+              mencionados arriba
             </div>
           </div>
         </div>
@@ -251,7 +283,6 @@ export default {
     });
 
     const tipoViviendas = (await TiposCalleGET()).tipos;
-    console.log(tipoViviendas[0]);
     const tipoVivienda = ref('Calle');
     const { calles } = await CalleGET(tipoVivienda.value);
     const viviendas = ref(calles.value);
@@ -370,8 +401,10 @@ export default {
 
       let solicitud;
       let estado;
+      let documentos;
       const token = Cookie.get('token');
-      if (formData.get('file') !== null) {
+      console.log(formData.get('file') !== null && formData.get('file').length > 2);
+      if (formData.get('file') !== null && formData.get('file').length > 2) {
         await axios.post(`${BASE_URL}solicitud/document/new`, formData, {
           headers: {
             'Content-Type': 'multipart/boundary',
@@ -380,23 +413,18 @@ export default {
         })
           .then((res) => {
             estado = res.status;
-            if (opcion.value === 'A' || subOpcion.value !== 'MV') {
-              solicitudDatosPersonales.documentos = res.data;
-              /* for(let i = 0; i < res.data.length; i++) {
-                solicitudDatosPersonales.documentos.push(res.data[i]);
-              } */
-              solicitudDatosPersonales.documentos = res.data;
-            } else {
-              /* for(let i = 0; i < res.data.length; i++) {
-                solicitudVivienda.documentos.push(res.data[i]);
-              } */
-              solicitudVivienda.documentos = res.data;
-            }
+            documentos = res.data;
           })
           .catch(() => {
             isSubmitted.value = false;
             window.alert('Se ha producido un error tratando su solicitud.\n\nPosiblemente, el tamaño del conjunto de documentos es superior al que acepta el sistema.');
           });
+      } else {
+        console.log('Entra por el else');
+        isSubmitted.value = false;
+        // TODO: Comprobar los documentos necesarios
+        await Swal.fire('Error', '<p>Está enviando una solicitud sin presentar los documentos necesarios para la misma. <br> Puede encontrar los archivos necesarios para esta solicitud en la columna de la derecha.</p>', 'info');
+        return;
       }
 
       if (opcion.value === 'A' || subOpcion.value !== 'MD') {
@@ -404,6 +432,8 @@ export default {
       } else {
         solicitud = solicitudDatosPersonales;
       }
+
+      solicitud.documentos = documentos;
 
       if ((estado === 200 || estado === undefined) && isSubmitted.value !== false) {
         await axios.post(`${BASE_URL}solicitud/habitante/new`, solicitud, {
@@ -413,7 +443,6 @@ export default {
         })
           .then((res) => {
             if (res.data.status === 200) {
-              // Añadimos la request a la lista de requests
               const { object } = res.data;
               const arrayRequests = JSON.parse(localStorage.getItem('requests'));
               arrayRequests.push(object);
@@ -494,6 +523,10 @@ export default {
 <style scoped>
 * {
   text-align: center;
+}
+
+input {
+  text-align: left;
 }
 
 html, body {
