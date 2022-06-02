@@ -92,7 +92,7 @@
                   </div>
                   <div class="field">
                     <label class="label">Justificación</label>
-                    <textarea class="textarea" :required="status === 'R'"
+                    <textarea class="textarea"
                               v-model="justificacion"
                               :disabled="!isAdmin || statusRequest !== 'P'"></textarea>
                     <br>
@@ -160,6 +160,25 @@
                   <i class="far fa-file-image"></i> {{ file.name }}
                 </li>
               </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" v-show="estado === 'P'">
+        <div class="card-content">
+          <div class="content is-centered">
+            <div id="file">
+              <label>
+                <input class="file-input" type="file" :onchange="adjuntarArchivo">
+                <span class="file-cta">
+                        <span class="file-icon">
+                          <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label">
+                          Adjuntar nuevos documentos
+                        </span>
+                        </span>
+              </label>
             </div>
           </div>
         </div>
@@ -233,7 +252,6 @@ export default {
       router.push('/database-error');
     }
 
-    console.log("request", request);
     const solicitante = computed(() => `${request.solicitante.nombre}  ${request.solicitante.primerApellido} ${request.solicitante.segundoApellido}`);
     const fecha = request.fecha;
     const fechaCreacion = computed(() => `${new Date(fecha).getDate()}/${new Date(fecha).getMonth()}/${new Date(fecha).getFullYear()}`);
@@ -298,6 +316,46 @@ export default {
     };
     const justificacion = ref(request.justificacion);
     const justificacionHab = ref(request.justificacionHab);
+    const formData = new FormData();
+    const archivosName = ref([]);
+    const token = Cookie.get('token');
+
+    const adjuntarArchivo = (e) => {
+      e.preventDefault();
+      const file = e.target.files[0];
+      formData.append('file', file, file.name);
+      if (!archivosName.value.includes(file.name)) {
+        archivosName.value.push(file.name);
+        const type = file.name.toString()
+          .split('.');
+        archivos.value.push({
+          name: file.name,
+          type: type[type.length - 1].toUpperCase(),
+        });
+      }
+
+      modificarDocumentos();
+    };
+
+    let documentos = [];
+
+    const modificarDocumentos = async (e) => {
+      await axios.post(`${BASE_URL}solicitud/document/edit/${request.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/boundary',
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          estado = res.status;
+          documentos = res.data;
+        })
+        .catch(() => {
+          isSubmitted.value = false;
+          window.alert('Se ha producido un error tratando su solicitud.\n\nPosiblemente, el tamaño del conjunto de documentos es superior al que acepta el sistema.');
+        });
+    };
+
     const modificarSolicitud = (e) => {
       e.preventDefault();
       const token = Cookie.get('token');
@@ -368,6 +426,7 @@ export default {
       fechaCreacion,
       estado,
       modificarSolicitud,
+      adjuntarArchivo,
     };
   },
 };
