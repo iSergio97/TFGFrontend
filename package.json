@@ -16,7 +16,7 @@
     "cli-plugin-eslint": "^0.1.0",
     "core-js": "^3.18.3",
     "crypto-js": "^4.1.1",
-    "eslint": "^7.32.0",
+    "eslint": "^7.0.0",
     "js-cookie": "^2.2.1",
     "register-service-worker": "^1.7.2",
     "sass-loader": "^12.2.0",
@@ -27,6 +27,7 @@
     "vue-router": "^4.0.12",
     "vue-select": "^3.15.0",
     "vue-spinner": "^1.0.4",
+    "vue2-google-maps": "^0.10.7",
     "vue3-apexcharts": "^1.4.1"
   },
   "devDependencies": {

@@ -11,7 +11,7 @@
             <div class="message-body" v-if="isLoaded">
               <AreaChartCard :data="solicitudesPorEstado"
                              :colors="['#48c774', '#f14668', '#ffdd57', '#000000']"
-                             :columns="['Aceptadas', 'Rechadazas', 'Pendientes', 'Rechazadas']"/>
+                             :columns="['Aceptadas', 'Rechazadas', 'Pendientes', 'Canceladas']"/>
             </div>
             <div class="message-body" v-else>
               <LoadingDiv/>

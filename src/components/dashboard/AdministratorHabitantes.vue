@@ -13,7 +13,7 @@
 
 <script>
 import VerticalNav from '@/components/statistics/VerticalNav';
-
+// TODO: Donut de sexo de habitantes empadronados
 export default {
   name: 'AdministratorHabitantes',
   components: { VerticalNav },

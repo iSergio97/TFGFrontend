@@ -6,14 +6,26 @@
         <div class="column">
           <article class="message is-dark">
             <div class="message-header">
-              <p>Mapa de calor</p>
+              <p>Mapa de calor - Operaciones de cambio de domicilio del año seleccionado</p>
+              <div align="right">
+                <div class="select is-rounded is-small">
+                  <select v-model="listPosition" class="select is-rounded">
+                    <option value="0" selected> 2021</option>
+                    <option value="1"> 2020</option>
+                    <option value="2"> 2019</option>
+                  </select>
+                </div>
+                <button class="button is-small is-success is-light is-rounded"
+                        @click="recargarMapaCalor()">
+                  Recargar
+                </button>
+              </div>
             </div>
             <div class="message-body">
               <vue-google-heatmap :points="points"
                                   :width="750"
                                   :height="625"
                                   :initial-zoom="15"
-                                  maxIntensity="1"
                                   :lat="37.5403514"
                                   :lng="-5.0845226"/>
             </div>
@@ -58,59 +70,43 @@ export default {
     return {
       isLoaded: false,
       data: [],
-      salto: {
-        lat: 37.5451443,
-        lng: -5.0819647
-      },
-      emigrantes: {
-        lat: 37.5437427,
-        lng: -5.0857654
-      },
-      ferrocarril: {
-        lat: 37.5401121,
-        lng: -5.0891474
-      },
+      listHeatmap: [],
       points: [],
+      listPosition: 0,
+      tipo: 'M',
+      subtipo: 'MV',
     };
   },
   methods: {
     async fillPoints() {
       let { mapa } = await MapaCalorGET();
-      let salto = [];
-      let emigrantes = [];
-      let ferrocarril = [];
-      mapa.value.forEach((obj) => {
-        if (obj.calle.includes('SALTO')) {
-          salto = Array(500)
-            .fill(this.salto);
-          console.log(this.salto);
-        } else if (obj.calle.includes('EMIGRANTES')) {
-          emigrantes = Array(250)
-            .fill(this.emigrantes);
-        } else if (obj.calle.includes('FERROCARRIL')) {
-          ferrocarril = Array(1400)
-            .fill(this.ferrocarril);
-        }
+      this.listHeatmap = mapa;
+      this.fillDataPoints();
+    },
+    fillDataPoints() {
+      let year = this.listHeatmap[this.listPosition];
+      year.forEach((operacion) => {
+        let {
+          lat,
+          lng
+        } = operacion.hoja.numeracion;
+        this.points.push({
+          lat,
+          lng
+        });
       });
-      this.points = [...salto, ...emigrantes, ...ferrocarril];
     },
     async areaChart() {
       let { mapa } = await MapaCalorGET();
-      let salto = [];
-      let emigrantes = [];
-      let ferrocarril = [];
-      mapa.value.forEach((obj) => {
-        if (obj.calle.includes('SALTO')) {
-          salto = obj.cantidad;
-        } else if (obj.calle.includes('EMIGRANTES')) {
-          emigrantes = obj.cantidad;
-        } else if (obj.calle.includes('FERROCARRIL')) {
-          ferrocarril = obj.cantidad;
-        }
-      });
-      this.data = [salto, emigrantes, ferrocarril];
+      this.data = [1, 4, 4];
       this.isLoaded = true;
-    }
+    },
+    recargarMapaCalor() {
+      this.isLoaded = false;
+      this.points = []; // Limpiamos el vector para recargar el mapa
+      this.fillDataPoints();
+      this.isLoaded = true;
+    },
   },
   async mounted() {
     await this.fillPoints();
@@ -118,6 +114,15 @@ export default {
   },
 };
 </script>
+
+<style>
+@media (max-width: 1318px) {
+  html, body {
+    background: url(../../images/v996-016.jpg) no-repeat center center;
+    background-size: cover;
+  }
+}
+</style>
 
 <style scoped>
 * {

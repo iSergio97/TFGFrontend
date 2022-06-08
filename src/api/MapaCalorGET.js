@@ -11,7 +11,7 @@ export const MapaCalorGET = async () => {
   const token = Cookie.get("token");
 
   await axios
-    .get(`${BASE_URL}estadisticas/heatmap`, {
+    .get(`${BASE_URL}sistema/operacion/heatmap`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

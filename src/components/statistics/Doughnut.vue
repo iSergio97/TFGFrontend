@@ -10,7 +10,7 @@
 
 <script>
 import VueApexChart from 'vue3-apexcharts';
-
+// TODO: Nueva gráfica, diagrama de barra de solicitudes por año y del general
 export default {
   name: 'Doughnut',
   components: {
@@ -23,7 +23,7 @@ export default {
       requests: [],
       heightData: innerHeight / 2,
       chartOptions: {
-        labels: ['Aceptadas', 'Rechazadas', 'Pendientes', 'Rechazadas'],
+        labels: ['Aceptadas', 'Rechazadas', 'Pendientes', 'Canceladas'],
         colors: ['#48c774', '#f14668', '#ffdd57', '#000000'],
       },
     };
