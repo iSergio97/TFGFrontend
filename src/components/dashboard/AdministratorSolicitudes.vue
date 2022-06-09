@@ -24,7 +24,9 @@
               <p>Diagrama de sectores - Solicitudes por estado</p>
             </div>
             <div class="message-body" v-if="isLoaded">
-              <Doughnut :solicitudes="solicitudesPorEstado"/>
+              <Doughnut :datos="solicitudesPorEstado"
+                        :etiquetas="['Aceptadas', 'Rechazadas', 'Pendientes', 'Canceladas']"
+                        :colors="['#48c774', '#f14668', '#ffdd57', '#000000']"/>
             </div>
             <div class="message-body" v-else>
               <LoadingDiv/>

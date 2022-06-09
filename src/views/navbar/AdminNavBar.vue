@@ -80,7 +80,7 @@ export default {
       Cookie.remove('PMHSESSION');
       Cookie.remove('SALT');
       localStorage.clear();
-      window.location.reload();
+      window.location = '/';
     };
     return {
       loginLang,
