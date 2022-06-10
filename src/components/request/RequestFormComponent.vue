@@ -23,10 +23,10 @@
                   <span class="select">
                     <label>
                       <select v-model="subOpcion">
-                        <option v-if="opcion === 'A'" value="ACR">
+                        <option v-if="opcion === 'A'" value="ACR" selected>
                           Alta por cambio de residencia
                         </option>
-                        <option v-if="opcion === 'A'" value="AIM" selected>
+                        <option v-if="opcion === 'A'" value="AIM">
                           Alta de inmigrantes
                         </option>
                         <option v-if="opcion === 'B'" value="BNI" disabled>
@@ -163,27 +163,28 @@
           <div class="content">
             <div>
               Archivos necesarios para la solicitud:
-              <p v-if="opcion === 'A'" value="ACR">
-                Alta por cambio de residencia
+              <div v-if="opcion === 'A'" value="ACR">
+                <p v-if="subOpcion === 'ACR'">
+                  <b> Alta por cambio de residencia </b>
+                </p>
+                <p v-if="subOpcion === 'AIM'">
+                  <b> Alta de inmigrantes </b>
+                </p>
+              </div>
+              <div v-if="opcion === 'B'">
+                <b> Las solicitudes de baja no está disponibles </b>
+              </div>
+              <p v-if="subOpcion === 'MD'">
+                <b> Modificación datos personales </b>
               </p>
-              <p v-if="opcion === 'A'" value="AIM" selected>
-                Alta de inmigrantes
+              <p v-if="subOpcion === 'MV'">
+                <b> Cambio de domicilio </b>
               </p>
-              <p v-if="opcion === 'B'" value="BNI" disabled>
-                Las solicitudes de baja no está disponibles
+              <p v-if="subOpcion === 'MRE'">
+                <b> Renovación empadronamiento </b>
               </p>
-              <p v-if="opcion === 'M'" value="MD">
-                Modificación datos personales
-              </p>
-              <p v-if="opcion === 'M'" value="MV">
-                Cambio de domicilio
-              </p>
-              <p v-if="opcion === 'M'" value="MRE">
-                Renovación empadronamiento
-              </p>
-              <ul>
-                <li> Documento 1</li>
-                <li> Documento 2</li>
+              <ul v-for="documento in documentosNecesarios">
+                <li> {{ documento }}</li>
               </ul>
             </div>
           </div>
@@ -208,7 +209,7 @@
             <div v-else>
               Actualmente, la solicitud no presenta ningún documento asociado.
               El sistema no le permitirá enviar la solicitud sin presentar los documentos
-              mencionados arriba
+              mencionados arriba.
             </div>
           </div>
         </div>
@@ -282,6 +283,17 @@ export default {
       }
     });
 
+    let documentosNecesarios = ref(['DNI o Libro de Familia', 'Extranjeros deben presentar pasaporte o permiso de residencia']);
+    watch(subOpcion, (selectedOption) => {
+      if (selectedOption === 'MV' || selectedOption === 'ACR' || selectedOption === 'MRE') {
+        documentosNecesarios.value = ['DNI o Libro de Familia', 'Extranjeros deben presentar pasaporte o permiso de residencia'];
+      } else if (selectedOption.startsWith('B')) {
+        documentosNecesarios.value = ['Opción no disponible'];
+      } else if (selectedOption === 'MD') {
+        documentosNecesarios.value = ['Documento que acredite el cambio que vas a realizar', 'Si realiza un cambio en su documento de identidad, debe añadir el antiguo'];
+      }
+    });
+
     const tipoViviendas = (await TiposCalleGET()).tipos;
     const tipoVivienda = ref('Calle');
     const { calles } = await CalleGET(tipoVivienda.value);
@@ -327,6 +339,8 @@ export default {
           name: file.name,
           type: type[type.length - 1].toUpperCase(),
         });
+        console.log('formData.get(\'file\')', formData.getAll('file').length);
+        console.log('archivos', archivos);
       }
     };
     const deleteFile = (file) => {
@@ -403,8 +417,7 @@ export default {
       let estado;
       let documentos;
       const token = Cookie.get('token');
-      console.log(formData.get('file') !== null && formData.get('file').length > 2);
-      if (formData.get('file') !== null && formData.get('file').length > 2) {
+      if (formData.get('file') !== null && formData.getAll('file').length > 2) {
         await axios.post(`${BASE_URL}solicitud/document/new`, formData, {
           headers: {
             'Content-Type': 'multipart/boundary',
@@ -420,9 +433,7 @@ export default {
             window.alert('Se ha producido un error tratando su solicitud.\n\nPosiblemente, el tamaño del conjunto de documentos es superior al que acepta el sistema.');
           });
       } else {
-        console.log('Entra por el else');
         isSubmitted.value = false;
-        // TODO: Comprobar los documentos necesarios
         await Swal.fire('Error', '<p>Está enviando una solicitud sin presentar los documentos necesarios para la misma. <br> Puede encontrar los archivos necesarios para esta solicitud en la columna de la derecha.</p>', 'info');
         return;
       }
@@ -502,6 +513,7 @@ export default {
       numeracion,
       options,
       convivientes,
+      documentosNecesarios,
       adjuntarArchivo,
       deleteFile,
       submitForm,

@@ -17,7 +17,6 @@ export const HojaGET = async numeracionId => {
       }
     })
     .then(res => {
-      console.log(res.data);
       const { status, object } = res.data;
       hojas.value = object;
       statusCalles.value = status;

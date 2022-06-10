@@ -18,7 +18,6 @@ export const TiposCalleGET = async () => {
     })
     .then(res => {
       const { data, status } = res;
-      console.log(data);
       tipos.value = data;
       statusTipos.value = status;
     })

@@ -1,5 +1,5 @@
 <template>
-  <scale-loader :loading="loading" :color="color" :width="size" :height="height"></scale-loader>
+  <scale-loader :color="color" :width="size" :height="height"></scale-loader>
 </template>
 
 <script>
