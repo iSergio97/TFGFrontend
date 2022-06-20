@@ -15,6 +15,18 @@
                     <option value="2"> 2019</option>
                   </select>
                 </div>
+                <div class="select is-rounded is-small">
+                  <select v-model="tipo" class="select is-rounded">
+                    <option value="M" selected> Modificación</option>
+                    <option value="A"> Alta</option>
+                  </select>
+                </div>
+                <div class="select is-rounded is-small">
+                  <select v-model="subtipo" class="select is-rounded">
+                    <option value="MV" selected> Mod. Domicilio</option>
+                    <option value="ACR"> Alta por Cambio de Residencia</option>
+                  </select>
+                </div>
                 <button class="button is-small is-success is-light is-rounded"
                         @click="recargarMapaCalor()">
                   Recargar
@@ -85,6 +97,9 @@ export default {
     },
     fillDataPoints() {
       let year = this.listHeatmap[this.listPosition];
+      if (this.tipo !== 'todos') {
+        year = year.filter(ops => ops.tipo === this.tipo && ops.subtipo === this.subtipo);
+      }
       year.forEach((operacion) => {
         let {
           lat,

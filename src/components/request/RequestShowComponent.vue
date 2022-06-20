@@ -78,44 +78,43 @@
           <div class="content">
             <div class="field">
               <div class="control">
-                <form @submit="modificarSolicitud">
-                  <div class="field" v-if="isAdmin && estado !== 'P'">
-                    <label class="label">Estado</label>
-                    <div :class="status === 'A' ? 'control select is-rounded is-success'
-              : 'control select is-rounded is-danger'">
-                      <select v-model="status" :disabled="!isAdmin || statusRequest !== 'P'">
-                        <option value="A">Aceptar</option>
-                        <option value="R">Rechazar</option>
-                      </select>
-                    </div>
-                    <br>
+                <div class="field" v-if="isAdmin && statusRequest !== 'P'">
+                  <label class="label">Estado</label>
+                  <div :class="status === 'A' ? 'control select is-rounded is-success'
+            : (status === 'R' ? 'control select is-rounded is-danger' : 'control select is-rounded is-ghost')">
+                    <select v-model="status" :disabled="!isAdmin || statusRequest !== 'P'">
+                      <option value="A">Aceptar</option>
+                      <option value="R">Rechazar</option>
+                      <option value="P">Pendiente</option>
+                    </select>
                   </div>
-                  <div class="field">
-                    <label class="label">Justificación</label>
-                    <textarea class="textarea"
-                              v-model="justificacion"
-                              :disabled="!isAdmin || statusRequest !== 'P'"></textarea>
-                    <br>
-                    <div v-show="isAdmin && estado !== 'P'">
-                      <button class="button is-info">
-                        Enviar
-                      </button>
-                    </div>
+                  <br>
+                </div>
+                <div class="field">
+                  <label class="label">Justificación</label>
+                  <textarea class="textarea"
+                            v-model="justificacion"
+                            :disabled="!isAdmin || statusRequest !== 'P'"></textarea>
+                  <br>
+                  <div v-show="isAdmin && statusRequest !== 'P'">
+                    <button class="button is-info" @click="modificarSolicitud">
+                      Enviar
+                    </button>
                   </div>
-                  <br/>
-                  <div class="field">
-                    <label class="label">Justificación</label>
-                    <textarea class="textarea"
-                              v-model="justificacionHab"
-                              :disabled="isAdmin || statusRequest !== 'P'"></textarea>
-                    <br>
-                    <div v-show="!isAdmin && estado === 'P'">
-                      <button class="button is-info">
-                        Enviar
-                      </button>
-                    </div>
+                </div>
+                <br/>
+                <div class="field">
+                  <label class="label">Justificación</label>
+                  <textarea class="textarea"
+                            v-model="justificacionHab"
+                            :disabled="isAdmin || statusRequest !== 'P'"></textarea>
+                  <br>
+                  <div v-show="!isAdmin && statusRequest === 'P'">
+                    <button class="button is-info" @click="actualizarJustificacion">
+                      Enviar
+                    </button>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
           </div>
@@ -164,7 +163,7 @@
           </div>
         </div>
       </div>
-      <div class="card" v-show="estado === 'P'">
+      <div class="card" v-show="statusRequest === 'P'">
         <div class="card-content">
           <div class="content is-centered">
             <div id="file">
@@ -207,46 +206,37 @@ export default {
     const idRequest = ref(props.id);
     const router = useRouter();
     if (Number.isNaN(idRequest.value)) {
-      router.push('/database-error');
+      await router.push('/database-error');
     }
     const userId = JSON.parse(decrypt(localStorage.getItem('USER_PRO'), localStorage.getItem('SALT'))).id;
-    let requests = localStorage.getItem('requests');
     let request;
-    if (requests === null) {
-      const urlUser = `${BASE_URL}solicitud/${idRequest.value}`;
-      const urlAdmin = `${BASE_URL}solicitud/administrador/${idRequest.value}`;
-      let url = '';
-      const isAdmin = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT')) === 'ADMINISTRATOR';
-      if (isAdmin) {
-        url = urlAdmin;
-      } else {
-        url = urlUser;
-      }
-      const token = Cookie.get('token');
-      await axios.get(url, {
-        params: {
-          userId: userId,
-        },
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      })
-        .then((res) => {
-          const {
-            status,
-            object
-          } = res.data;
-          if (status !== 200) {
-            router.push('/database-error');
-          }
-          request = object;
-        });
-    } else {
-      requests = JSON.parse(requests);
-      request = requests.find((req) => {
-        return req.id === idRequest.value;
-      });
+    const urlAdmin = `${BASE_URL}solicitud/administrador/${idRequest.value}`;
+    let url = `${BASE_URL}solicitud/${idRequest.value}`;
+    const isAdmin = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT')) === 'ADMINISTRATOR';
+    if (isAdmin) {
+      url = urlAdmin;
     }
+
+    const token = Cookie.get('token');
+
+    await axios.get(url, {
+      params: {
+        userId: userId,
+      },
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        const {
+          status,
+          object
+        } = res.data;
+        if (status !== 200) {
+          router.push('/database-error');
+        }
+        request = object;
+      });
 
     if (request === undefined) {
       router.push('/database-error');
@@ -269,7 +259,6 @@ export default {
       nombre = ref(hoja.numeracion.calle.nombre);
       numeracion = ref(hoja.numeracion.numero);
     }
-    const isAdmin = decrypt(localStorage.getItem('USER_ROL'), localStorage.getItem('SALT')) === 'ADMINISTRATOR';
 
     let estado;
     let color;
@@ -284,7 +273,7 @@ export default {
         break;
       case 'P':
         estado = 'Pendiente';
-        color = 'is-warning';
+        color = 'is-ghost';
         break;
       case 'C':
         estado = 'Cancelada';
@@ -297,7 +286,6 @@ export default {
     const downloadFile = async (file) => {
       const type = file.name.split('.')[1].toUpperCase() === 'PDF' ? 'application/pdf' : 'image/png';
       const id = file.id;
-      const token = Cookie.get('token');
       await axios({
         url: `${BASE_URL}solicitud/document/${id}`,
         method: 'GET',
@@ -315,10 +303,10 @@ export default {
         });
     };
     const justificacion = ref(request.justificacion);
+    console.log('request', request);
     const justificacionHab = ref(request.justificacionHab);
     const formData = new FormData();
     const archivosName = ref([]);
-    const token = Cookie.get('token');
 
     const adjuntarArchivo = (e) => {
       e.preventDefault();
@@ -358,7 +346,6 @@ export default {
 
     const modificarSolicitud = (e) => {
       e.preventDefault();
-      const token = Cookie.get('token');
       const params = new URLSearchParams();
       params.append('solicitudId', request.id);
       params.append('estado', status.value);
@@ -408,6 +395,25 @@ export default {
           Swal.fire('Oops...', 'Se ha producido un error al editar el estado de la solicitud. \nPosiblemente esta solicitud ya haya sido aceptada o rechazada por otro administrador.\nO el habitante haya decidido cancelarla.', 'error');
         });
     };
+
+    const actualizarJustificacion = async () => {
+      const formDataJustificacion = new FormData();
+      formDataJustificacion.append('id', request.id);
+      formDataJustificacion.append('justificacion', justificacionHab.value);
+      await axios.post(`${BASE_URL}solicitud/habitante/edit/${request.id}`, formDataJustificacion, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+        .then(() => {
+          Swal.fire('¡Correcto!', 'Se ha actualizado la justificación de la solicitud. Se le redirigirá de nuevo al listado de sus solicitudes', 'success');
+          router.push('/user/requests/list');
+        })
+        .catch(() => {
+          isSubmitted.value = false;
+          window.alert('Se ha producido un error tratando su solicitud.\n\nPosiblemente, el tamaño del conjunto de documentos es superior al que acepta el sistema.');
+        });
+    };
     return {
       request,
       color,
@@ -427,6 +433,7 @@ export default {
       estado,
       modificarSolicitud,
       adjuntarArchivo,
+      actualizarJustificacion,
     };
   },
 };

@@ -339,8 +339,6 @@ export default {
           name: file.name,
           type: type[type.length - 1].toUpperCase(),
         });
-        console.log('formData.get(\'file\')', formData.getAll('file').length);
-        console.log('archivos', archivos);
       }
     };
     const deleteFile = (file) => {
@@ -368,6 +366,27 @@ export default {
       }
     };
     const submitForm = async () => {
+      const estadoSolicitante = props.userLogged.estado;
+      const nacionalidad = props.userLogged.nacionalidad;
+
+      if (nacionalidad === 108 && (subOpcion.value === 'AIM' || subOpcion.value === 'MRN')) {
+        await Swal.fire('Oops...', 'Está intentando realizar una solicitud de extranjería (Alta por inmigración o Renovación de empadronamiento) cuando posee nacionalidad española.', 'error');
+        isSubmitted.value = false;
+        return;
+      }
+
+      if (estadoSolicitante === 'A' && opcion.value === 'A') {
+        await Swal.fire('Oops...', 'Está intentando realizar una solicitud de Alta cuando su cuenta ya está activa. Debe realizar una modificación en este caso.', 'error');
+        isSubmitted.value = false;
+        return;
+      }
+
+      if (estadoSolicitante === 'M' && opcion.value === 'B') {
+        await Swal.fire('Oops...', 'Está intentando realizar una solicitud de Modificación cuando su cuenta no está activa. Debe realizar solicitud de alta en este caso.', 'error');
+        isSubmitted.value = false;
+        return;
+      }
+
       /* eslint-disable */
       isSubmitted.value = true;
       let tipoIdentificacion = 22;

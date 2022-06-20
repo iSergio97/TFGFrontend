@@ -43,16 +43,6 @@
                       </div>
                     </div>
                     <div class="field">
-                      <label>Confirmar contraseña</label>
-                      <div class="control">
-                        <input
-                          class="input is-rounded"
-                          type="password"
-                          placeholder="Confirmar contraseña"
-                          v-model="confirmPassword">
-                      </div>
-                    </div>
-                    <div class="field">
                       <label>Nueva contraseña</label>
                       <div class="control">
                         <input
@@ -145,7 +135,6 @@ export default {
     const submitted = ref(false);
     let username;
     let password;
-    let confirmPassword;
     let newPassword;
     let confirmNewPassword;
     let submitForm;
@@ -168,10 +157,9 @@ export default {
       }
       email = user.email;
       username = ref(user.cuentaUsuario.username);
-      password = ref('habitante0');
-      confirmPassword = ref('habitante0');
-      newPassword = ref('habitante0');
-      confirmNewPassword = ref('habitante0');
+      password = ref('');
+      newPassword = ref('');
+      confirmNewPassword = ref('');
       submitForm = async () => {
         if (newPassword.value !== confirmNewPassword.value) {
           alert('Ambas contraseñas nuevas deben coincidir');
@@ -209,7 +197,6 @@ export default {
       submitted,
       username,
       password,
-      confirmPassword,
       newPassword,
       confirmNewPassword,
       submitForm,
