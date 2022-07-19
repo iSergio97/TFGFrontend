@@ -150,7 +150,7 @@ export default {
       address = user.hoja !== undefined ? `${user.hoja.numeracion.calle.tipo} ${user.hoja.numeracion.calle.nombre} Nº ${user.hoja.numeracion.numero}` : 'Actualmente no tiene asignado ninguna vivienda';
       const fechaNacimiento = new Date(user.fechaNacimiento);
       birthDate = `${fechaNacimiento.getDate()}/${fechaNacimiento.getMonth() + 1}/${fechaNacimiento.getFullYear()}`;
-      if (user.identificacion !== undefined) {
+      if (user.identificacion === undefined) {
         tarjetaIdentificacion = 'Esta persona no tiene ninguna identificación asociada';
       } else {
         tarjetaIdentificacion = user.tarjetaIdentificacion.codigoTarjeta === 0 ? 'Identificación correspondiente con un menor de edad' : user.identificacion;

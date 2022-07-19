@@ -78,7 +78,7 @@
           <div class="content">
             <div class="field">
               <div class="control">
-                <div class="field" v-if="isAdmin && statusRequest !== 'P'">
+                <div class="field" v-if="isAdmin && statusRequest === 'P'">
                   <label class="label">Estado</label>
                   <div :class="status === 'A' ? 'control select is-rounded is-success'
             : (status === 'R' ? 'control select is-rounded is-danger' : 'control select is-rounded is-ghost')">
@@ -96,7 +96,7 @@
                             v-model="justificacion"
                             :disabled="!isAdmin || statusRequest !== 'P'"></textarea>
                   <br>
-                  <div v-show="isAdmin && statusRequest !== 'P'">
+                  <div v-show="isAdmin && statusRequest === 'P'">
                     <button class="button is-info" @click="modificarSolicitud">
                       Enviar
                     </button>
@@ -163,7 +163,7 @@
           </div>
         </div>
       </div>
-      <div class="card" v-show="statusRequest === 'P'">
+      <div class="card" v-show="statusRequest === 'P' && !isAdmin">
         <div class="card-content">
           <div class="content is-centered">
             <div id="file">
@@ -202,7 +202,7 @@ export default {
   },
   async setup(props) {
     /* eslint-disable */
-    const { decrypt } = new PMHCrypto();
+    const { decrypt } = PMHCrypto();
     const idRequest = ref(props.id);
     const router = useRouter();
     if (Number.isNaN(idRequest.value)) {

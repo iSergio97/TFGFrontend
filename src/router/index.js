@@ -10,99 +10,99 @@ const routes = [
   {
     path: "/route-error",
     name: "RouterError",
-    component: RouterError
+    component: RouterError,
   },
   {
     path: "/login",
     name: "Login",
-    component: Login
+    component: Login,
   },
   {
     path: "/administrator/login",
     name: "AdministratorLogin",
-    component: AdministratorLogin
+    component: AdministratorLogin,
   },
   {
     path: "/user/profile",
     name: "UserProfile",
-    component: () => import("../views/UserProfile.vue")
+    component: () => import("../views/UserProfile.vue"),
   },
   {
     path: "/administrator/sistema",
     name: "Administrator",
-    component: () => import("../views/Administrator.vue")
+    component: () => import("../views/Administrator.vue"),
   },
   {
     path: "/user/requests/list",
     name: "UserRequestList",
-    component: () => import("../views/requests/User/UserRequestList.vue")
+    component: () => import("../views/requests/User/UserRequestList.vue"),
   },
   {
     path: "/user/requests/new",
     name: "UserRequestNew",
-    component: () => import("../views/requests/User/UserRequestNew.vue")
+    component: () => import("../views/requests/User/UserRequestNew.vue"),
   },
   {
     path: "/user/requests/show/:id",
     name: "UserRequestShow",
-    component: () => import("../views/requests/User/UserRequestShow.vue")
+    component: () => import("../views/requests/User/UserRequestShow.vue"),
   },
   {
     path: "/administrator/requests/list",
     name: "AdministratorRequestList",
-    component: () => import("../views/requests/Admin/AdministratorRequestList.vue") // Listado de solicitudes
+    component: () => import("../views/requests/Admin/AdministratorRequestList.vue"), // Listado de solicitudes
   },
   {
     path: "/administrator/requests/show/:id",
     name: "AdministratorRequestShow",
-    component: () => import("../views/requests/Admin/AdministratorRequestShow.vue") // Show de la solicitud en cuestión
+    component: () => import("../views/requests/Admin/AdministratorRequestShow.vue"), // Show de la solicitud en cuestión
   },
   {
     path: "/administrator/operations/list",
     name: "AdministratorOperationList",
-    component: () => import("../views/operations/OperationList.vue")
+    component: () => import("../views/operations/OperationList.vue"),
   },
   {
     path: "/administrator/operations/show/:id",
     name: "AdministratorOperationShow",
-    component: () => import("../views/operations/OperationShow.vue")
+    component: () => import("../views/operations/OperationShow.vue"),
   },
   {
     path: "/administrator/estadisticas/habitantes",
     name: "AdministratorHabitantes",
-    component: () => import("../components/dashboard/AdministratorHabitantes.vue")
+    component: () => import("../components/dashboard/AdministratorHabitantes.vue"),
   },
   {
     path: "/administrator/estadisticas/solicitudes",
     name: "AdministratorSolicitudes",
-    component: () => import("../components/dashboard/AdministratorSolicitudes.vue")
+    component: () => import("../components/dashboard/AdministratorSolicitudes.vue"),
   },
   {
     path: "/administrator/estadisticas/heatmap",
     name: "AdministratorHeatmap",
-    component: () => import("../components/dashboard/AdministratorHeatmap.vue")
+    component: () => import("../components/dashboard/AdministratorHeatmap.vue"),
   },
   {
     path: "/FAQ",
     name: "FAQ",
-    component: () => import("../views/FAQ.vue")
+    component: () => import("../views/FAQ.vue"),
   },
   {
     path: "/",
     name: "Home",
-    component: Home
-  }
+    component: Home,
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 });
 
 /* eslint-disable */
 router.beforeEach((to, from, next) => {
   const session = Cookie.get("PMHSESSION");
-  const { decrypt } = new PMHCrypto();
+  const { decrypt } = PMHCrypto();
   if (to.name === undefined) {
     next({ name: "RouterError" });
   }

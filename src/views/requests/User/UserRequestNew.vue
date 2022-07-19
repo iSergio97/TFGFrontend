@@ -1,10 +1,10 @@
 <template>
   <Suspense>
     <template #default>
-      <RequestFormComponent :userLogged="userLogged" />
+      <RequestFormComponent :userLogged="userLogged"/>
     </template>
     <template #fallback>
-      <LoadingDiv />
+      <LoadingDiv/>
     </template>
   </Suspense>
 </template>
@@ -22,7 +22,7 @@ export default {
     LoadingDiv,
   },
   setup() {
-    const { decrypt } = new PMHCrypto();
+    const { decrypt } = PMHCrypto();
     const localUser = JSON.parse(decrypt(localStorage.getItem('USER_PRO'), localStorage.getItem('SALT')));
     const userLogged = ref(localUser);
 

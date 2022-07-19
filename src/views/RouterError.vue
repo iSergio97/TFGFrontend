@@ -5,10 +5,10 @@
         <div></div>
         <h1>404</h1>
       </div>
-      <h2>Page not found</h2>
-      <p>The page you are looking for might have been removed had its
-        name changed or is temporarily unavailable.</p>
-      <router-link to="/">home page</router-link>
+      <h2>Página no encontrada</h2>
+      <p>La página a la que intentas acceder no está disponible. Es posible que se haya eliminado o
+        no esté disonible temporalmente. Inténtelo de nuevo más tarde</p>
+      <router-link to="/">Volver al inicio</router-link>
     </div>
   </div>
 </template>
@@ -72,7 +72,7 @@ export default {
 
 .notfound .notfound-404 h1 {
   font-family: 'Maven Pro', sans-serif;
-  color: #ececec;
+  color: #cccccc;
   font-weight: 900;
   font-size: 276px;
   margin: 0px;
@@ -128,6 +128,7 @@ export default {
   .notfound .notfound-404 h1 {
     font-size: 162px;
   }
+
   .notfound h2 {
     font-size: 26px;
   }
