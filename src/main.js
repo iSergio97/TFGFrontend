@@ -8,6 +8,6 @@ import "../node_modules/bulma/css/bulma.css";
 createApp(App)
   .use(router)
   .use(VueGoogleHeatmap, {
-    apiKey: "AIzaSyDLAbJ3ZoW5hU5-4wBTuRirRWSxNkNTtd4"
+    apiKey: process.env.VUE_APP_MAPS_API_KEY,
   })
   .mount("#app");

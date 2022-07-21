@@ -267,12 +267,6 @@ export default {
     const opcion = ref('A');
     // ['ACR', 'AIM', 'MD', 'MV', 'MRN']
     const subOpcion = ref('ACR');
-    const options = [{
-      country: 'canada',
-      meta: {
-        code: 'ca',
-      },
-    }];
     watch(opcion, (selectedOption) => {
       if (selectedOption === 'A') {
         subOpcion.value = 'ACR';
@@ -530,7 +524,6 @@ export default {
       vivienda,
       numeracionesCalle,
       numeracion,
-      options,
       convivientes,
       documentosNecesarios,
       adjuntarArchivo,
@@ -545,7 +538,7 @@ export default {
 <style>
 @media (max-width: 1318px) {
   html, body {
-    background: url(../../images/v996-016.jpg) no-repeat center center;
+    background: url(../../images/v996-016.jpg) center center;
     background-size: cover;
   }
 }

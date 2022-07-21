@@ -4,7 +4,8 @@ import { BASE_URL } from "@/api/BASE_URL";
 import Cookie from "js-cookie";
 
 /* eslint-disable */
-export const MapaCalorGET = async () => {
+export const MapaCalorGET = async (start, end) => {
+  // TODO: Revisar porqué la fecha se manda en formato incorrecto
   const mapa = ref([]);
   const statusMapa = ref(0);
 
@@ -13,10 +14,14 @@ export const MapaCalorGET = async () => {
   await axios
     .get(`${BASE_URL}sistema/operacion/heatmap`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        start,
+        end,
+      },
     })
-    .then(res => {
+    .then((res) => {
       const { status, object } = res.data;
       mapa.value = object;
       statusMapa.value = status;
@@ -25,6 +30,6 @@ export const MapaCalorGET = async () => {
 
   return {
     mapa,
-    statusMapa
+    statusMapa,
   };
 };

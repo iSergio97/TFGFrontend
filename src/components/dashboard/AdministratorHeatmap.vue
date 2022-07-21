@@ -6,55 +6,27 @@
         <div class="column">
           <article class="message is-dark">
             <div class="message-header">
-              <p>Mapa de calor - Operaciones de cambio de domicilio del año seleccionado</p>
+              <p>Operaciones de cambio de domicilio</p>
               <div align="right">
-                <div class="select is-rounded is-small">
-                  <select v-model="listPosition" class="select is-rounded">
-                    <option value="0" selected> 2021</option>
-                    <option value="1"> 2020</option>
-                    <option value="2"> 2019</option>
-                  </select>
+                <div class="container">
+                  <div class="notification is-dark">
+                    <input type="date" v-model="startTime" name="startTime"/>
+                    <input type="date" v-model="endTime" name="endTime"/>
+                    <button class="button is-small is-success is-light is-rounded"
+                            @click="recargarHeatMap()">
+                      Recargar
+                    </button>
+                  </div>
                 </div>
-                <div class="select is-rounded is-small">
-                  <select v-model="tipo" class="select is-rounded">
-                    <option value="M" selected> Modificación</option>
-                    <option value="A"> Alta</option>
-                  </select>
-                </div>
-                <div class="select is-rounded is-small">
-                  <select v-model="subtipo" class="select is-rounded">
-                    <option value="MV" selected> Mod. Domicilio</option>
-                    <option value="ACR"> Alta por Cambio de Residencia</option>
-                  </select>
-                </div>
-                <button class="button is-small is-success is-light is-rounded"
-                        @click="recargarMapaCalor()">
-                  Recargar
-                </button>
               </div>
             </div>
             <div class="message-body">
               <vue-google-heatmap :points="points"
-                                  :width="750"
+                                  :width="950"
                                   :height="625"
                                   :initial-zoom="15"
                                   :lat="37.5403514"
                                   :lng="-5.0845226"/>
-            </div>
-          </article>
-        </div>
-        <div class="column">
-          <article class="message is-dark">
-            <div class="message-header">
-              <p>Diagrama de barras - Habitantes por direccion</p>
-            </div>
-            <div class="message-body" v-if="isLoaded">
-              <AreaChartCard :data="data"
-                             :columns="['C/ Salto', 'Avda Emigrantes', 'R/ Ferrocarril']"
-                             :colors:="['#2E294E', '#8D5B4C', '#F86624']"/>
-            </div>
-            <div class="message-body" v-else>
-              <LoadingDiv/>
             </div>
           </article>
         </div>
@@ -67,15 +39,11 @@
 import { MapaCalorGET } from '@/api/MapaCalorGET';
 import VerticalNav from '@/components/statistics/VerticalNav';
 import LoadingDiv from '@/components/LoadingDiv';
-import Doughnut from '@/components/statistics/Doughnut';
-import AreaChartCard from '@/components/statistics/AreaChartCard';
 
 export default {
   name: 'AdministratorHeatmap',
   components: {
     LoadingDiv,
-    Doughnut,
-    AreaChartCard,
     VerticalNav
   },
   data() {
@@ -87,45 +55,75 @@ export default {
       listPosition: 0,
       tipo: 'M',
       subtipo: 'MV',
+      startTime: '',
+      endTime: '',
     };
   },
+  watch: {
+    startTime: function (val, oldVal) {
+      let nuevaFecha = new Date(val);
+      if (nuevaFecha > new Date()) {
+        this.startTime = oldVal;
+        alert('La fecha de inicio no puede ser superior a la fecha actual');
+        return;
+      } else if (nuevaFecha > new Date(this.endTime)) {
+        this.startTime = oldVal;
+        alert('La fecha de inicio no puede ser anterior a la fecha de fin');
+        return;
+      }
+      this.startTime = val;
+    },
+
+    endTime: function (val, oldVal) {
+      let nuevaFecha = new Date(val);
+      if (nuevaFecha > new Date()) {
+        this.endTime = oldVal;
+        alert('La fecha de fin no puede ser superior a la fecha actual');
+        return;
+      } else if (nuevaFecha < new Date(this.startTime)) {
+        this.endTime = oldVal;
+        alert('La fecha de fin no puede ser superior a la de inicio');
+        return;
+      }
+      this.endTime = val;
+    },
+  },
   methods: {
-    async fillPoints() {
-      let { mapa } = await MapaCalorGET();
+    async fillPoints(fechaInicio, fechaFin) {
+      let { mapa } = await MapaCalorGET(fechaInicio, fechaFin);
       this.listHeatmap = mapa;
       this.fillDataPoints();
     },
     fillDataPoints() {
-      let year = this.listHeatmap[this.listPosition];
-      if (this.tipo !== 'todos') {
-        year = year.filter(ops => ops.tipo === this.tipo && ops.subtipo === this.subtipo);
-      }
-      year.forEach((operacion) => {
+      let year = this.listHeatmap;
+      year.forEach((coordenadas) => {
         let {
           lat,
           lng
-        } = operacion.hoja.numeracion;
+        } = coordenadas;
         this.points.push({
           lat,
           lng
         });
       });
     },
-    async areaChart() {
-      let { mapa } = await MapaCalorGET();
-      this.data = [1, 4, 4];
-      this.isLoaded = true;
-    },
-    recargarMapaCalor() {
+    recargarHeatMap() {
       this.isLoaded = false;
       this.points = []; // Limpiamos el vector para recargar el mapa
-      this.fillDataPoints();
+      this.fillPoints(this.startTime, this.endTime);
       this.isLoaded = true;
     },
   },
   async mounted() {
-    await this.fillPoints();
-    await this.areaChart();
+    this.endTime = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1)
+      .padStart(2, '0') + '-' + String(new Date().getDate())
+      .padStart(2, '0');
+    let fechaSemanaAnterior = new Date();
+    fechaSemanaAnterior.setDate(fechaSemanaAnterior.getDate() - 7);
+    this.startTime = fechaSemanaAnterior.getFullYear() + '-' + String((fechaSemanaAnterior.getMonth() + 1))
+      .padStart(2, '0') + '-' + String(fechaSemanaAnterior.getDate())
+      .padStart(2, '0');
+    await this.fillPoints(this.startTime, this.endTime);
   },
 };
 </script>
@@ -133,13 +131,18 @@ export default {
 <style>
 @media (max-width: 1318px) {
   html, body {
-    background: url(../../images/v996-016.jpg) no-repeat center center;
+    background: url(../../images/v996-016.jpg) center center;
     background-size: cover;
   }
 }
 </style>
 
 <style scoped>
+html, body {
+  background: url(../../images/v996-016.jpg) no-repeat center center;
+  background-size: cover;
+}
+
 * {
   text-align: center;
 }
