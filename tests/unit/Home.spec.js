@@ -1,10 +1,11 @@
+/* eslint-disable */
 import { expect } from "chai";
 import { shallowMount } from "@vue/test-utils";
-import Home from "../../src/views/Home";
+import Home from "../../src/views/Home.vue";
 
 describe("Home.vue", () => {
   it("La página inicial tiene título, subtítulo, botón de preguntas frecuentes e imagen", () => {
-    const wrapper = shallowMount(Home);
+    const wrapper = shallowMount(Home, {});
     const img = wrapper.findAll("img");
     expect(wrapper.text()).to.includes("Padrón Municipal Online de Habitantes");
     expect(wrapper.text()).to.includes(
