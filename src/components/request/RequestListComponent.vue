@@ -35,7 +35,7 @@
 import { SolicitudesGET } from '@/api/SolicitudesGET';
 import { SolicitudesFiltroGET } from '@/api/SolicitudesFiltroGET';
 import { PMHCrypto } from '@/methods/PMHCrypto';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import TablaPaginada from './TablaPaginada';
 
 export default {
@@ -93,5 +93,13 @@ table {
 
 .box {
   background-color: transparent !important;
+}
+
+input, select {
+  margin-right: 10px;
+}
+
+select {
+  margin-left: 5px;
 }
 </style>

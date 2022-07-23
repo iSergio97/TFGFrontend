@@ -72,6 +72,11 @@ export default {
 </script>
 
 <style scoped>
+html, body {
+  background: url(../../images/v996-016.jpg) center center;
+  background-size: cover;
+}
+
 * {
   text-align: center;
 }

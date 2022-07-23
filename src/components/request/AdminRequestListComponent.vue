@@ -1,75 +1,37 @@
 <template>
+  <h3> Ordenar</h3>
+  <div class="container">
+    <label for="startTime">Fecha desde:</label> <input type="date" v-model="startTime"
+                                                       id="startTime"/>
+    <label for="endTime">Fecha hasta:</label> <input type="date" v-model="endTime" id="endTime"/>
+    <label for="estado">Estado:</label>
+    <span>
+      <select id="estado" v-model="estado" class="is-expanded">
+        <option value="P">Pendiente</option>
+        <option value="A">Aceptadas</option>
+        <option value="R">Rechazadas</option>
+        <option value="C">Canceladas</option>
+        <option value="T">Todas</option>
+      </select>
+    </span>
+    <label for="orden"> Orden</label>
+    <span>
+      <select id="orden" v-model="orden" class="is-expanded">
+        <option value="ASC">Ascendiente</option>
+        <option value="DESC">Descendiente</option>
+      </select>
+    </span>
+    <button class="button is-small is-success is-rounded"
+            @click="filtrarSolicitudes">
+      Recargar
+    </button>
+  </div>
+  <br>
   <div v-if="lista.length > 0">
-    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-      <a :disabled="indexPag > 0 ? disabled : ''"
-         @click="prevPage"
-         class="pagination-previous"
-         id="prevbutton">Página anterior</a>
-      <a :disabled="indexPag < paginas - 1 ? disabled : ''"
-         @click="nextPage"
-         class="pagination-next"
-         id="nextButton">Siguiente página</a>
-      <ul class="pagination-list">
-        <li><a class="pagination-link" @click="indexPag = 0">Página 1</a></li>
-        <li v-if="indexPag > 0">
-          <a class="pagination-link" @click="indexPag -= 1">{{ indexPag }}
-          </a>
-        </li>
-        <li><span class="pagination-ellipsis">&hellip;</span></li>
-        <li><a class="pagination-link is-current">{{ indexPag + 1 }}</a></li>
-        <li><span class="pagination-ellipsis">&hellip;</span></li>
-        <li v-if="indexPag < paginas - 2">
-          <a class="pagination-link" aria-current="page" @click="indexPag += 1">
-            {{ indexPag + 2 }}
-          </a>
-        </li>
-        <li><a class="pagination-link" @click="indexPag = paginas - 1">Página {{ paginas }}</a></li>
-      </ul>
-    </nav>
-    <table class="table">
-      <thead>
-      <tr>
-        <th>
-          ID
-        </th>
-        <th><abbr title="Tipo de la operación (A)lta, (B)aja o (M)odificación"> Tipo</abbr></th>
-        <th><abbr title="
-        Subtipo de la operación (Alta por cambio de Residencia(ACR), Alta de Inmigrantes (AIM),
-        Modificación de vivienda (MV), Modificación de datos personales (MDP)
-        o Modificación por Renovación de Empadronamiento (MRE) (exclusivo para extranjeros)">
-          Subtipo</abbr></th>
-        <th> Estado</th>
-        <th> Habitante</th>
-        <th> Fecha</th>
-      </tr>
-      </thead>
-      <tbody v-for="request in itemsPaginados" :key="request.id">
-      <tr>
-        <th>
-          <router-link :to="{name: 'AdministratorRequestShow', params: {id: request.id}}">
-            {{ request.id }}
-          </router-link>
-        </th>
-        <td> {{ request.tipo }}</td>
-        <td> {{ request.subtipo }}</td>
-        <td> {{ request.estado }}</td>
-        <!-- eslint-disable -->
-        <td> {{ request.solicitante.primerApellido }} {{ request.solicitante.segundoApellido }},
-          {{ request.solicitante.nombre }}
-        </td>
-        <td>
-          {{ new Date(request.fecha).getDate() }}/{{
-            new Date(request.fecha).getMonth()
-          }}/{{ new Date(request.fecha).getFullYear() }}
-        </td>
-      </tr>
-      </tbody>
-    </table>
+    <TablaPaginada :lista="lista" :is-Admin="true" :key="isLoaded"/>
   </div>
   <div v-else class="box">
-    <h3> Actualmente no se ha registrado ninguna operación.
-      Si desea registrar una, acuda a la lista de solicitudes para aceptar una.
-    </h3>
+    <h3> Actualmente no existe ninguna solicitud pendiente de revisar, ¡gran trabajo! </h3>
   </div>
   <div>
     <br>
@@ -80,51 +42,54 @@
 import { SolicitudesGET } from '@/api/SolicitudesGET';
 import { PMHCrypto } from '@/methods/PMHCrypto';
 import { ref, watch } from 'vue';
+import TablaPaginada from './TablaPaginada';
+import { SolicitudesFiltroGET } from '../../api/SolicitudesFiltroGET';
 
 export default {
   name: 'AdminRequestListComponent',
+  components: { TablaPaginada },
   async setup() {
     /* eslint-disable */
     const { decrypt } = PMHCrypto();
     const { id } = JSON.parse(decrypt(localStorage.getItem('USER_PRO'), localStorage.getItem('SALT')));
     let lista = ref((await SolicitudesGET({ user: false }, id)).lista);
 
-    console.log(lista);
+    let isLoaded = ref(false);
 
-    const indexPag = ref(0);
-    const itemsPerList = (indexPag) => {
-      return indexPag * 10 + 10;// Se toman 10 elementos por página
-    };
+    let startTime = ref(new Date());
+    let endTime = ref(new Date().getFullYear() + '-' + String(new Date().getMonth() + 1)
+      .padStart(2, '0') + '-' + String(new Date().getDate())
+      .padStart(2, '0'));
+    let fechaSemanaAnterior = new Date();
+    fechaSemanaAnterior.setDate(fechaSemanaAnterior.getDate() - 7);
+    fechaSemanaAnterior = fechaSemanaAnterior.getFullYear() + '-' + String((fechaSemanaAnterior.getMonth() + 1))
+      .padStart(2, '0') + '-' + String(fechaSemanaAnterior.getDate())
+      .padStart(2, '0');
+    startTime.value = fechaSemanaAnterior;
 
-    const itemsPag = (indexPag) => {
-      return indexPag * 10 + 10;
-    };
+    let estado = ref('P');
+    let orden = ref('ASC');
 
-    const paginas = ref(Math.ceil(lista.value.length / 10)); // Redondeamos operaciones
-    const nextPage = () => {
-      if (indexPag.value < paginas.value - 1) {
-        indexPag.value++;
+    let filtrarSolicitudes = async () => {
+      isLoaded.value = false;
+      let tmpLista = (await SolicitudesFiltroGET({
+        user: false,
+      }, id, startTime.value, endTime.value, estado.value)).lista;
+      if (orden.value === 'ASC') {
+        tmpLista.value = tmpLista.value.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
       }
+      lista.value = tmpLista.value;
+      isLoaded.value = true;
     };
-    const prevPage = () => {
-      if (indexPag.value > 0) {
-        indexPag.value--;
-      }
-    };
-    let supLimit = itemsPerList(indexPag.value);
-    const itemsPaginados = ref(lista.value.slice(indexPag.value * 10, supLimit));
-    watch(indexPag, (indexPag) => {
-      supLimit = itemsPag(indexPag);
-      itemsPaginados.value = lista.value.slice(indexPag * 10, supLimit);
-    });
+
     return {
       lista,
-      itemsPaginados,
-      itemsPag,
-      paginas,
-      indexPag,
-      nextPage,
-      prevPage,
+      estado,
+      orden,
+      isLoaded,
+      startTime,
+      endTime,
+      filtrarSolicitudes,
     };
   },
 };
@@ -141,5 +106,13 @@ table {
 
 .box, table {
   background-color: transparent;
+}
+
+input, select {
+  margin-right: 10px;
+}
+
+select {
+  margin-left: 5px;
 }
 </style>

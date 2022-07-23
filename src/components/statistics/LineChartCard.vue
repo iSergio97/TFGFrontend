@@ -15,17 +15,17 @@ import VueApexChart from 'vue3-apexcharts';
 
 export default {
   name: 'LineChartCard',
-  props: ['solicitudesDate'],
+  props: ['datos', 'etiquetas', 'colors'],
   components: {
     VueApexChart,
   },
   data() {
-    return{
+    return {
       arrayDates: [],
       arraySol: [],
       series: [{
-        name: "Desktops",
-        data: [1,2,3,4,5,6,7],
+        name: 'Solicitudes',
+        data: this.datos,
       }],
       chartOptions: {
         chart: {
@@ -52,7 +52,7 @@ export default {
           },
         },
         xAxis: {
-          categories: ['E', 'F', 'M', 'A', 'M', 'JN', 'JL', 'A', 'S', 'O', 'N', 'D'],
+          categories: this.categories,
         }
       },
     };

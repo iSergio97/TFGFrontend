@@ -97,7 +97,8 @@
                             :disabled="!isAdmin || statusRequest !== 'P'"></textarea>
                   <br>
                   <div v-show="isAdmin && statusRequest === 'P'">
-                    <button class="button is-info" @click="modificarSolicitud">
+                    <button class="button is-info" :class="isSubmitted ? 'is-loading' : ''"
+                            @click="modificarSolicitud">
                       Enviar
                     </button>
                   </div>
@@ -110,7 +111,8 @@
                             :disabled="isAdmin || statusRequest !== 'P'"></textarea>
                   <br>
                   <div v-show="!isAdmin && statusRequest === 'P'">
-                    <button class="button is-info" @click="actualizarJustificacion">
+                    <button class="button is-info" :class="isSubmitted ? 'is-loading' : ''"
+                            @click="actualizarJustificacion">
                       Enviar
                     </button>
                   </div>
@@ -216,6 +218,8 @@ export default {
     if (isAdmin) {
       url = urlAdmin;
     }
+
+    let isSubmitted = ref(false);
 
     const token = Cookie.get('token');
 
@@ -345,6 +349,7 @@ export default {
     };
 
     const modificarSolicitud = (e) => {
+      isSubmitted.value = true;
       e.preventDefault();
       const params = new URLSearchParams();
       params.append('solicitudId', request.id);
@@ -385,9 +390,11 @@ export default {
                 router.push('/administrator/requests/list');
               })
               .catch(() => {
+                isSubmitted.value = false;
                 Swal.fire('Oops...', 'Se ha producido un error al editar el estado de la solicitud. \nPosiblemente esta solicitud ya haya sido aceptada o rechazada por otro administrador.\nO el habitante haya decidido cancelarla.', 'error');
               });
           } else {
+            isSubmitted.value = false;
             Swal.fire('Oops...', 'Se ha producido un error al editar el estado de la solicitud. \nPosiblemente esta solicitud ya haya sido aceptada o rechazada por otro administrador.\nO el habitante haya decidido cancelarla.', 'error');
           }
         })
@@ -417,7 +424,7 @@ export default {
     return {
       request,
       color,
-      downloadFile,
+      isSubmitted,
       status,
       statusRequest,
       isAdmin,
@@ -431,6 +438,7 @@ export default {
       solicitante,
       fechaCreacion,
       estado,
+      downloadFile,
       modificarSolicitud,
       adjuntarArchivo,
       actualizarJustificacion,

@@ -4,7 +4,7 @@ import { BASE_URL } from "@/api/BASE_URL";
 import Cookie from "js-cookie";
 
 /* eslint-disable */
-export const SolicitudesFiltroGET = async (user, userId, fechaDesde, fechaHasta) => {
+export const SolicitudesFiltroGET = async (user, userId, fechaDesde, fechaHasta, estado) => {
   const lista = ref([]);
   const statusSolicitudes = ref(0);
 
@@ -30,9 +30,14 @@ export const SolicitudesFiltroGET = async (user, userId, fechaDesde, fechaHasta)
       .catch(() => (statusSolicitudes.value = 404));
   } else {
     await axios
-      .get(`${BASE_URL}solicitud/administrador/all`, {
+      .get(`${BASE_URL}solicitud/administrador/filter`, {
         headers: {
           Authorization: `Bearer ${token}`,
+        },
+        params: {
+          estado: estado,
+          desde: fechaDesde,
+          hasta: fechaHasta,
         },
       })
       .then((res) => {

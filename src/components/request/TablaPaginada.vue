@@ -44,11 +44,16 @@
     </thead>
     <tbody v-for="request in itemsPaginados" :key="request.id">
     <tr>
-      <th>
+      <td v-if="!isAdmin">
         <router-link :to="{name: 'UserRequestShow', params: {id: request.id}}">
           {{ request.id }}
         </router-link>
-      </th>
+      </td>
+      <td v-if="isAdmin">
+        <router-link :to="{name: 'AdministratorRequestShow', params: {id: request.id}}">
+          {{ request.id }}
+        </router-link>
+      </td>
       <td> {{ request.tipo }}</td>
       <td> {{ request.subtipo }}</td>
       <td> {{ request.estado }}</td>

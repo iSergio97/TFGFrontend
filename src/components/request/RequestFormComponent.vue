@@ -360,6 +360,7 @@ export default {
       }
     };
     const submitForm = async () => {
+      isSubmitted.value = true;
       const estadoSolicitante = props.userLogged.estado;
       const nacionalidad = props.userLogged.nacionalidad;
 
@@ -382,7 +383,6 @@ export default {
       }
 
       /* eslint-disable */
-      isSubmitted.value = true;
       let tipoIdentificacion = 22;
       if (tIdentificacion.value.match('\\d{8}\\w')) {
         tipoIdentificacion = 23;
@@ -467,10 +467,6 @@ export default {
         })
           .then((res) => {
             if (res.data.status === 200) {
-              const { object } = res.data;
-              const arrayRequests = JSON.parse(localStorage.getItem('requests'));
-              arrayRequests.push(object);
-              localStorage.setItem('requests', JSON.stringify(arrayRequests));
               let timerInterval;
               Swal.fire({
                 title: 'Solicitud enviada',
