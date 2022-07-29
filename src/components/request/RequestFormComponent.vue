@@ -1,236 +1,46 @@
 <template>
-  <div class="columns">
-    <div class="column is-three-quarters">
-      <div class="card">
-        <div class="card-content">
-          <div class="content">
-            <form>
-              <div class="field">
-                <p class="control">
-                  <span class="select">
-                    <label>
-                      <select v-model="opcion" class="is-expanded">
-                        <option value="A">Alta</option>
-                        <option value="B">Baja</option>
-                        <option value="M">Modificación</option>
-                      </select>
-                    </label>
-                  </span>
-                </p>
-              </div>
-              <div class="field">
-                <p class="select">
-                  <span class="select">
-                    <label>
-                      <select v-model="subOpcion">
-                        <option v-if="opcion === 'A'" value="ACR" selected>
-                          Alta por cambio de residencia
-                        </option>
-                        <option v-if="opcion === 'A'" value="AIM">
-                          Alta de inmigrantes
-                        </option>
-                        <option v-if="opcion === 'B'" value="BNI" disabled>
-                          Las solicitudes de baja no está disponibles
-                        </option>
-                        <option v-if="opcion === 'M'" value="MD">
-                          Modificación datos personales
-                        </option>
-                        <option v-if="opcion === 'M'" value="MV">
-                          Cambio de domicilio
-                        </option>
-                        <option v-if="opcion === 'M'" value="MRE">
-                          Renovación empadronamiento
-                        </option>
-                      </select>
-                    </label>
-                  </span>
-                </p>
-              </div>
-              <div v-if="opcion === 'A' || subOpcion === 'MV'">
-                <div class="field">
-                  <p class="select">
-                    <span class="select">
-                      <label>
-                        <select v-model="tipoVivienda">
-                          <option
-                            v-for="(tViv, order) in tipoViviendas"
-                            :value="tViv"
-                            :key="order">
-                            {{ tViv }}
-                          </option>
-                        </select>
-                      </label>
-                    </span>
-                  </p>
-                </div>
-                <div class="field">
-                  <p class="select">
-                    <span class="select">
-                      <label>
-                        <select v-model="vivienda">
-                          <option
-                            v-for="viv in viviendas"
-                            :value="viv"
-                            :key="viv.id">
-                            {{ viv.nombre }}
-                          </option>
-                        </select>
-                      </label>
-                    </span>
-                  </p>
-                </div>
-                <div class="field">
-                  <p class="select">
-                    <span class="select">
-                      <label>
-                        <select v-model="numeracion">
-                          <option
-                            v-for="num in numeracionesCalle"
-                            :value="num"
-                            :key="num.id">
-                            {{ num.numero }}
-                          </option>
-                        </select>
-                      </label>
-                    </span>
-                  </p>
-                </div>
-              </div>
-              <div v-else-if="subOpcion === 'MD'">
-                <div class="is-centered">
-                  <div class="field">
-                    <label class="label">Nombre</label>
-                    <div class="control">
-                      <input class="input" type="text" v-model="nombre">
-                    </div>
-                  </div>
-                  <div class="field">
-                    <label class="label">Primer apellido</label>
-                    <div class="control">
-                      <input class="input" type="text" v-model="primerApellido">
-                    </div>
-                  </div>
-                  <div class="field">
-                    <label class="label">Segundo apellido</label>
-                    <div class="control">
-                      <input class="input" type="text" v-model="segundoApellido">
-                    </div>
-                  </div>
-                  <div class="field">
-                    <label class="label">Fecha de nacimiento</label>
-                    <div class="control">
-                      <input class="input" type="date" v-model="fechaNacimiento">
-                    </div>
-                  </div>
-                  <div class="field">
-                    <label class="label">Identificación</label>
-                    <div class="control">
-                      <input class="input" type="text" v-model="tIdentificacion">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <br>
-              <div id="file">
-                <label>
-                  <input class="file-input" type="file" :onchange="adjuntarArchivo">
-                  <span class="file-cta">
-                <span class="file-icon">
-                  <i class="fas fa-upload"></i>
-                </span>
-                <span class="file-label">
-                  Adjuntar documento
-                </span>
-              </span>
-                </label>
-              </div>
-              <br>
-              <div class="e-text-center">
-                <button type="button" :class="isSubmitted ? 'is-loading' : ''"
-                        :onclick="submitForm" value="Enviar"
-                        class="button is-info is-outlined is-rounded">Enviar
-                </button>
-                <br>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+  <div class="tabs is-toggle is-toggle-rounded is-fullwidth">
+    <ul>
+      <li :class="position === 0 ? 'is-active' : ''">
+        <a class="inactiveLink">
+          <span class="icon is-small"><i class="fas fa-info-circle"></i></span>
+          <span>Solicitud</span>
+        </a>
+      </li>
+      <li :class="position === 1 ? 'is-active' : ''">
+        <a class="inactiveLink">
+          <span class="icon is-small"><i class="fas fa-user-check"></i></span>
+          <span>Convivientes</span>
+        </a>
+      </li>
+      <li :class="position === 2 ? 'is-active' : ''">
+        <a class="inactiveLink">
+          <span class="icon is-small"><i class="fas fa-file-upload"></i></span>
+          <span>Documentos</span>
+        </a>
+      </li>
+      <li :class="position === 3 ? 'is-active' : ''">
+        <a class="inactiveLink">
+          <span class="icon is-small"><i class="fas fa-book-open"></i></span>
+          <span>Resumen</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="tab-content">
+    <div v-if="position === 0" class="column">
+      <UserFormComponent :user-logged="userLogged" @next="next"
+                         @completa-olicitud="completaSolicitud"/>
     </div>
-    <div class="column is-one-quarters">
-      <div class="card">
-        <div class="card-content">
-          <div class="content">
-            <div>
-              Archivos necesarios para la solicitud:
-              <div v-if="opcion === 'A'" value="ACR">
-                <p v-if="subOpcion === 'ACR'">
-                  <b> Alta por cambio de residencia </b>
-                </p>
-                <p v-if="subOpcion === 'AIM'">
-                  <b> Alta de inmigrantes </b>
-                </p>
-              </div>
-              <div v-if="opcion === 'B'">
-                <b> Las solicitudes de baja no está disponibles </b>
-              </div>
-              <p v-if="subOpcion === 'MD'">
-                <b> Modificación datos personales </b>
-              </p>
-              <p v-if="subOpcion === 'MV'">
-                <b> Cambio de domicilio </b>
-              </p>
-              <p v-if="subOpcion === 'MRE'">
-                <b> Renovación empadronamiento </b>
-              </p>
-              <ul v-for="documento in documentosNecesarios">
-                <li> {{ documento }}</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card" id="files">
-        <div class="card-content">
-          <div class="content">
-            <div v-if="archivos.length > 0">
-              <ul v-for="file in archivos" :key="file.name">
-                <li v-if="file.type === 'PDF'" class="title is-5">
-                  <i class="far fa-file-pdf"></i> {{ file.name }}
-                  <button class="delete" @click="deleteFile(file)"></button>
-                </li>
-                <li v-else-if="file.type === 'PNG' || file.type === 'JPG' || file.type === 'JPGE'"
-                    class="title is-5">
-                  <i class="far fa-file-image"></i> {{ file.name }}
-                  <button class="delete" @click="deleteFile(file)"></button>
-                </li>
-              </ul>
-            </div>
-            <div v-else>
-              Actualmente, la solicitud no presenta ningún documento asociado.
-              El sistema no le permitirá enviar la solicitud sin presentar los documentos
-              mencionados arriba.
-            </div>
-          </div>
-        </div>
-      </div>
-      <br>
-      <br>
-      <div class="card" v-if="convivientes.length > 0 && subOpcion === 'MV'">
-        <div class="card-content">
-          <div class="content">
-            <div v-for="conviviente in convivientes">
-              <div>
-                <label>
-                  <input type="checkbox" @click="editarSolicitud(conviviente.id)">
-                  {{ conviviente.nombre }}, {{ conviviente.primerApellido }}
-                  {{ conviviente.segundoApellido }}
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div v-if="position === 1" class="column">
+      <ConvivientesComponent @next="next" @previous="previous"/>
+    </div>
+    <div v-if="position === 2" class="column">
+      <UserDocumentosComponent @next="next" @previous="previous"/>
+    </div>
+    <div v-if="position === 3" class="column">
+      <ResumenComponent @previous="previous" @submit-request="submitRequest"
+                        @demo-data="demoData"/>
     </div>
   </div>
 </template>
@@ -247,15 +57,61 @@ import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 import Cookie from 'js-cookie';
 import { ConvivientesGET } from '@/api/ConvivientesGET';
+import UserFormComponent from './UserFormComponent';
+import UserDocumentosComponent from './UserDocumentosComponent';
+import ConvivientesComponent from './ConvivientesComponent';
+import ResumenComponent from './ResumenComponent';
 
 export default {
   name: 'RequestFormComponent',
   props: {
     userLogged: Object,
   },
+  components: {
+    UserFormComponent,
+    UserDocumentosComponent,
+    ConvivientesComponent,
+    ResumenComponent,
+  },
   async setup(props) {
     const router = useRouter();
     const formData = new FormData();
+
+    let position = ref(0);
+
+    let submitRequest = () => {
+      alert('Botón de finalizar pulsado');
+    };
+
+    let demoData = (data) => {
+      alert('Botón pulsado demoData');
+      console.log(data);
+    };
+
+    const next = () => {
+      position.value++;
+    };
+
+    const previous = () => {
+      position.value--;
+    };
+
+    const avisoFinal = () => {
+      alert('Botón de finalizar');
+    };
+
+    const completaSolicitud = (formField) => {
+      opcion.value = formFields.opcion;
+      subOpcion.value = formFields.subOpcion;
+      tipoVivienda.value = formFields.tipoVivienda;
+      vivienda.value = formFields.vivienda;
+      numeracion.value = formFields.numeracion;
+      nombre.value = formFields.nombre;
+      primerApellido.value = formFields.primerApellido;
+      segundoApellido.value = formFields.segundoApellido;
+      fechaNacimiento.value = formFields.fechaNacimiento;
+      tIdentificacion.value = formFields.tIdentificacion;
+    };
 
     const {
       id,
@@ -425,7 +281,6 @@ export default {
         documentos: [],
         grupo: convivientesEnSolicitud,
       };
-
       let solicitud;
       let estado;
       let documentos;
@@ -522,6 +377,13 @@ export default {
       numeracion,
       convivientes,
       documentosNecesarios,
+      position,
+      next,
+      previous,
+      completaSolicitud,
+      avisoFinal,
+      submitRequest,
+      demoData,
       adjuntarArchivo,
       deleteFile,
       submitForm,
@@ -576,5 +438,10 @@ input[type="text"], input[type="date"] {
 
 input, select {
   border: solid 1px black;
+}
+
+.inactiveLink {
+  pointer-events: none;
+  cursor: default;
 }
 </style>
