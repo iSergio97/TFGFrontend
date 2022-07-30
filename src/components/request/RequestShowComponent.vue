@@ -302,6 +302,7 @@ export default {
         }
       })
         .then((res) => {
+          console.log('res.data', res.data);
           const url = URL.createObjectURL(new Blob([res.data], { type: type }));
           window.open(url);
         });

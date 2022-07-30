@@ -150,11 +150,13 @@ export default {
   props: {
     userLogged: Object,
     position: Number,
+    datos: Object
   },
   async setup(props) {
-    const opcion = ref('A');
+    console.log(props.datos);
+    const opcion = ref(props.datos.opcion);
     // ['ACR', 'AIM', 'MD', 'MV', 'MRN']
-    const subOpcion = ref('ACR');
+    const subOpcion = ref(props.datos.subOpcion);
     watch(opcion, (selectedOption) => {
       if (selectedOption === 'A') {
         subOpcion.value = 'ACR';
@@ -166,7 +168,7 @@ export default {
     });
 
     const tipoViviendas = (await TiposCalleGET()).tipos;
-    const tipoVivienda = ref('Calle');
+    const tipoVivienda = ref(props.datos.tipoVivienda);
     const { calles } = await CalleGET(tipoVivienda.value);
     const viviendas = ref(calles.value);
     const vivienda = ref(viviendas.value[0]);
@@ -188,12 +190,12 @@ export default {
     });
     // viviendas.value[0].id
     /* eslint-disable */
-    const nombre = ref(props.userLogged.nombre);
-    const primerApellido = ref(props.userLogged.primerApellido);
-    const segundoApellido = ref(props.userLogged.segundoApellido);
-    const fechaNacimiento = ref(new Date(props.userLogged.fechaNacimiento).toISOString()
+    const nombre = ref(props.datos.nombre);
+    const primerApellido = ref(props.datos.primerApellido);
+    const segundoApellido = ref(props.datos.segundoApellido);
+    const fechaNacimiento = ref(new Date(props.datos.fechaNacimiento).toISOString()
       .split('T')[0]);
-    const tIdentificacion = props.userLogged.identificacion !== null ?
+    const tIdentificacion = props.datos.identificacion !== null ?
       ref(props.userLogged.identificacion) : ref('');
 
     return {

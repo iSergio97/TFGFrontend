@@ -7,7 +7,7 @@
           <span>Solicitud</span>
         </a>
       </li>
-      <li :class="position === 1 ? 'is-active' : ''">
+      <li :class="position === 1 ? 'is-active' : ''" v-if="convivientes.length > 0">
         <a class="inactiveLink">
           <span class="icon is-small"><i class="fas fa-user-check"></i></span>
           <span>Convivientes</span>
@@ -30,13 +30,16 @@
   <div class="tab-content">
     <div v-if="position === 0" class="column">
       <UserFormComponent :user-logged="userLogged" @next="next"
-                         @completa-olicitud="completaSolicitud"/>
+                         :datos="{opcion, subOpcion, tipoVivienda, vivienda, numeracion, nombre, primerApellido, segundoApellido, fechaNacimiento, tIdentificacion}"
+                         @completa-solicitud="completaSolicitud"/>
     </div>
     <div v-if="position === 1" class="column">
       <ConvivientesComponent @next="next" @previous="previous"/>
     </div>
     <div v-if="position === 2" class="column">
-      <UserDocumentosComponent @next="next" @previous="previous"/>
+      <UserDocumentosComponent @next="next" @previous="previous"
+                               :nacionalidad="userLogged.nacionalidad"
+                               :tipo-operacion="subOpcion"/>
     </div>
     <div v-if="position === 3" class="column">
       <ResumenComponent @previous="previous" @submit-request="submitRequest"
@@ -85,14 +88,19 @@ export default {
 
     let demoData = (data) => {
       alert('Botón pulsado demoData');
-      console.log(data);
     };
 
     const next = () => {
+      if (position.value === 0 && (convivientes.value.length === 0)) {
+        position.value++;
+      }
       position.value++;
     };
 
     const previous = () => {
+      if (position.value === 2 && (convivientes.value.length === 0)) {
+        position.value--;
+      }
       position.value--;
     };
 
@@ -101,16 +109,17 @@ export default {
     };
 
     const completaSolicitud = (formField) => {
-      opcion.value = formFields.opcion;
-      subOpcion.value = formFields.subOpcion;
-      tipoVivienda.value = formFields.tipoVivienda;
-      vivienda.value = formFields.vivienda;
-      numeracion.value = formFields.numeracion;
-      nombre.value = formFields.nombre;
-      primerApellido.value = formFields.primerApellido;
-      segundoApellido.value = formFields.segundoApellido;
-      fechaNacimiento.value = formFields.fechaNacimiento;
-      tIdentificacion.value = formFields.tIdentificacion;
+      opcion.value = formField.opcion;
+      subOpcion.value = formField.subOpcion;
+      tipoVivienda.value = formField.tipoVivienda;
+      vivienda.value = formField.vivienda;
+      numeracion.value = formField.numeracion;
+      nombre.value = formField.nombre;
+      primerApellido.value = formField.primerApellido;
+      segundoApellido.value = formField.segundoApellido;
+      fechaNacimiento.value = formField.fechaNacimiento;
+      tIdentificacion.value = formField.tIdentificacion;
+      console.log(opcion.value, subOpcion.value);
     };
 
     const {
