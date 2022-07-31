@@ -119,7 +119,6 @@ export default {
       segundoApellido.value = formField.segundoApellido;
       fechaNacimiento.value = formField.fechaNacimiento;
       tIdentificacion.value = formField.tIdentificacion;
-      console.log(opcion.value, subOpcion.value);
     };
 
     const {

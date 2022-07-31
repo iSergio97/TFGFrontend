@@ -3,11 +3,13 @@
   </button>
   <button @click="$emit('next')" class="button is-success is-rounded next-button"> Siguiente
   </button>
-  <div v-for="documento in documentosNecesarios">
-    <div v-if="documento.required" class="file is-danger">
+  <div class="column"></div>
+  <div v-for="documento in documentosNecesarios" class="column">
+    <div v-if="documento.required && !documento.done" class="file is-danger">
+      <p>{{ documento.name }}</p>
       <label>
-        <p>{{ documento.name }}</p>
-        <input class="file-input" type="file" :onchange="adjuntarArchivo">
+        <input class="file-input" type="file"
+               @change="[adjuntarArchivo($event), marcaHecho(documento)]">
         <span class="file-cta">
                 <span class="file-icon">
                   <i class="fas fa-upload"></i>
@@ -15,12 +17,12 @@
                 <span class="file-label">
                   Adjuntar documento
                 </span>
-      </span>
+        </span>
       </label>
     </div>
-    <div v-else class="file is-info">
+    <div v-else-if="!documento.required" class="file is-info">
+      <p>{{ documento.name }}</p>
       <label>
-        <p>{{ documento.name }}</p>
         <input class="file-input" type="file" :onchange="adjuntarArchivo">
         <span class="file-cta">
                 <span class="file-icon">
@@ -29,27 +31,33 @@
                 <span class="file-label">
                   Adjuntar documento
                 </span>
-      </span>
+        </span>
       </label>
     </div>
   </div>
+  <div class="column"></div>
   <div class="card" id="files">
     <div class="card-content">
       <div class="content">
         <div v-if="archivos.length > 0">
-          <ul v-for="file in archivos" :key="file.name">
+          <ul v-for="(file, index) in archivos" :key="file.name">
+            <h3> {{ index }} </h3>
             <li v-if="file.type === 'PDF'" class="title is-5">
-              <i class="far fa-file-pdf"></i>
-              <p @click="previewDoc(file)" class="archivo">{{ file.name }}</p>
-              <i class="fas fa-trash" @click="deleteFile(file)"></i>
-              <!--<button class="delete" @click="deleteFile(file)"></button> -->
+              <span>
+                <i class="far fa-file-pdf"></i>
+                <p class="archivo">{{ file.name }}</p>
+                <i class="fas fa-eye" @click="previewDoc(file)"></i>
+                <i class="fas fa-trash" @click="[deleteFile(file), desmarcaHecho(index)]"></i>
+              </span>
             </li>
             <li v-else-if="file.type === 'PNG' || file.type === 'JPG' || file.type === 'JPGE'"
                 class="title is-5">
-              <i class="far fa-file-image" @click="previewDoc(file)"></i>
-              <p @click="previewDoc(file)" class="archivo">{{ file.name }}</p>
-              <i class="fas fa-trash" @click="deleteFile(file)"></i>
-              <!--<button class="delete" @click="deleteFile(file)"></button>-->
+              <span>
+                <i class="far fa-file-image" @click="[deleteFile(file), desmarcaHecho(index)]"></i>
+                <p class="archivo">{{ file.name }}</p>
+                <i class="fas fa-eye" @click="previewDoc(file)"></i>
+                <i class="fas fa-trash" @click="deleteFile(file)"></i>
+              </span>
             </li>
           </ul>
         </div>
@@ -65,26 +73,46 @@ export default {
   name: 'UserDocumentosComponent',
   props: ['tipoOperacion', 'nacionalidad'],
   async setup(props) {
-    console.log(props.nacionalidad);
     let documentosNecesarios = ref([]);
     switch (props.tipoOperacion) {
       case 'ACR':
+      case 'AIM':
       case 'MV':
       case 'MRE':
         let dni = {
+          alias: 'DNI',
           name: 'DNI o Libro de Familia',
           required: true,
+          done: false,
+          fileName: '',
         };
         let pasaporte = {
+          alias: 'Pasaporte',
           name: 'Extranjeros deben presentar pasaporte o permiso de residencia',
           required: props.nacionalidad !== 108,
+          done: false,
+          fileName: '',
         };
         documentosNecesarios.value.push(dni);
         documentosNecesarios.value.push(pasaporte);
         break;
-      case 'AIM':
-        break;
       case 'MD':
+        let documento = {
+          alias: 'Documento',
+          name: 'Documento que acredite el cambio que vas a realizar',
+          required: true,
+          done: false,
+          fileName: '',
+        };
+        let dniAntiguo = {
+          alias: 'DocumentoAntiguo',
+          name: 'Si realiza un cambio en su documento de identidad, debe añadir el antiguo',
+          required: false,
+          done: false,
+          fileName: '',
+        };
+        documentosNecesarios.value.push(documento);
+        documentosNecesarios.value.push(dniAntiguo);
         break;
       case 'MRN':
         break;
@@ -100,8 +128,16 @@ export default {
     const adjuntarArchivo = (e) => {
       e.preventDefault();
       const file = e.target.files[0];
-      formData.append('file', file, file.name);
+      let split = file.name.toString()
+        .split('.');
+      let type = split[split.length - 1].toUpperCase();
+      let bannedTypes = ['CSS', 'JS', 'XTHML', 'HTML', 'TXT', 'XML', 'PPTX', 'EXE', 'BAT', 'RAR', 'ZIP', '7ZIP'];
+      if (bannedTypes.includes(type)) {
+        alert('Formato de archivo no soportado');
+        return;
+      }
       if (!archivosName.value.includes(file.name)) {
+        formData.append('file', file, file.name);
         archivosName.value.push(file.name);
         const type = file.name.toString()
           .split('.');
@@ -114,6 +150,20 @@ export default {
           file: file
         });
       }
+    };
+
+    let marcaHecho = (documento) => {
+      let alias = documento.alias;
+      let docsNecesarios = documentosNecesarios.value.filter(doc => doc.alias == alias)[0];
+      docsNecesarios.done = true;
+    };
+
+    let desmarcaHecho = (index) => {
+      alert('Activo');
+      let docIndex = documentosNecesarios.value[index];
+      console.log(docIndex);
+      docIndex.done = false;
+      console.log(docIndex);
     };
 
     const previewDoc = (documento) => {
@@ -143,6 +193,8 @@ export default {
       previewDoc,
       deleteFile,
       adjuntarArchivo,
+      marcaHecho,
+      desmarcaHecho,
     };
   }
 };
@@ -200,9 +252,15 @@ input, select {
 
 i, .archivo {
   cursor: pointer;
+  padding-left: 3px;
+  display: block;
 }
 
 .file {
   display: block;
+}
+
+i {
+  display: inline-block;
 }
 </style>

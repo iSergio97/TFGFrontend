@@ -1,8 +1,11 @@
 <template>
   <button class="button is-link is-rounded prev-button" disabled> Anterior</button>
-  <button
-    @click="$emit('completaSolicitud', {opcion, subOpcion, tipoVivienda, vivienda, numeracion, nombre, primerApellido, segundoApellido, fechaNacimiento, tIdentificacion}); $emit('next');"
-    class="button is-success is-rounded next-button"> Siguiente
+  <button v-if="opcion !== 'B'"
+          @click="$emit('completaSolicitud', {opcion, subOpcion, tipoVivienda, vivienda, numeracion, nombre, primerApellido, segundoApellido, fechaNacimiento, tIdentificacion}); $emit('next');"
+          class="button is-success is-rounded next-button"> Siguiente
+  </button>
+  <button v-else disabled
+          class="button is-success is-rounded next-button"> Siguiente
   </button>
   <div class="card">
     <div class="card-content">
