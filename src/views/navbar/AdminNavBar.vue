@@ -22,7 +22,7 @@
                   <li
                     :class="componentName === 'AdministratorRequestList' ? 'is-active' : ''">
                     <router-link to="/administrator/estadisticas/habitantes">
-                      Sistema/Estadísticas
+                      Estadísticas
                     </router-link
                     >
                   </li>

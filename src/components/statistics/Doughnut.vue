@@ -3,7 +3,8 @@
     <VueApexChart type="donut"
                   :height="heightData"
                   :options="chartOptions"
-                  :series="datos">
+                  :series="datos"
+                  ref="areaChart">
     </VueApexChart>
   </div>
 </template>

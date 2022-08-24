@@ -1,7 +1,7 @@
 <template>
   <button class="button is-link is-rounded prev-button" disabled> Anterior</button>
   <button v-if="opcion !== 'B'"
-          @click="$emit('completaSolicitud', {opcion, subOpcion, tipoVivienda, vivienda, numeracion, nombre, primerApellido, segundoApellido, fechaNacimiento, tIdentificacion}); $emit('next');"
+          @click="$emit('completaSolicitud', {opcion, subOpcion, tipoViviendas, tipoVivienda, viviendas, vivienda, calles, numeracion, nombre, primerApellido, segundoApellido, fechaNacimiento, tIdentificacion}); $emit('next');"
           class="button is-success is-rounded next-button"> Siguiente
   </button>
   <button v-else disabled
@@ -15,7 +15,7 @@
             <p class="control">
                   <span class="select">
                     <label>
-                      <select v-model="opcion" class="is-expanded">
+                      <select v-model="opcion" class="is-expanded" id="opcion">
                         <option value="A">Alta</option>
                         <option value="B">Baja</option>
                         <option value="M">Modificación</option>
@@ -28,7 +28,7 @@
             <p class="select">
                   <span class="select">
                     <label>
-                      <select v-model="subOpcion">
+                      <select v-model="subOpcion" class="subOpcion">
                         <option v-if="opcion === 'A'" value="ACR" selected>
                           Cambio de residencia
                         </option>
@@ -52,7 +52,7 @@
                   </span>
             </p>
           </div>
-          <div v-if="opcion === 'A' || subOpcion === 'MV'">
+          <div v-if="opcion === 'A' && subOpcion === 'ACR' || subOpcion === 'MV'">
             <div class="field">
               <p class="select">
                     <span class="select">
@@ -153,10 +153,11 @@ export default {
   props: {
     userLogged: Object,
     position: Number,
-    datos: Object
+    datos: Object,
+    firstLoad: Boolean,
   },
   async setup(props) {
-    console.log(props.datos);
+    let isLoaded = false;
     const opcion = ref(props.datos.opcion);
     // ['ACR', 'AIM', 'MD', 'MV', 'MRN']
     const subOpcion = ref(props.datos.subOpcion);
@@ -170,27 +171,32 @@ export default {
       }
     });
 
-    const tipoViviendas = (await TiposCalleGET()).tipos;
+    const tipoViviendas = ref(props.datos.tipoViviendas);
     const tipoVivienda = ref(props.datos.tipoVivienda);
-    const { calles } = await CalleGET(tipoVivienda.value);
-    const viviendas = ref(calles.value);
-    const vivienda = ref(viviendas.value[0]);
-
-    watch(tipoVivienda, async (selectedOption) => {
-      const { calles } = await CalleGET(selectedOption);
-      viviendas.value = calles.value;
-      vivienda.value = viviendas.value[0];
-    });
+    const calles = ref(props.datos.calles);
+    const viviendas = ref(props.datos.viviendas);
+    const vivienda = ref(props.datos.vivienda);
 
     const { numeraciones } = await NumeracionGET(vivienda.value.id);
     const numeracionesCalle = ref(numeraciones.value);
-    const numeracion = ref(numeracionesCalle.value[0]);
+    const numeracion = ref(props.datos.numeracion);
+
+    watch(tipoVivienda, async (selectedOption) => {
+      if (isLoaded) {
+        const { calles } = await CalleGET(selectedOption);
+        viviendas.value = calles.value;
+        vivienda.value = viviendas.value[0];
+      }
+    });
 
     watch(vivienda, async (selectedOption) => {
-      const { numeraciones } = await NumeracionGET(selectedOption.id);
-      numeracionesCalle.value = numeraciones.value;
-      numeracion.value = numeracionesCalle.value[0];
+      if (isLoaded) {
+        const { numeraciones } = await NumeracionGET(selectedOption.id);
+        numeracionesCalle.value = numeraciones.value;
+        numeracion.value = numeracionesCalle.value[0];
+      }
     });
+
     // viviendas.value[0].id
     /* eslint-disable */
     const nombre = ref(props.datos.nombre);
@@ -200,6 +206,8 @@ export default {
       .split('T')[0]);
     const tIdentificacion = props.datos.identificacion !== null ?
       ref(props.userLogged.identificacion) : ref('');
+
+    isLoaded = true;
 
     return {
       opcion,
@@ -215,6 +223,7 @@ export default {
       vivienda,
       numeracionesCalle,
       numeracion,
+      calles,
     };
   },
 };

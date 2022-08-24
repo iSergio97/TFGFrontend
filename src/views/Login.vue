@@ -1,49 +1,50 @@
 <!-- eslint-disable -->
 <template>
-    <div class="hero-body">
-      <div class="container has-text-centered">
-        <div class="column is-4 is-offset-4">
-          <h3 class="title has-text-black">Login</h3>
-          <hr class="login-hr">
-          <p class="subtitle has-text-black">Please login to proceed.</p>
-          <div class="box">
-            <figure class="avatar">
-              <img src="../images/login.png" alt="Login image">
-            </figure>
-            <form @submit.prevent="submitForm">
-              <div class="field">
-                <div class="control">
-                  <input v-model="username"
-                         :class="errorUsername ? 'input is-rounded is-danger' : 'input is-rounded'"
-                         type="text" :placeholder="username">
-                </div>
-                <p class="help is-danger" v-if="errorUsername">{{errorUsernameLang[lang]}}</p>
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <div class="column is-4 is-offset-4">
+        <h3 class="title has-text-black">Login</h3>
+        <hr class="login-hr">
+        <p class="subtitle has-text-black">Please login to proceed.</p>
+        <div class="box">
+          <figure class="avatar">
+            <img src="../images/login.png" alt="Login image">
+          </figure>
+          <form @submit.prevent="submitForm">
+            <div class="field">
+              <div class="control">
+                <input v-model="username"
+                       :class="errorUsername ? 'input is-rounded is-danger' : 'input is-rounded'"
+                       type="text" :placeholder="username">
               </div>
-              <div class="field">
-                <div class="control">
-                  <input v-model="password"
-                         :class="errorPassword ? 'input is-rounded is-danger' : 'input is-rounded'"
-                         type="password" :placeholder="password">
-                </div>
-                <p class="help is-danger" v-if="errorPassword">{{errorPasswordLang[lang]}}</p>
+              <p class="help is-danger" v-if="errorUsername">{{ errorUsernameLang[lang] }}</p>
+            </div>
+            <div class="field">
+              <div class="control">
+                <input v-model="password"
+                       :class="errorPassword ? 'input is-rounded is-danger' : 'input is-rounded'"
+                       type="password" :placeholder="password">
               </div>
-              <button
-                      :class="[submitted ?
+              <p class="help is-danger" v-if="errorPassword">{{ errorPasswordLang[lang] }}</p>
+            </div>
+            <button
+              :class="[submitted ?
                       'button is-info is-rounded is-large is-fullwidth is-loading' :
                       'button is-info is-rounded is-large is-fullwidth']">
-                      <span>{{submitButton[lang]}}</span><span class="icon"><i class="fa fa-sign-in" aria-hidden="true"></i></span>
-              </button>
-            </form>
-            <br>
-            <div>
-              <p> ¿Tiene cuenta de administrador? Haga click
-                <router-link to="/administrator/login"> aquí </router-link>
-              </p>
-            </div>
+              <span>{{ submitButton[lang] }}</span><span class="icon"><i class="fa fa-sign-in"
+                                                                         aria-hidden="true"></i></span>
+            </button>
+          </form>
+          <br>
+          <div>
+            <p> ¿Tiene cuenta de administrador? Haga click
+              <router-link to="/administrator/login"> aquí</router-link>
+            </p>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -82,10 +83,15 @@ export default {
       errorPassword.value = password.value.trim() === '';
       if (!errorUsername.value && !errorPassword.value) {
         submitted.value = true;
-        const { lista, statusUser } = await Login({
+        const {
+          lista,
+          statusUser
+        } = await Login({
           username: username.value,
           password: password.value,
         });
+
+        console.log(statusUser.value);
 
         // Si el usuario existe y la contraseña es correcta
         switch (statusUser.value) {
@@ -114,7 +120,7 @@ export default {
               title: 'Error',
               text: 'Usuario o contraseña incorrecta',
               icon: 'error',
-              target: document.getElementById("error"),
+              target: document.getElementById('error'),
             });
             break;
           case 370: // Error inesperado, inténtelo de nuevo más tarde.
@@ -123,14 +129,14 @@ export default {
               title: 'Error inesperado',
               text: 'Se ha producido un error inesperado. Inténtelo de nuevo más tarde',
               icon: 'error',
-              target: document.getElementById("error"),
+              target: document.getElementById('error'),
             });
             break;
           case 404:
-            if(isMobile) {
-              await Swal.fire('Oops...', 'El sistema operativo iOS no acepta el almacén de cierta información necesaria.\n\nSi desea continuar, inicie sesión con otro dispositivo', 'error')
+            if (isMobile) {
+              await Swal.fire('Oops...', 'El sistema operativo iOS no acepta el almacén de cierta información necesaria.\n\nSi desea continuar, inicie sesión con otro dispositivo', 'error');
             } else {
-              await Swal.fire('Oops...', 'Se ha producido un error en la base de datos. Inténtelo de nuevo más tarde', 'error')
+              await Swal.fire('Oops...', 'Se ha producido un error en la base de datos. Inténtelo de nuevo más tarde', 'error');
             }
             submitted.value = false;
             break;

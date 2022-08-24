@@ -5,7 +5,6 @@ import Cookie from "js-cookie";
 
 /* eslint-disable */
 export const MapaCalorGET = async (start, end) => {
-  // TODO: Revisar porqué la fecha se manda en formato incorrecto
   const mapa = ref([]);
   const statusMapa = ref(0);
 

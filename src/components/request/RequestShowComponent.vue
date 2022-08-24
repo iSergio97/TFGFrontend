@@ -105,7 +105,7 @@
                 </div>
                 <br/>
                 <div class="field">
-                  <label class="label">Justificación</label>
+                  <label class="label">Justificación habitante</label>
                   <textarea class="textarea"
                             v-model="justificacionHab"
                             :disabled="isAdmin || statusRequest !== 'P'"></textarea>
@@ -134,7 +134,7 @@
           </div>
           <div class="content is-vcenteredv">
             <div class="content has-text-left">
-              <article :class="'message ' + color" style="width: 20%">
+              <article :class="'message ' + color" style="width: 30%">
                 <div class="message-header is-centered button is-rounded">
                   <p>{{ estado }}</p>
                 </div>

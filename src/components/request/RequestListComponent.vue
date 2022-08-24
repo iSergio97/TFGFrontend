@@ -5,6 +5,7 @@
       Fecha desde: <input type="date" v-model="startTime" name="startTime"/>
       Fecha hasta: <input type="date" v-model="endTime" name="endTime"/>
       <button class="button is-small is-success is-rounded"
+              :class="isLoaded ? '' : 'is-loading'"
               @click="filtrarSolicitudes">
         Recargar
       </button>
@@ -68,7 +69,7 @@ export default {
       isLoaded.value = true;
     };
 
-    let isLoaded = ref(false);
+    let isLoaded = ref(true);
 
     return {
       listaSolicitudes,

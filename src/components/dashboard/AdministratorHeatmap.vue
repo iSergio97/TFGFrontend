@@ -13,6 +13,7 @@
                     <input type="date" v-model="startTime" name="startTime"/>
                     <input type="date" v-model="endTime" name="endTime"/>
                     <button class="button is-small is-success is-light is-rounded"
+                            :class="isLoaded ? '' : 'is-loading'"
                             @click="recargarHeatMap()">
                       Recargar
                     </button>
@@ -48,7 +49,7 @@ export default {
   },
   data() {
     return {
-      isLoaded: false,
+      isLoaded: true,
       data: [],
       listHeatmap: [],
       points: [],
@@ -124,6 +125,7 @@ export default {
       .padStart(2, '0') + '-' + String(fechaSemanaAnterior.getDate())
       .padStart(2, '0');
     await this.fillPoints(this.startTime, this.endTime);
+    this.isLoaded = true;
   },
 };
 </script>

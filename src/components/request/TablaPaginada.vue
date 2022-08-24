@@ -58,9 +58,12 @@
       <td> {{ request.subtipo }}</td>
       <td> {{ request.estado }}</td>
       <!-- eslint-disable -->
-      <td v-if="isAdmin"> {{ request.solicitante.primerApellido }}
-        {{ request.solicitante.segundoApellido }},
-        {{ request.solicitante.nombre }}
+      <td v-if="isAdmin">
+        {{ request.solicitante !== null ? request.solicitante.primerApellido : '' }}
+        {{
+          request.solicitante !== null ? request.solicitante.segundoApellido : ''
+        }},
+        {{ request.solicitante !== null ? request.solicitante.nombre : '' }}
       </td>
       <td>
         {{

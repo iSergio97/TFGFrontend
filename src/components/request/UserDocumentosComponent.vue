@@ -1,7 +1,8 @@
 <template>
   <button @click="$emit('previous')" class="button is-link is-rounded prev-button"> Anterior
   </button>
-  <button @click="$emit('next')" class="button is-success is-rounded next-button"> Siguiente
+  <button @click="$emit('rellenaDocumentos', {documento});$emit('next')"
+          class="button is-success is-rounded next-button"> Siguiente
   </button>
   <div class="column"></div>
   <div v-for="documento in documentosNecesarios" class="column">
@@ -9,7 +10,7 @@
       <p>{{ documento.name }}</p>
       <label>
         <input class="file-input" type="file"
-               @change="[adjuntarArchivo($event), marcaHecho(documento)]">
+               @change="[adjuntarArchivo($event, documento)]">
         <span class="file-cta">
                 <span class="file-icon">
                   <i class="fas fa-upload"></i>
@@ -23,7 +24,7 @@
     <div v-else-if="!documento.required" class="file is-info">
       <p>{{ documento.name }}</p>
       <label>
-        <input class="file-input" type="file" :onchange="adjuntarArchivo">
+        <input class="file-input" type="file" @change="adjuntarArchivo($event, documento)">
         <span class="file-cta">
                 <span class="file-icon">
                   <i class="fas fa-upload"></i>
@@ -40,20 +41,20 @@
     <div class="card-content">
       <div class="content">
         <div v-if="archivos.length > 0">
-          <ul v-for="(file, index) in archivos" :key="file.name">
-            <h3> {{ index }} </h3>
+          <ul v-for="(file) in archivos" :key="file.name">
             <li v-if="file.type === 'PDF'" class="title is-5">
               <span>
                 <i class="far fa-file-pdf"></i>
                 <p class="archivo">{{ file.name }}</p>
                 <i class="fas fa-eye" @click="previewDoc(file)"></i>
-                <i class="fas fa-trash" @click="[deleteFile(file), desmarcaHecho(index)]"></i>
+                <i class="fas fa-trash" @click="deleteFile(file);"></i>
               </span>
             </li>
             <li v-else-if="file.type === 'PNG' || file.type === 'JPG' || file.type === 'JPGE'"
                 class="title is-5">
               <span>
-                <i class="far fa-file-image" @click="[deleteFile(file), desmarcaHecho(index)]"></i>
+                <i class="far fa-file-image"
+                   @click="deleteFile(file);"></i>
                 <p class="archivo">{{ file.name }}</p>
                 <i class="fas fa-eye" @click="previewDoc(file)"></i>
                 <i class="fas fa-trash" @click="deleteFile(file)"></i>
@@ -71,62 +72,67 @@ import { ref } from 'vue';
 
 export default {
   name: 'UserDocumentosComponent',
-  props: ['tipoOperacion', 'nacionalidad'],
+  props: ['tipoOperacion', 'nacionalidad', 'documento'],
   async setup(props) {
-    let documentosNecesarios = ref([]);
-    switch (props.tipoOperacion) {
-      case 'ACR':
-      case 'AIM':
-      case 'MV':
-      case 'MRE':
-        let dni = {
-          alias: 'DNI',
-          name: 'DNI o Libro de Familia',
-          required: true,
-          done: false,
-          fileName: '',
-        };
-        let pasaporte = {
-          alias: 'Pasaporte',
-          name: 'Extranjeros deben presentar pasaporte o permiso de residencia',
-          required: props.nacionalidad !== 108,
-          done: false,
-          fileName: '',
-        };
-        documentosNecesarios.value.push(dni);
-        documentosNecesarios.value.push(pasaporte);
-        break;
-      case 'MD':
-        let documento = {
-          alias: 'Documento',
-          name: 'Documento que acredite el cambio que vas a realizar',
-          required: true,
-          done: false,
-          fileName: '',
-        };
-        let dniAntiguo = {
-          alias: 'DocumentoAntiguo',
-          name: 'Si realiza un cambio en su documento de identidad, debe añadir el antiguo',
-          required: false,
-          done: false,
-          fileName: '',
-        };
-        documentosNecesarios.value.push(documento);
-        documentosNecesarios.value.push(dniAntiguo);
-        break;
-      case 'MRN':
-        break;
+    // Los campos se vuelven a duplicar al volver de nuevo a la vista desde la anterior
+    console.log();
+    let documentosNecesarios = ref(props.documento.documentosNecesarios);
+    console.log('documentosNecesarios.value', documentosNecesarios.value);
+    const archivosName = ref(props.documento.archivosName);
+    const archivosPreview = ref(props.documento.archivosPreview);
+    const archivos = ref(props.documento.archivos);
+
+    const formData = props.documento.formData;
+
+    if (documentosNecesarios.value.length == 0) {
+      switch (props.tipoOperacion) {
+        case 'ACR':
+        case 'AIM':
+        case 'MV':
+        case 'MRE':
+          let dni = {
+            alias: 'DNI',
+            name: 'DNI o Libro de Familia',
+            required: true,
+            done: false,
+            fileName: '',
+          };
+          let pasaporte = {
+            alias: 'Pasaporte',
+            name: 'Extranjeros deben presentar pasaporte o permiso de residencia',
+            required: props.nacionalidad !== 108,
+            done: false,
+            fileName: '',
+          };
+          documentosNecesarios.value.push(dni);
+          documentosNecesarios.value.push(pasaporte);
+          break;
+        case 'MD':
+          let documento = {
+            alias: 'Documento',
+            name: 'Documento que acredite el cambio que vas a realizar',
+            required: true,
+            done: false,
+            fileName: '',
+          };
+          let dniAntiguo = {
+            alias: 'DocumentoAntiguo',
+            name: 'Si realiza un cambio en su documento de identidad, debe añadir el antiguo',
+            required: false,
+            done: false,
+            fileName: '',
+          };
+          documentosNecesarios.value.push(documento);
+          documentosNecesarios.value.push(dniAntiguo);
+          break;
+        case 'MRN':
+          break;
+      }
     }
-    const archivosName = ref([]);
 
-    const archivos = ref([]);
-
-    const formData = new FormData();
-
-    const archivosPreview = ref([]);
-
-    const adjuntarArchivo = (e) => {
+    const adjuntarArchivo = (e, documento) => {
       e.preventDefault();
+      let alias = documento.alias;
       const file = e.target.files[0];
       let split = file.name.toString()
         .split('.');
@@ -142,32 +148,23 @@ export default {
         const type = file.name.toString()
           .split('.');
         archivos.value.push({
-          name: file.name,
+          name: alias,
           type: type[type.length - 1].toUpperCase(),
         });
         archivosPreview.value.push({
           name: file.name,
+          alias: alias,
           file: file
         });
       }
-    };
 
-    let marcaHecho = (documento) => {
-      let alias = documento.alias;
       let docsNecesarios = documentosNecesarios.value.filter(doc => doc.alias == alias)[0];
       docsNecesarios.done = true;
     };
 
-    let desmarcaHecho = (index) => {
-      alert('Activo');
-      let docIndex = documentosNecesarios.value[index];
-      console.log(docIndex);
-      docIndex.done = false;
-      console.log(docIndex);
-    };
-
     const previewDoc = (documento) => {
-      const archivo = archivosPreview.value.filter((doc) => doc.name === documento.name)[0].file;
+      console.log(documento);
+      const archivo = archivosPreview.value.filter((doc) => doc.alias === documento.name)[0].file;
       const url = URL.createObjectURL(archivo);
       window.open(url);
     };
@@ -175,7 +172,9 @@ export default {
     const deleteFile = (file) => {
       let confirma = window.confirm('¿Desea eliminar este documento?');
       if (confirma) {
-        const index = archivosName.value.indexOf(file.name);
+        const index = archivosName.value.filter(archivo => archivo.alias === file.name);
+        console.log(index);
+        documentosNecesarios.value.filter(doc => doc.alias === file.name)[0].done = false;
         const { length } = archivosName.value;
         archivosName.value = archivosName.value
           .slice(0, index)
@@ -193,8 +192,6 @@ export default {
       previewDoc,
       deleteFile,
       adjuntarArchivo,
-      marcaHecho,
-      desmarcaHecho,
     };
   }
 };

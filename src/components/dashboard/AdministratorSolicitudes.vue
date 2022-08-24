@@ -11,6 +11,7 @@
                 Fecha desde: <input type="date" v-model="startTime" name="startTime"/>
                 Fecha hasta: <input type="date" v-model="endTime" name="endTime"/>
                 <button class="button is-small is-success is-rounded"
+                        :class="isLoaded ? '' : 'is-loading'"
                         @click="filtrarEstadisticas">
                   Recargar
                 </button>
@@ -25,10 +26,13 @@
                         :datos="solicitudesPorEstado"
                         :etiquetas="['Aceptadas', 'Rechazadas', 'Pendientes', 'Canceladas']"
                         :colors="['#48c774', '#f14668', '#ffdd57', '#000000']"/>
-              <BarChartCard v-if="barChart"
-                            :data="solicitudesPorEstado"
-                            :columns="['Aceptadas', 'Rechazadas', 'Pendientes', 'Canceladas']"
-                            :colors="['#48c774', '#f14668', '#ffdd57', '#000000']"/>
+              <BarChartCard
+                style="width: 80%"
+                class="barChard"
+                v-if="barChart"
+                :data="solicitudesPorEstado"
+                :columns="['Aceptadas', 'Rechazadas', 'Pendientes', 'Canceladas']"
+                :colors="['#48c774', '#f14668', '#ffdd57', '#000000']"/>
             </div>
             <div class="message-body" v-else>
               <LoadingDiv/>
@@ -180,5 +184,9 @@ html, body {
   min-height: calc(100vh - 64px);
   transition: 0.2s all ease-out;
   border-left: none;
+}
+
+.barChard {
+  margin-right: auto;
 }
 </style>

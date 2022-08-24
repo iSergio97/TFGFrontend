@@ -7,6 +7,15 @@
           <article class="message is-dark">
             <div class="message-header">
               <p>Habitantes</p>
+              <div class="is-small">
+                Edad desde: <input type="number" v-model="minAge" name="minAge"/>
+                Edad hasta: <input type="number" v-model="maxAge" name="maxAge"/>
+                <button class="button is-small is-success is-rounded"
+                        :class="isLoaded ? '' : 'is-loading'"
+                        @click="filtrarContadorHabitantes">
+                  Recargar
+                </button>
+              </div>
             </div>
             <div class="message-body" v-if="isLoaded">
               <Doughnut :datos="contador"
@@ -29,7 +38,7 @@ import axios from 'axios';
 import { BASE_URL } from '@/api/BASE_URL';
 import Cookie from 'js-cookie';
 import Doughnut from '@/components/statistics/Doughnut';
-// TODO: Donut de sexo de habitantes empadronados
+
 export default {
   name: 'AdministratorHabitantes',
   components: {
@@ -40,6 +49,8 @@ export default {
     return {
       contador: [],
       isLoaded: false,
+      minAge: 18,
+      maxAge: 50,
     };
   },
   methods: {
@@ -64,6 +75,37 @@ export default {
           this.isLoaded = true;
         });
     },
+    async filtrarContadorHabitantes() {
+      if (this.minAge < 0 || this.minAge > this.maxAge) {
+        alert('La fecha mínima no puede ser menor a 0 o la máxima no puede ser inferior a la mínima');
+        this.minAge = 18;
+        this.maxAge = 50;
+        return;
+      }
+      let token = Cookie.get('token');
+      await axios.get(`${BASE_URL}estadisticas/countSexoHabitantes/filtro`, {
+        params: {
+          edadDesde: this.minAge,
+          edadHasta: this.maxAge,
+        },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          let h = 0;
+          let m = 0;
+          if (res.data.object[0].nombre === 'H') {
+            h = res.data.object[0].contador;
+            m = res.data.object[1].contador;
+          } else {
+            h = res.data.object[1].contador;
+            m = res.data.object[0].contador;
+          }
+          this.contador = [h, m];
+          this.isLoaded = true;
+        });
+    }
   },
   async mounted() {
     await this.fluctuacion();
@@ -87,5 +129,13 @@ html, body {
   min-height: calc(100vh - 64px);
   transition: 0.2s all ease-out;
   border-left: none;
+}
+
+input[type=number] {
+  width: 10%;
+}
+
+button {
+  padding-left: 150px;
 }
 </style>

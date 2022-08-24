@@ -22,6 +22,7 @@
       </select>
     </span>
     <button class="button is-small is-success is-rounded"
+            :class="isLoaded ? '' : 'is-loading'"
             @click="filtrarSolicitudes">
       Recargar
     </button>
@@ -54,7 +55,7 @@ export default {
     const { id } = JSON.parse(decrypt(localStorage.getItem('USER_PRO'), localStorage.getItem('SALT')));
     let lista = ref((await SolicitudesGET({ user: false }, id)).lista);
 
-    let isLoaded = ref(false);
+    let isLoaded = ref(true);
 
     let startTime = ref(new Date());
     let endTime = ref(new Date().getFullYear() + '-' + String(new Date().getMonth() + 1)

@@ -8,6 +8,7 @@
         </a>
       </li>
       <li :class="position === 1 ? 'is-active' : ''" v-if="convivientes.length > 0">
+        <!-- Revisar las opciones de mover a los habitantes -->
         <a class="inactiveLink">
           <span class="icon is-small"><i class="fas fa-user-check"></i></span>
           <span>Convivientes</span>
@@ -30,7 +31,8 @@
   <div class="tab-content">
     <div v-if="position === 0" class="column">
       <UserFormComponent :user-logged="userLogged" @next="next"
-                         :datos="{opcion, subOpcion, tipoVivienda, vivienda, numeracion, nombre, primerApellido, segundoApellido, fechaNacimiento, tIdentificacion}"
+                         :datos="{opcion, subOpcion, tipoViviendas, tipoVivienda, viviendas, vivienda, calles, numeracion, nombre, primerApellido, segundoApellido, fechaNacimiento, tIdentificacion}"
+                         :first-load="firstLoad"
                          @completa-solicitud="completaSolicitud"/>
     </div>
     <div v-if="position === 1" class="column">
@@ -39,7 +41,10 @@
     <div v-if="position === 2" class="column">
       <UserDocumentosComponent @next="next" @previous="previous"
                                :nacionalidad="userLogged.nacionalidad"
-                               :tipo-operacion="subOpcion"/>
+                               :documento="documento"
+                               :tipo-operacion="subOpcion"
+                               @rellena-documentos="rellenaDocumentos"
+      />
     </div>
     <div v-if="position === 3" class="column">
       <ResumenComponent @previous="previous" @submit-request="submitRequest"
@@ -78,7 +83,6 @@ export default {
   },
   async setup(props) {
     const router = useRouter();
-    const formData = new FormData();
 
     let position = ref(0);
 
@@ -108,10 +112,15 @@ export default {
       alert('Botón de finalizar');
     };
 
+    let documentosNecesarios = ref([]);
+
     const completaSolicitud = (formField) => {
       opcion.value = formField.opcion;
       subOpcion.value = formField.subOpcion;
+      tipoViviendas.value = formField.tipoViviendas;
       tipoVivienda.value = formField.tipoVivienda;
+      calles.value = formField.calles;
+      viviendas.value = formField.viviendas;
       vivienda.value = formField.vivienda;
       numeracion.value = formField.numeracion;
       nombre.value = formField.nombre;
@@ -119,6 +128,15 @@ export default {
       segundoApellido.value = formField.segundoApellido;
       fechaNacimiento.value = formField.fechaNacimiento;
       tIdentificacion.value = formField.tIdentificacion;
+    };
+
+    const rellenaDocumentos = (formField) => {
+      console.log('formField.documentos', formField.documento.documentosNecesarios.value);
+      formData = formField.documento.formData;
+      archivos = formField.documento.archivos;
+      archivosName = formField.documento.archivosName;
+      archivosPreview = formField.documento.archivosPreview;
+      documentosNecesarios.value = formField.documentos.documentosNecesarios; // Aquí peta. No puede leer los datos de esta línea
     };
 
     const {
@@ -131,26 +149,70 @@ export default {
     const opcion = ref('A');
     // ['ACR', 'AIM', 'MD', 'MV', 'MRN']
     const subOpcion = ref('ACR');
-    watch(opcion, (selectedOption) => {
-      if (selectedOption === 'A') {
-        subOpcion.value = 'ACR';
-      } else if (selectedOption === 'B') {
-        subOpcion.value = 'BNI';
-      } else {
-        subOpcion.value = 'MD';
+
+    watch(subOpcion, (selectedOption) => {
+      switch (selectedOption) {
+        case 'ACR':
+        case 'AIM':
+        case 'MV':
+        case 'MRE':
+          let dni = {
+            alias: 'DNI',
+            name: 'DNI o Libro de Familia',
+            required: true,
+            done: false,
+            fileName: '',
+          };
+          let pasaporte = {
+            alias: 'Pasaporte',
+            name: 'Extranjeros deben presentar pasaporte o permiso de residencia',
+            required: props.nacionalidad !== 108,
+            done: false,
+            fileName: '',
+          };
+          documentosNecesarios.value = [];
+          documentosNecesarios.value.push(dni);
+          documentosNecesarios.value.push(pasaporte);
+          break;
+        case 'MD':
+          let documento = {
+            alias: 'Documento',
+            name: 'Documento que acredite el cambio que vas a realizar',
+            required: true,
+            done: false,
+            fileName: '',
+          };
+          let dniAntiguo = {
+            alias: 'DocumentoAntiguo',
+            name: 'Si realiza un cambio en su documento de identidad, debe añadir el antiguo',
+            required: false,
+            done: false,
+            fileName: '',
+          };
+          documentosNecesarios.value = [];
+          documentosNecesarios.value.push(documento);
+          documentosNecesarios.value.push(dniAntiguo);
+          break;
+        case 'MRN':
+          break;
       }
     });
 
-    let documentosNecesarios = ref(['DNI o Libro de Familia', 'Extranjeros deben presentar pasaporte o permiso de residencia']);
-    watch(subOpcion, (selectedOption) => {
-      if (selectedOption === 'MV' || selectedOption === 'ACR' || selectedOption === 'MRE') {
-        documentosNecesarios.value = ['DNI o Libro de Familia', 'Extranjeros deben presentar pasaporte o permiso de residencia'];
-      } else if (selectedOption.startsWith('B')) {
-        documentosNecesarios.value = ['Opción no disponible'];
-      } else if (selectedOption === 'MD') {
-        documentosNecesarios.value = ['Documento que acredite el cambio que vas a realizar', 'Si realiza un cambio en su documento de identidad, debe añadir el antiguo'];
-      }
-    });
+    let firstLoad = true;
+
+    let formData = new FormData();
+
+    let archivosName = ref([]);
+    let archivosPreview = ref([]);
+    let archivos = ref([]);
+
+    let documento = {
+      'formData': formData,
+      'archivosName': archivosName,
+      'archivosPreview': archivosPreview,
+      'archivos': archivos,
+      'documentosNecesarios': documentosNecesarios,
+    };
 
     const tipoViviendas = (await TiposCalleGET()).tipos;
     const tipoVivienda = ref('Calle');
@@ -158,21 +220,10 @@ export default {
     const viviendas = ref(calles.value);
     const vivienda = ref(viviendas.value[0]);
 
-    watch(tipoVivienda, async (selectedOption) => {
-      const { calles } = await CalleGET(selectedOption);
-      viviendas.value = calles.value;
-      vivienda.value = viviendas.value[0];
-    });
-
     const { numeraciones } = await NumeracionGET(vivienda.value.id);
     const numeracionesCalle = ref(numeraciones.value);
     const numeracion = ref(numeracionesCalle.value[0]);
 
-    watch(vivienda, async (selectedOption) => {
-      const { numeraciones } = await NumeracionGET(selectedOption.id);
-      numeracionesCalle.value = numeraciones.value;
-      numeracion.value = numeracionesCalle.value[0];
-    });
     // viviendas.value[0].id
     /* eslint-disable */
     const nombre = ref(props.userLogged.nombre);
@@ -183,35 +234,6 @@ export default {
     const tIdentificacion = props.userLogged.identificacion !== null ?
       ref(props.userLogged.identificacion) : ref('');
     /* eslint-enable */
-    const archivosName = ref([]);
-    const archivos = ref([]);
-    const adjuntarArchivo = (e) => {
-      e.preventDefault();
-      const file = e.target.files[0];
-      formData.append('file', file, file.name);
-      if (!archivosName.value.includes(file.name)) {
-        archivosName.value.push(file.name);
-        const type = file.name.toString()
-          .split('.');
-        archivos.value.push({
-          name: file.name,
-          type: type[type.length - 1].toUpperCase(),
-        });
-      }
-    };
-    const deleteFile = (file) => {
-      let confirma = window.confirm('¿Desea eliminar este documento?');
-      if (confirma) {
-        const index = archivosName.value.indexOf(file.name);
-        const { length } = archivosName.value;
-        archivosName.value = archivosName.value
-          .slice(0, index)
-          .concat(archivosName.value.slice(index + 1, length + 1));
-        archivos.value = archivos.value
-          .slice(0, index)
-          .concat(archivos.value.slice(index + 1, length + 1));
-      }
-    };
 
     let convivientesEnSolicitud = [];
 
@@ -381,21 +403,23 @@ export default {
       subOpcion,
       viviendas,
       vivienda,
+      calles,
       numeracionesCalle,
       numeracion,
       convivientes,
       documentosNecesarios,
       position,
+      documento,
       next,
       previous,
       completaSolicitud,
       avisoFinal,
       submitRequest,
       demoData,
-      adjuntarArchivo,
-      deleteFile,
+      formData,
       submitForm,
-      editarSolicitud,
+      firstLoad,
+      rellenaDocumentos,
     };
   },
 };
