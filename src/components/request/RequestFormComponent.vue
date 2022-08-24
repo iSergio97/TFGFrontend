@@ -131,12 +131,12 @@ export default {
     };
 
     const rellenaDocumentos = (formField) => {
-      console.log('formField.documentos', formField.documento.documentosNecesarios.value);
+      console.log('documentosNecesarios', documentosNecesarios.value);
       formData = formField.documento.formData;
       archivos = formField.documento.archivos;
       archivosName = formField.documento.archivosName;
       archivosPreview = formField.documento.archivosPreview;
-      documentosNecesarios.value = formField.documentos.documentosNecesarios; // Aquí peta. No puede leer los datos de esta línea
+      documentosNecesarios = formField.documento.documentosNecesarios; // Aquí peta. No puede leer los datos de esta línea
     };
 
     const {

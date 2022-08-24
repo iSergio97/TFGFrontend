@@ -75,9 +75,7 @@ export default {
   props: ['tipoOperacion', 'nacionalidad', 'documento'],
   async setup(props) {
     // Los campos se vuelven a duplicar al volver de nuevo a la vista desde la anterior
-    console.log();
     let documentosNecesarios = ref(props.documento.documentosNecesarios);
-    console.log('documentosNecesarios.value', documentosNecesarios.value);
     const archivosName = ref(props.documento.archivosName);
     const archivosPreview = ref(props.documento.archivosPreview);
     const archivos = ref(props.documento.archivos);
@@ -163,7 +161,6 @@ export default {
     };
 
     const previewDoc = (documento) => {
-      console.log(documento);
       const archivo = archivosPreview.value.filter((doc) => doc.alias === documento.name)[0].file;
       const url = URL.createObjectURL(archivo);
       window.open(url);
@@ -173,7 +170,6 @@ export default {
       let confirma = window.confirm('¿Desea eliminar este documento?');
       if (confirma) {
         const index = archivosName.value.filter(archivo => archivo.alias === file.name);
-        console.log(index);
         documentosNecesarios.value.filter(doc => doc.alias === file.name)[0].done = false;
         const { length } = archivosName.value;
         archivosName.value = archivosName.value
