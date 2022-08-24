@@ -85,7 +85,7 @@ describe("RequestFormComponent.vue", () => {
     });
   });
 
-  it("El botón de tipo de solicitud actualiza el valor del campo de subtipo de solicitud", () => {
+  it("El componente UserFormComponent es cargado en el parent component", async () => {
     //global.localStorage = window.localStorage
     let position = 0;
 
@@ -93,29 +93,58 @@ describe("RequestFormComponent.vue", () => {
     Cargamos los props y vemos que los datos llegan correctos
      */
 
-    expect(wrapper.props().userLogged.vivienda.id).to.eq(451);
+    expect(wrapper.props().userLogged.vivienda.id)
+      .to
+      .eq(451);
 
-    console.log(wrapper);
-    // expect(wrapper.props().datos.fechaNacimiento).not.to.empty;
-
-    // expect(wrapper.props().position).to.eq(0);
-
-    const userFormComponentWrapper = wrapper.findComponent(UserFormComponent);
+    const userFormComponentWrapper = await wrapper.findAllComponents({ name: "UserFormComponent" });
 
     userFormComponentWrapper.propsData = {
       userLogged: userLogged,
       datos: datos,
       position: 0,
+      firstLoad: true,
     };
-
-    /*userFormComponentWrapper.setProps({
-      userLogged: userLogged,
-      datos: datos,
-      position: position,
-    });*/
 
     console.log("userFormComponentWrapper", userFormComponentWrapper);
 
-    expect(userFormComponentWrapper.exists()).to.eq(true);
+    // Comprobamos que el childComponent tiene el mismo valor que el parentComponent en la primera carga
+    expect(userFormComponentWrapper.propsData.userLogged.fechaNacimiento)
+      .to
+      .eq(
+        wrapper.props().userLogged.fechaNacimiento
+      );
+    expect(userFormComponentWrapper.propsData.userLogged.nombre)
+      .to
+      .eq(
+        wrapper.props().userLogged.nombre
+      );
+
+    expect(userFormComponentWrapper.propsData.userLogged.primerApellido)
+      .to
+      .eq(
+        wrapper.props().userLogged.primerApellido
+      );
+
+    expect(userFormComponentWrapper.propsData.userLogged.segundoApellido)
+      .to
+      .eq(
+        wrapper.props().userLogged.segundoApellido
+      );
+  });
+
+  it("El componente UserFormComponent activa el watch al cambiar de opcion", async () => {
+    const userFormComponentWrapper = await wrapper.findAllComponents({ name: "UserFormComponent" });
+
+    userFormComponentWrapper.propsData = {
+      userLogged: userLogged,
+      datos: datos,
+      position: 0,
+      firstLoad: true,
+    };
+
+    expect(1)
+      .eq(1);
+
   });
 });

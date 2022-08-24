@@ -154,7 +154,6 @@ export default {
     userLogged: Object,
     position: Number,
     datos: Object,
-    firstLoad: Boolean,
   },
   async setup(props) {
     let isLoaded = false;

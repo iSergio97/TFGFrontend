@@ -32,7 +32,6 @@
     <div v-if="position === 0" class="column">
       <UserFormComponent :user-logged="userLogged" @next="next"
                          :datos="{opcion, subOpcion, tipoViviendas, tipoVivienda, viviendas, vivienda, calles, numeracion, nombre, primerApellido, segundoApellido, fechaNacimiento, tIdentificacion}"
-                         :first-load="firstLoad"
                          @completa-solicitud="completaSolicitud"/>
     </div>
     <div v-if="position === 1" class="column">
@@ -136,7 +135,7 @@ export default {
       archivos = formField.documento.archivos;
       archivosName = formField.documento.archivosName;
       archivosPreview = formField.documento.archivosPreview;
-      documentosNecesarios = formField.documento.documentosNecesarios; // Aquí peta. No puede leer los datos de esta línea
+      documentosNecesarios = formField.documento.documentosNecesarios;
     };
 
     const {
@@ -197,8 +196,6 @@ export default {
           break;
       }
     });
-
-    let firstLoad = true;
 
     let formData = new FormData();
 
@@ -418,7 +415,6 @@ export default {
       demoData,
       formData,
       submitForm,
-      firstLoad,
       rellenaDocumentos,
     };
   },
