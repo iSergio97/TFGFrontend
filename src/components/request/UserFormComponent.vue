@@ -2,7 +2,7 @@
   <button class="button is-link is-rounded prev-button" disabled> Anterior</button>
   <button v-if="opcion !== 'B'"
           @click="$emit('completaSolicitud', {opcion, subOpcion, tipoViviendas, tipoVivienda, viviendas, vivienda, calles, numeracion, nombre, primerApellido, segundoApellido, fechaNacimiento, tIdentificacion}); $emit('next');"
-          class="button is-success is-rounded next-button"> Siguiente
+          class="button is-success is-rounded next-button activeButton"> Siguiente
   </button>
   <button v-else disabled
           class="button is-success is-rounded next-button"> Siguiente

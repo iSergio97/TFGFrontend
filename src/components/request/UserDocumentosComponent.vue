@@ -53,11 +53,10 @@
             <li v-else-if="file.type === 'PNG' || file.type === 'JPG' || file.type === 'JPGE'"
                 class="title is-5">
               <span>
-                <i class="far fa-file-image"
-                   @click="deleteFile(file);"></i>
+                <i class="far fa-file-image"></i>
                 <p class="archivo">{{ file.name }}</p>
                 <i class="fas fa-eye" @click="previewDoc(file)"></i>
-                <i class="fas fa-trash" @click="deleteFile(file)"></i>
+                <i class="fas fa-trash" @click="deleteFile(file);"></i>
               </span>
             </li>
           </ul>
@@ -74,7 +73,6 @@ export default {
   name: 'UserDocumentosComponent',
   props: ['tipoOperacion', 'nacionalidad', 'documento'],
   async setup(props) {
-    // Los campos se vuelven a duplicar al volver de nuevo a la vista desde la anterior
     let documentosNecesarios = ref(props.documento.documentosNecesarios);
     const archivosName = ref(props.documento.archivosName);
     const archivosPreview = ref(props.documento.archivosPreview);
@@ -95,8 +93,9 @@ export default {
             done: false,
             fileName: '',
           };
+          let alias = props.nacionalidad !== 108 ? 'Documentos adicionales' : 'Pasaporte';
           let pasaporte = {
-            alias: 'Pasaporte',
+            alias: 'alias',
             name: 'Extranjeros deben presentar pasaporte o permiso de residencia',
             required: props.nacionalidad !== 108,
             done: false,
@@ -105,7 +104,7 @@ export default {
           documentosNecesarios.value.push(dni);
           documentosNecesarios.value.push(pasaporte);
           break;
-        case 'MD':
+        default:
           let documento = {
             alias: 'Documento',
             name: 'Documento que acredite el cambio que vas a realizar',
@@ -122,8 +121,6 @@ export default {
           };
           documentosNecesarios.value.push(documento);
           documentosNecesarios.value.push(dniAntiguo);
-          break;
-        case 'MRN':
           break;
       }
     }

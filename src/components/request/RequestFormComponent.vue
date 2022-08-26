@@ -47,6 +47,9 @@
     </div>
     <div v-if="position === 3" class="column">
       <ResumenComponent @previous="previous" @submit-request="submitRequest"
+                        :user-logged="userLogged"
+                        :documento="documento"
+                        :datos="{opcion, subOpcion, tipoViviendas, tipoVivienda, viviendas, vivienda, calles, numeracion, nombre, primerApellido, segundoApellido, fechaNacimiento, tIdentificacion}"
                         @demo-data="demoData"/>
     </div>
   </div>
@@ -114,6 +117,13 @@ export default {
     let documentosNecesarios = ref([]);
 
     const completaSolicitud = (formField) => {
+      if (formField.opcion !== opcion.value || formField.subOpcion !== subOpcion.value) {
+        formData = new FormData();
+        archivos.value = [];
+        archivosName.value = [];
+        archivosPreview.value = [];
+        documentosNecesarios.value = [];
+      }
       opcion.value = formField.opcion;
       subOpcion.value = formField.subOpcion;
       tipoViviendas.value = formField.tipoViviendas;
@@ -130,7 +140,6 @@ export default {
     };
 
     const rellenaDocumentos = (formField) => {
-      console.log('documentosNecesarios', documentosNecesarios.value);
       formData = formField.documento.formData;
       archivos = formField.documento.archivos;
       archivosName = formField.documento.archivosName;
@@ -165,7 +174,7 @@ export default {
           let pasaporte = {
             alias: 'Pasaporte',
             name: 'Extranjeros deben presentar pasaporte o permiso de residencia',
-            required: props.nacionalidad !== 108,
+            required: props.userLogged.nacionalidad !== 108,
             done: false,
             fileName: '',
           };

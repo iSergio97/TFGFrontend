@@ -3,8 +3,8 @@
 /* eslint-disable */
 import { expect } from "chai";
 import { shallowMount, mount } from "@vue/test-utils";
-import RequestFormComponent from "../../src/components/request/RequestFormComponent";
-import UserFormComponent from "../../src/components/request/UserFormComponent";
+import RequestFormComponent from "../../src/components/request/RequestFormComponent.vue";
+import UserFormComponent from "../../src/components/request/UserFormComponent.vue";
 
 let wrapper;
 
@@ -92,59 +92,30 @@ describe("RequestFormComponent.vue", () => {
     /*
     Cargamos los props y vemos que los datos llegan correctos
      */
+    expect(wrapper.props().userLogged.vivienda.id).to.eq(451);
 
-    expect(wrapper.props().userLogged.vivienda.id)
-      .to
-      .eq(451);
+    // Comprobamos que el wrapper tiene los valores del props indicado
+    expect(wrapper.props().userLogged.fechaNacimiento).to.eq(userLogged.fechaNacimiento);
+    expect(wrapper.props().userLogged.nombre).to.eq(userLogged.nombre);
 
-    const userFormComponentWrapper = await wrapper.findAllComponents({ name: "UserFormComponent" });
+    expect(wrapper.props().userLogged.primerApellido).to.eq(userLogged.primerApellido);
 
-    userFormComponentWrapper.propsData = {
-      userLogged: userLogged,
-      datos: datos,
-      position: 0,
-      firstLoad: true,
-    };
-
-    console.log("userFormComponentWrapper", userFormComponentWrapper);
-
-    // Comprobamos que el childComponent tiene el mismo valor que el parentComponent en la primera carga
-    expect(userFormComponentWrapper.propsData.userLogged.fechaNacimiento)
-      .to
-      .eq(
-        wrapper.props().userLogged.fechaNacimiento
-      );
-    expect(userFormComponentWrapper.propsData.userLogged.nombre)
-      .to
-      .eq(
-        wrapper.props().userLogged.nombre
-      );
-
-    expect(userFormComponentWrapper.propsData.userLogged.primerApellido)
-      .to
-      .eq(
-        wrapper.props().userLogged.primerApellido
-      );
-
-    expect(userFormComponentWrapper.propsData.userLogged.segundoApellido)
-      .to
-      .eq(
-        wrapper.props().userLogged.segundoApellido
-      );
+    expect(wrapper.props().userLogged.segundoApellido).to.eq(userLogged.segundoApellido);
   });
 
   it("El componente UserFormComponent activa el watch al cambiar de opcion", async () => {
-    const userFormComponentWrapper = await wrapper.findAllComponents({ name: "UserFormComponent" });
+    const userFormComponentWrapper = mount(UserFormComponent, {
+      propsData: {
+        userLogged: userLogged,
+        datos: datos,
+        position: 0,
+        firstLoad: true,
+      },
+    });
 
-    userFormComponentWrapper.propsData = {
-      userLogged: userLogged,
-      datos: datos,
-      position: 0,
-      firstLoad: true,
-    };
+    expect(userFormComponentWrapper.exists()).to.be.true;
 
-    expect(1)
-      .eq(1);
-
+    expect(userFormComponentWrapper.props().datos.opcion).to.eq("A");
+    expect(userFormComponentWrapper.props().datos.subOpcion).to.eq("ACR");
   });
 });
