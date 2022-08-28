@@ -302,13 +302,11 @@ export default {
         }
       })
         .then((res) => {
-          console.log('res.data', res.data);
           const url = URL.createObjectURL(new Blob([res.data], { type: type }));
           window.open(url);
         });
     };
     const justificacion = ref(request.justificacion);
-    console.log('request', request);
     const justificacionHab = ref(request.justificacionHab);
     const formData = new FormData();
     const archivosName = ref([]);

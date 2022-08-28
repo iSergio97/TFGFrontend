@@ -91,8 +91,6 @@ export default {
           password: password.value,
         });
 
-        console.log(statusUser.value);
-
         // Si el usuario existe y la contraseña es correcta
         switch (statusUser.value) {
           case 200: // El usuario y la contraseña son correctas
@@ -136,7 +134,7 @@ export default {
             if (isMobile) {
               await Swal.fire('Oops...', 'El sistema operativo iOS no acepta el almacén de cierta información necesaria.\n\nSi desea continuar, inicie sesión con otro dispositivo', 'error');
             } else {
-              await Swal.fire('Oops...', 'Se ha producido un error en la base de datos. Inténtelo de nuevo más tarde', 'error');
+              await Swal.fire('Oops...', 'No hemos recibido respuesta del servidor. Inténtelo de nuevo más tarde', 'error');
             }
             submitted.value = false;
             break;

@@ -214,7 +214,6 @@ export default {
       })
         .then((res) => {
           this.solicitudesDate = res.data.object;
-          console.log(res.data.object);
         });
     }
   },

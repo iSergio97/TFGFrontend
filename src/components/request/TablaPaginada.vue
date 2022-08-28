@@ -89,7 +89,6 @@ export default {
     /* eslint-disable */
     let lista = ref(props.lista || []);
     watch(() => props.lista, (nuevaLista, antiguaLista) => {
-      console.log('Watch props.lista');
       lista.value = [];
       let listaTmp = [];
       for (let i = 0; i < nuevaLista.length; i++) {

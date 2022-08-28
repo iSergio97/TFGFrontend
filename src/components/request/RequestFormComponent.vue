@@ -205,12 +205,12 @@ export default {
       };
       switch (selectedOption) {
         case 'MV':
+        case 'ACR':
           documentosNecesarios.value = [];
           documentosNecesarios.value.push(dni);
           documentosNecesarios.value.push(alquiler);
           documentosNecesarios.value.push(volante);
           break;
-        case 'ACR':
         case 'AIM':
         case 'MRE':
           documentosNecesarios.value = [];
@@ -273,7 +273,6 @@ export default {
       }
     };
     const submitForm = async () => {
-      console.log('Envia solicitud');
       isSubmitted.value = true;
       const estadoSolicitante = props.userLogged.estado;
       const nacionalidad = props.userLogged.nacionalidad;

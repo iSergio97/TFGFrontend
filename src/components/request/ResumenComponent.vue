@@ -143,7 +143,6 @@ export default {
       archivos
     } = documento;
     let datos = props.datos;
-    console.log(userLogged);
     let {
       opcion,
       subOpcion

@@ -162,7 +162,6 @@ export default {
       .padStart(2, '0') + '-' + String(fechaSemanaAnterior.getDate())
       .padStart(2, '0');
     this.startTime = fechaSemanaAnterior;
-    console.log(this.startTime, this.endTime);
     await this.fluctuacion();
   }
 };

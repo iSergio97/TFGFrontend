@@ -16,11 +16,11 @@
           </a>
         </li>
         <li><span class="pagination-ellipsis">&hellip;</span></li>
-        <li><a class="pagination-link is-current" >{{ indexPag + 1 }}</a></li>
+        <li><a class="pagination-link is-current">{{ indexPag + 1 }}</a></li>
         <li><span class="pagination-ellipsis">&hellip;</span></li>
         <li v-if="indexPag < paginas - 2">
           <a class="pagination-link" aria-current="page" @click="indexPag += 1">
-            {{ indexPag  + 2}}
+            {{ indexPag + 2 }}
           </a>
         </li>
         <li><a class="pagination-link" @click="indexPag = paginas - 1">Página {{ paginas }}</a></li>
@@ -32,26 +32,29 @@
         <th>
           <abbr title="ID de la operación"> ID </abbr>
         </th>
-        <th> <abbr title="Tipo de la operación (A)lta, (B)aja o (M)odificación"> Tipo</abbr></th>
-        <th> <abbr title="
+        <th><abbr title="Tipo de la operación (A)lta, (B)aja o (M)odificación"> Tipo</abbr></th>
+        <th><abbr title="
         Subtipo de la operación (Alta por cambio de Residencia(ACR), Alta de Inmigrantes (AIM),
         Modificación de vivienda (MV), Modificación de datos personales (MDP)
         o Modificación por Renovación de Empadronamiento (MRE) (exclusivo para extranjeros)">
           Subtipo</abbr></th>
-        <th> Habitante </th>
-        <th> Fecha </th>
-        <th> Solicitud relacionada </th>
+        <th> Habitante</th>
+        <th> Fecha</th>
+        <th> Solicitud relacionada</th>
       </tr>
       </thead>
       <tbody v-for="operation in itemsPaginados" :key="operation.id">
       <tr>
-        <th>{{operation.id}}</th>
-        <td> {{operation.tipo}}</td>
-        <td> {{operation.subtipo}}</td>
+        <th>{{ operation.id }}</th>
+        <td> {{ operation.tipo }}</td>
+        <td> {{ operation.subtipo }}</td>
         <!-- eslint-disable -->
-        <td> {{operation.habitante.primerApellido}} {{operation.habitante.segundoApellido}}, {{operation.habitante.nombre}}</td>
+        <td> {{ operation.habitante.primerApellido }} {{ operation.habitante.segundoApellido }},
+          {{ operation.habitante.nombre }}
+        </td>
         <td>
-          {{new Date(operation.fechaOperacion).getDate()}}/{{new Date(operation.fechaOperacion).getMonth()}}/{{new Date(operation.fechaOperacion).getFullYear()}}</td>
+          {{ new Date(operation.fechaOperacion).getDate() }}/{{ new Date(operation.fechaOperacion).getMonth() }}/{{ new Date(operation.fechaOperacion).getFullYear() }}
+        </td>
         <!-- eslint-enable -->
         <td>
           <a :href="'/administrator/requests/show/' + operation.solicitud.id">
@@ -85,11 +88,11 @@ export default {
 
     const itemsPag = (indexPag) => {
       return indexPag * 10 + 10;
-    }
+    };
 
     const paginas = ref(Math.ceil(lista.value.length / 10)); // Redondeamos operaciones
     const nextPage = () => {
-      if(indexPag.value < paginas.value - 1) {
+      if (indexPag.value < paginas.value - 1) {
         indexPag.value++;
       }
     };
@@ -100,12 +103,11 @@ export default {
     };
     let supLimit = itemsPerList(indexPag.value);
     const itemsPaginados = ref(lista.value.slice(indexPag.value * 10, supLimit));
-    console.log(itemsPaginados.value.length);
+
     watch(indexPag, (indexPag) => {
       supLimit = itemsPag(indexPag);
       itemsPaginados.value = lista.value.slice(indexPag * 10, supLimit);
     });
-
 
     return {
       lista,

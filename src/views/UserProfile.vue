@@ -146,7 +146,6 @@ export default {
       /* eslint-disable */
       apellidos = computed(() => `${user.primerApellido} ${user.segundoApellido}`);
       /* eslint-enable */
-      console.log(user);
       address = user.hoja !== undefined ? `${user.hoja.numeracion.calle.tipo} ${user.hoja.numeracion.calle.nombre} Nº ${user.hoja.numeracion.numero}` : 'Actualmente no tiene asignado ninguna vivienda';
       const fechaNacimiento = new Date(user.fechaNacimiento);
       birthDate = `${fechaNacimiento.getDate()}/${fechaNacimiento.getMonth() + 1}/${fechaNacimiento.getFullYear()}`;
@@ -186,7 +185,6 @@ export default {
         }
       };
     } catch (e) {
-      console.log(e);
       alert(alertErrorStorage.value[lang]);
       Cookie.remove('PMHSESSION');
       Cookie.remove('SALT');

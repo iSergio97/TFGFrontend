@@ -127,11 +127,11 @@ export default {
       };
       switch (props.tipoOperacion) {
         case 'MV':
+        case 'ACR':
           documentosNecesarios.value.push(dni);
           documentosNecesarios.value.push(volante);
           documentosNecesarios.value.push(alquiler);
           break;
-        case 'ACR':
         case 'AIM':
         case 'MRE':
           documentosNecesarios.value.push(dni);
@@ -143,7 +143,6 @@ export default {
           break;
       }
     }
-    console.log(props.tipoOperacion, documentosNecesarios.value);
 
     const adjuntarArchivo = (e, documento) => {
       e.preventDefault();
