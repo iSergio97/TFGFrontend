@@ -3,7 +3,7 @@
     <h1 class="faq-heading title">Preguntas frecuentes</h1>
     <section class="faq-container">
       <div class="faq">
-        <h1 class="faq-page subtitle is-4">¿Qué es el PMOH?</h1>
+        <h1 class="faq-page subtitle is-4">¿Qué es el POH?</h1>
         <div class="faq-body">
           <p>El PMOH o Padrón Municipal Online de Habitantes es el lugar donde puedes realizar las
             gestiones del ayuntamiento, desde tu casa.
@@ -23,6 +23,9 @@
           Entre las opciones disponibles están las operaciones de modificación o confirmación de
           residencia:
           <ul>
+            <li>
+              <p> * Altas por cambio de residencia </p>
+            </li>
             <li>
               <p> * Modificación de datos personales </p>
             </li>
@@ -59,8 +62,9 @@
             vuelves a realizar el proceso en segundos aportando lo que pone en el comentario de la
             solicitud rechadaza. En cambio, si te la aceptan, ya está todo hecho, el ayuntamiento
             actualizará tus datos a prinicpios del mes siguiente (se recomienda no realizar
-            operaciones en el ayuntamiento tras realizar una solicitud, pues se darán prioridad a
-            los datos del ayuntamiento).
+            operaciones en el ayuntamiento tras realizar una solicitud, pues sincronizamos lo datos
+            de forma semanal y se por fecha, por lo que si tu solicitud del ayuntamiento se
+            formalizó después de la de aquí, tus datos serán sobrescritos).
           </p>
         </div>
       </div>

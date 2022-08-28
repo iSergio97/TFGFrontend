@@ -42,15 +42,16 @@
                                :nacionalidad="userLogged.nacionalidad"
                                :documento="documento"
                                :tipo-operacion="subOpcion"
+                               :tiene-convivientes="convivientes.length > 0"
                                @rellena-documentos="rellenaDocumentos"
       />
     </div>
     <div v-if="position === 3" class="column">
-      <ResumenComponent @previous="previous" @submit-request="submitRequest"
+      <ResumenComponent @previous="previous" @submit-form="submitForm"
                         :user-logged="userLogged"
                         :documento="documento"
                         :datos="{opcion, subOpcion, tipoViviendas, tipoVivienda, viviendas, vivienda, calles, numeracion, nombre, primerApellido, segundoApellido, fechaNacimiento, tIdentificacion}"
-                        @demo-data="demoData"/>
+      />
     </div>
   </div>
 </template>
@@ -159,44 +160,64 @@ export default {
     const subOpcion = ref('ACR');
 
     watch(subOpcion, (selectedOption) => {
+      let dni = {
+        alias: 'DNI',
+        name: 'DNI o Libro de Familia',
+        required: true,
+        done: false,
+        fileName: '',
+      };
+      let alquiler = {
+        alias: 'Alquiler',
+        name: 'Fotocopia y original del contrato de alquiler o la autorización firmada por el dueño de la vivienda',
+        required: true,
+        done: false,
+        fileName: '',
+      };
+      let volante = {
+        alias: 'Alquiler',
+        name: 'Volante empadronamiento para sus convivientes',
+        required: convivientes.length > 0,
+        done: false,
+        fileName: '',
+      };
+      let alias = props.nacionalidad !== 108 ? 'Documentos adicionales' : 'Pasaporte';
+      let pasaporte = {
+        alias: alias,
+        name: alias,
+        required: props.userLogged.nacionalidad !== 108,
+        done: false,
+        fileName: '',
+      };
+      let documento = {
+        alias: 'Documento',
+        name: 'Documento que acredite el cambio que vas a realizar',
+        required: true,
+        done: false,
+        fileName: '',
+      };
+      let dniAntiguo = {
+        alias: 'DocumentoAntiguo',
+        name: 'Si realiza un cambio en su documento de identidad, debe añadir el antiguo',
+        required: false,
+        done: false,
+        fileName: '',
+      };
       switch (selectedOption) {
+        case 'MV':
+          documentosNecesarios.value = [];
+          documentosNecesarios.value.push(dni);
+          documentosNecesarios.value.push(alquiler);
+          documentosNecesarios.value.push(volante);
+          break;
         case 'ACR':
         case 'AIM':
-        case 'MV':
         case 'MRE':
-          let dni = {
-            alias: 'DNI',
-            name: 'DNI o Libro de Familia',
-            required: true,
-            done: false,
-            fileName: '',
-          };
-          let pasaporte = {
-            alias: 'Pasaporte',
-            name: 'Extranjeros deben presentar pasaporte o permiso de residencia',
-            required: props.userLogged.nacionalidad !== 108,
-            done: false,
-            fileName: '',
-          };
           documentosNecesarios.value = [];
           documentosNecesarios.value.push(dni);
           documentosNecesarios.value.push(pasaporte);
           break;
         case 'MD':
-          let documento = {
-            alias: 'Documento',
-            name: 'Documento que acredite el cambio que vas a realizar',
-            required: true,
-            done: false,
-            fileName: '',
-          };
-          let dniAntiguo = {
-            alias: 'DocumentoAntiguo',
-            name: 'Si realiza un cambio en su documento de identidad, debe añadir el antiguo',
-            required: false,
-            done: false,
-            fileName: '',
-          };
           documentosNecesarios.value = [];
           documentosNecesarios.value.push(documento);
           documentosNecesarios.value.push(dniAntiguo);
@@ -252,6 +273,7 @@ export default {
       }
     };
     const submitForm = async () => {
+      console.log('Envia solicitud');
       isSubmitted.value = true;
       const estadoSolicitante = props.userLogged.estado;
       const nacionalidad = props.userLogged.nacionalidad;
@@ -321,7 +343,8 @@ export default {
       let estado;
       let documentos;
       const token = Cookie.get('token');
-      if (formData.get('file') !== null && formData.getAll('file').length > 2) {
+      let docNecesariaAdjunta = documentosNecesarios.value.filter(doc => doc.required === true && doc.done === false);
+      if (formData.get('file') !== null && docNecesariaAdjunta.length === 0) {
         await axios.post(`${BASE_URL}solicitud/document/new`, formData, {
           headers: {
             'Content-Type': 'multipart/boundary',

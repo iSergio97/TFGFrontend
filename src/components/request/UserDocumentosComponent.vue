@@ -71,7 +71,7 @@ import { ref } from 'vue';
 
 export default {
   name: 'UserDocumentosComponent',
-  props: ['tipoOperacion', 'nacionalidad', 'documento'],
+  props: ['tipoOperacion', 'nacionalidad', 'documento', 'tieneConvivientes'],
   async setup(props) {
     let documentosNecesarios = ref(props.documento.documentosNecesarios);
     const archivosName = ref(props.documento.archivosName);
@@ -80,50 +80,70 @@ export default {
 
     const formData = props.documento.formData;
 
-    if (documentosNecesarios.value.length == 0) {
+    if (documentosNecesarios.value.length === 0) {
+      let documentosNecesarios = ref([]);
+      let dni = {
+        alias: 'DNI',
+        name: 'DNI o Libro de Familia',
+        required: true,
+        done: false,
+        fileName: '',
+      };
+      let volante = {
+        alias: 'Alquiler',
+        name: 'Volante empadronamiento para sus convivientes',
+        required: props.tieneConvivientes,
+        done: false,
+        fileName: '',
+      };
+      let alquiler = {
+        alias: 'Alquiler',
+        name: 'Fotocopia y original del contrato de alquiler o la autorización firmada por el dueño de la vivienda',
+        required: true,
+        done: false,
+        fileName: '',
+      };
+      let alias = props.nacionalidad !== 108 ? 'Documentos adicionales' : 'Pasaporte';
+      let pasaporte = {
+        alias: alias,
+        name: alias,
+        required: props.nacionalidad !== 108,
+        done: false,
+        fileName: '',
+      };
+      let documento = {
+        alias: 'Documento',
+        name: 'Documento que acredite el cambio que vas a realizar',
+        required: true,
+        done: false,
+        fileName: '',
+      };
+      let dniAntiguo = {
+        alias: 'DocumentoAntiguo',
+        name: 'Si realiza un cambio en su documento de identidad, debe añadir el antiguo',
+        required: false,
+        done: false,
+        fileName: '',
+      };
       switch (props.tipoOperacion) {
+        case 'MV':
+          documentosNecesarios.value.push(dni);
+          documentosNecesarios.value.push(volante);
+          documentosNecesarios.value.push(alquiler);
+          break;
         case 'ACR':
         case 'AIM':
-        case 'MV':
         case 'MRE':
-          let dni = {
-            alias: 'DNI',
-            name: 'DNI o Libro de Familia',
-            required: true,
-            done: false,
-            fileName: '',
-          };
-          let alias = props.nacionalidad !== 108 ? 'Documentos adicionales' : 'Pasaporte';
-          let pasaporte = {
-            alias: 'alias',
-            name: 'Extranjeros deben presentar pasaporte o permiso de residencia',
-            required: props.nacionalidad !== 108,
-            done: false,
-            fileName: '',
-          };
           documentosNecesarios.value.push(dni);
           documentosNecesarios.value.push(pasaporte);
           break;
         default:
-          let documento = {
-            alias: 'Documento',
-            name: 'Documento que acredite el cambio que vas a realizar',
-            required: true,
-            done: false,
-            fileName: '',
-          };
-          let dniAntiguo = {
-            alias: 'DocumentoAntiguo',
-            name: 'Si realiza un cambio en su documento de identidad, debe añadir el antiguo',
-            required: false,
-            done: false,
-            fileName: '',
-          };
           documentosNecesarios.value.push(documento);
           documentosNecesarios.value.push(dniAntiguo);
           break;
       }
     }
+    console.log(props.tipoOperacion, documentosNecesarios.value);
 
     const adjuntarArchivo = (e, documento) => {
       e.preventDefault();

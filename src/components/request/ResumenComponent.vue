@@ -1,7 +1,7 @@
 <template>
   <button @click="$emit('previous')" class="button is-link is-rounded prev-button"> Anterior
   </button>
-  <button @click="$emit('submitRequest'); $emit('demoData', 123)"
+  <button @click="$emit('submitForm');"
           class="button is-success is-warning next-button"> Finalizar
   </button>
   <br>
