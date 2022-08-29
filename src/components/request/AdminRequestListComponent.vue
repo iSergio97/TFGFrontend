@@ -72,6 +72,18 @@ export default {
     let orden = ref('ASC');
 
     let filtrarSolicitudes = async () => {
+      if (new Date(endTime.value) > new Date() || new Date(startTime.value) > new Date() || new Date(startTime.value) > new Date(endTime.value)) {
+        if (new Date(endTime.value) > new Date()) {
+          alert('La fecha hasta no puede ser posterior al día actual');
+          return;
+        } else if (new Date(startTime.value) > new Date()) {
+          alert('La fecha inicial no puede ser posterior al día actual');
+          return;
+        } else if (new Date(startTime.value) > new Date(endTime.value)) {
+          alert('La fecha desde no puede ser posterior a la fecha hasta');
+          return;
+        }
+      }
       isLoaded.value = false;
       let tmpLista = (await SolicitudesFiltroGET({
         user: false,

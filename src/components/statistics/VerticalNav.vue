@@ -5,7 +5,7 @@
       <ul class="menu-list">
         <li>
           <router-link to="habitantes">
-            <span class="icon is-small"><i class="fa-solid fa-people-roof"></i></span>
+            <span class="icon is-small"><i class="fas fa-users"></i></span>
             <span class="menu-text">Habitantes</span>
           </router-link>
         </li>
@@ -47,6 +47,10 @@ export default {
   z-index: 2;
   width: 250px;
   border-left: none;
+}
+
+.icon {
+  padding-right: 15px;
 }
 
 </style>

@@ -35,7 +35,10 @@
                          @completa-solicitud="completaSolicitud"/>
     </div>
     <div v-if="position === 1" class="column">
-      <ConvivientesComponent @next="next" @previous="previous"/>
+      <ConvivientesComponent @next="next" @previous="previous" :convivientes="convivientes"
+                             :convivientes-en-solicitud="convivientesEnSolicitud"
+                             :tipoOperacion="subOpcion"
+                             @rellena-convivientes="rellenaConvivientes"/>
     </div>
     <div v-if="position === 2" class="column">
       <UserDocumentosComponent @next="next" @previous="previous"
@@ -89,16 +92,8 @@ export default {
 
     let position = ref(0);
 
-    let submitRequest = () => {
-      alert('Botón de finalizar pulsado');
-    };
-
-    let demoData = (data) => {
-      alert('Botón pulsado demoData');
-    };
-
     const next = () => {
-      if (position.value === 0 && (convivientes.value.length === 0)) {
+      if (position.value === 0 && (convivientes.length > 0)) {
         position.value++;
       }
       position.value++;
@@ -109,10 +104,6 @@ export default {
         position.value--;
       }
       position.value--;
-    };
-
-    const avisoFinal = () => {
-      alert('Botón de finalizar');
     };
 
     let documentosNecesarios = ref([]);
@@ -264,14 +255,10 @@ export default {
 
     let convivientesEnSolicitud = [];
 
-    const editarSolicitud = (id) => {
-      if (convivientesEnSolicitud.filter((conv) => conv.id === id).length === 0) {
-        let conviviente = convivientes.value.filter((conv) => conv.id === id);
-        convivientesEnSolicitud.push(conviviente[0]);
-      } else {
-        convivientesEnSolicitud = convivientesEnSolicitud.filter((conv) => conv.id !== id);
-      }
+    const rellenaConvivientes = (formField) => {
+      convivientesEnSolicitud = formField;
     };
+
     const submitForm = async () => {
       isSubmitted.value = true;
       const estadoSolicitante = props.userLogged.estado;
@@ -435,16 +422,15 @@ export default {
       numeracionesCalle,
       numeracion,
       convivientes,
+      convivientesEnSolicitud,
       documentosNecesarios,
       position,
       documento,
+      formData,
       next,
       previous,
       completaSolicitud,
-      avisoFinal,
-      submitRequest,
-      demoData,
-      formData,
+      rellenaConvivientes,
       submitForm,
       rellenaDocumentos,
     };

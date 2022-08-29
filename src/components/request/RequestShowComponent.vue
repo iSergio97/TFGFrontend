@@ -94,7 +94,7 @@
                   <label class="label">Justificación</label>
                   <textarea class="textarea"
                             v-model="justificacion"
-                            :disabled="!isAdmin || statusRequest !== 'P'"></textarea>
+                            :disabled="!isAdmin || statusRequest !== 'P' || isSubmitted"></textarea>
                   <br>
                   <div v-show="isAdmin && statusRequest === 'P'">
                     <button class="button is-info" :class="isSubmitted ? 'is-loading' : ''"
@@ -159,6 +159,21 @@
                 file.name.split('.')[1].toUpperCase() === 'JPGE'"
                     class="title is-5" @click="downloadFile(file)">
                   <i class="far fa-file-image"></i> {{ file.name }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" v-if="convivientes.length > 0">
+        <div class="card-content">
+          <div class="content is-centered">
+            <strong>Convivientes que acompan&ntilde;an esta solicitud:</strong>
+            <div v-for="conviviente in convivientes">
+              <ul>
+                <li>
+                  {{ conviviente.nombre }}, {{ conviviente.primerApellido }}
+                  {{ conviviente.segundoApellido }}
                 </li>
               </ul>
             </div>
@@ -263,6 +278,8 @@ export default {
       nombre = ref(hoja.numeracion.calle.nombre);
       numeracion = ref(hoja.numeracion.numero);
     }
+
+    let convivientes = request.grupo;
 
     let estado;
     let color;
@@ -437,6 +454,7 @@ export default {
       solicitante,
       fechaCreacion,
       estado,
+      convivientes,
       downloadFile,
       modificarSolicitud,
       adjuntarArchivo,

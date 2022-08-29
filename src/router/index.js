@@ -28,11 +28,6 @@ const routes = [
     component: () => import("../views/UserProfile.vue"),
   },
   {
-    path: "/administrator/sistema",
-    name: "Administrator",
-    component: () => import("../views/Administrator.vue"),
-  },
-  {
     path: "/user/requests/list",
     name: "UserRequestList",
     component: () => import("../views/requests/User/UserRequestList.vue"),
@@ -56,16 +51,6 @@ const routes = [
     path: "/administrator/requests/show/:id",
     name: "AdministratorRequestShow",
     component: () => import("../views/requests/Admin/AdministratorRequestShow.vue"), // Show de la solicitud en cuestión
-  },
-  {
-    path: "/administrator/operations/list",
-    name: "AdministratorOperationList",
-    component: () => import("../views/operations/OperationList.vue"),
-  },
-  {
-    path: "/administrator/operations/show/:id",
-    name: "AdministratorOperationShow",
-    component: () => import("../views/operations/OperationShow.vue"),
   },
   {
     path: "/administrator/estadisticas/habitantes",

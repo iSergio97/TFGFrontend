@@ -170,10 +170,10 @@ export default {
           alias: alias,
           file: file
         });
-      }
 
-      let docsNecesarios = documentosNecesarios.value.filter(doc => doc.alias == alias)[0];
-      docsNecesarios.done = true;
+        let docsNecesarios = documentosNecesarios.value.filter(doc => doc.alias == alias)[0];
+        docsNecesarios.done = true;
+      }
     };
 
     const previewDoc = (documento) => {

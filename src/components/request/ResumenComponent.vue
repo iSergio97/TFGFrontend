@@ -42,8 +42,20 @@
                   <div class="field">
                     <label class="label">N&uacute;mero</label>
                     <p class="control">
+                      <input class="input" type="text" :value="datos.numeracion.calle.nombre"
+                             disabled
+                             :class="datos.numeracion.calle.nombre === userLogged.hoja.numeracion.calle.nombre ? 'is-success' : 'is-danger'">
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-body">
+                  <div class="field">
+                    <label class="label">N&uacute;mero</label>
+                    <p class="control">
                       <input class="input" type="text" :value="datos.numeracion.numero" disabled
-                             :class="datos.numeracion.numero === userLogged.hoja.numeracion.numero ? 'is-success' : 'is-danger'">
+                             :class="datos.numeracion.numero === userLogged.hoja.numeracion.calle.nombre ? 'is-success' : 'is-danger'">
                     </p>
                   </div>
                 </div>
