@@ -150,50 +150,55 @@ export default {
     // ['ACR', 'AIM', 'MD', 'MV', 'MRN']
     const subOpcion = ref('ACR');
 
+    let dni = {
+      alias: 'DNI',
+      name: 'DNI o Libro de Familia',
+      required: true,
+      done: false,
+      fileName: '',
+    };
+    let alquiler = {
+      alias: 'Alquiler',
+      name: 'Fotocopia y original del contrato de alquiler o la autorización firmada por el dueño de la vivienda',
+      required: true,
+      done: false,
+      fileName: '',
+    };
+    let volante = {
+      alias: 'Volantes',
+      name: 'Volante empadronamiento para sus convivientes',
+      required: convivientes.length > 0,
+      done: false,
+      fileName: '',
+    };
+    let alias = props.userLogged.nacionalidad !== 108 ? 'Documentos adicionales' : 'Pasaporte';
+    let pasaporte = {
+      alias: alias,
+      name: alias,
+      required: props.userLogged.nacionalidad !== 108,
+      done: false,
+      fileName: '',
+    };
+    let documentoCambio = {
+      alias: 'Documento',
+      name: 'Documento que acredite el cambio que vas a realizar',
+      required: true,
+      done: false,
+      fileName: '',
+    };
+    let dniAntiguo = {
+      alias: 'DocumentoAntiguo',
+      name: 'Si realiza un cambio en su documento de identidad, debe añadir el antiguo',
+      required: false,
+      done: false,
+      fileName: '',
+    };
+
+    documentosNecesarios.value.push(dni);
+    documentosNecesarios.value.push(alquiler);
+    documentosNecesarios.value.push(volante);
+
     watch(subOpcion, (selectedOption) => {
-      let dni = {
-        alias: 'DNI',
-        name: 'DNI o Libro de Familia',
-        required: true,
-        done: false,
-        fileName: '',
-      };
-      let alquiler = {
-        alias: 'Alquiler',
-        name: 'Fotocopia y original del contrato de alquiler o la autorización firmada por el dueño de la vivienda',
-        required: true,
-        done: false,
-        fileName: '',
-      };
-      let volante = {
-        alias: 'Alquiler',
-        name: 'Volante empadronamiento para sus convivientes',
-        required: convivientes.length > 0,
-        done: false,
-        fileName: '',
-      };
-      let alias = props.nacionalidad !== 108 ? 'Documentos adicionales' : 'Pasaporte';
-      let pasaporte = {
-        alias: alias,
-        name: alias,
-        required: props.userLogged.nacionalidad !== 108,
-        done: false,
-        fileName: '',
-      };
-      let documento = {
-        alias: 'Documento',
-        name: 'Documento que acredite el cambio que vas a realizar',
-        required: true,
-        done: false,
-        fileName: '',
-      };
-      let dniAntiguo = {
-        alias: 'DocumentoAntiguo',
-        name: 'Si realiza un cambio en su documento de identidad, debe añadir el antiguo',
-        required: false,
-        done: false,
-        fileName: '',
-      };
       switch (selectedOption) {
         case 'MV':
         case 'ACR':
@@ -210,7 +215,7 @@ export default {
           break;
         case 'MD':
           documentosNecesarios.value = [];
-          documentosNecesarios.value.push(documento);
+          documentosNecesarios.value.push(documentoCambio);
           documentosNecesarios.value.push(dniAntiguo);
           break;
         case 'MRN':

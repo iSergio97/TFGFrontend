@@ -9,7 +9,7 @@
             </figure>
           </div>
           <div class="column is-6 is-offset-1">
-            <h1 class="title is-2">Padrón Municipal Online de Habitantes</h1>
+            <h1 class="title is-2">Padrón Online de Habitantes</h1>
             <h2 class="subtitle is-4">
               Tus gestiones en el ayuntamiento, desde tu dispositivo móvil
             </h2>

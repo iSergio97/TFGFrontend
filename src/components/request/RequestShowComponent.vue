@@ -263,7 +263,9 @@ export default {
 
     const solicitante = computed(() => `${request.solicitante.nombre}  ${request.solicitante.primerApellido} ${request.solicitante.segundoApellido}`);
     const fecha = request.fecha;
-    const fechaCreacion = computed(() => `${new Date(fecha).getDate()}/${new Date(fecha).getMonth()}/${new Date(fecha).getFullYear()}`);
+    let day = new String(new Date(fecha).getDate()).padStart(2, 0);
+    let month = new String(new Date(fecha).getMonth() + 1).padStart(2, 0);
+    const fechaCreacion = computed(() => `${day}/${month}/${new Date(fecha).getFullYear()}`);
     const archivos = ref(request.documentos);
     const fechaNacimiento = ref(new Date(request.fechaNacimiento).toISOString()
       .split('T')[0]);
